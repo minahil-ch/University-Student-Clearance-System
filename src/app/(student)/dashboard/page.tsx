@@ -1,0 +1,332 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { Sidebar } from "@/components/layout/Sidebar"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { StatusBadge } from "@/components/ui/StatusBadge"
+import { motion, AnimatePresence } from "framer-motion"
+import { formatDate } from "@/lib/utils"
+import { 
+  GraduationCap, 
+  Phone, 
+  Mail, 
+  Hash, 
+  User, 
+  CheckCircle2, 
+  Clock, 
+  AlertTriangle,
+  Send,
+  Building2,
+  Truck,
+  BookOpen,
+  ArrowRight
+} from "lucide-react"
+import { Button } from "@/components/ui/Button"
+import { toast } from "sonner"
+
+// Initializing Student Dashboard Node
+export default function StudentDashboard() {
+  const [profile, setProfile] = useState<any>(null)
+  const [clearanceData, setClearanceData] = useState<any[]>([])
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  const fetchData = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    // Fetch Profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+    
+    setProfile(profile)
+
+    // Fetch Clearance Status
+    const { data: clearance } = await supabase
+      .from('clearance_status')
+      .select('*')
+      .eq('student_id', user.id)
+
+    const { data: futureData } = await supabase
+      .from("future_data")
+      .select("id")
+      .eq("student_id", user.id)
+      .maybeSingle()
+    
+    setClearanceData(clearance || [])
+    setFormSubmitted(Boolean(futureData))
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchData()
+
+    // Real-time subscription
+    const channel = supabase
+      .channel('clearance-updates')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'clearance_status' },
+        (payload) => {
+          if (payload.new.student_id === profile?.id) {
+            toast.info(`${payload.new.department_key.replace(/_/g, ' ').toUpperCase()} has updated your status!`)
+            fetchData()
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [profile?.id])
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <p className="text-sm font-black uppercase tracking-widest text-muted-foreground animate-pulse">Checking Clearance Profile...</p>
+    </div>
+  )
+
+  const getDepartmentIcon = (key: string) => {
+    if (key === 'transport') return <Truck className="w-5 h-5" />
+    if (key === 'library') return <BookOpen className="w-5 h-5" />
+    return <Building2 className="w-5 h-5" />
+  }
+
+  return (
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <Sidebar role="student" />
+      
+      <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
+        <header className="mb-10">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
+              Student <span className="text-primary text-emerald-500">Workspace</span>
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm font-medium">Monitor your academic clearance journey in real-time.</p>
+          </motion.div>
+        </header>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* User Profile Card */}
+          <Card className="glass-card shadow-xl border-none overflow-hidden h-fit">
+            <div className="h-24 bg-gradient-to-r from-primary via-emerald-500 to-blue-600"></div>
+            <CardContent className="p-6 -mt-12 text-center">
+              <div className="w-24 h-24 rounded-[2rem] bg-white dark:bg-slate-900 flex items-center justify-center mx-auto mb-4 shadow-xl relative border-[3px] border-white dark:border-slate-800">
+                <GraduationCap className="w-12 h-12 text-primary" />
+                <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white p-1.5 rounded-lg shadow-md">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+              </div>
+              <h3 className="text-xl font-black tracking-tight">{profile?.full_name}</h3>
+              <p className="text-xs font-bold text-primary mt-1 uppercase tracking-widest">{profile?.reg_no}</p>
+              {!formSubmitted && (
+                <p className="text-xs text-amber-600 mt-3 font-semibold">
+                  You have not filled the clearance form yet.
+                </p>
+              )}
+              
+              <div className="mt-6 grid grid-cols-1 gap-3 text-left">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Father Name</p>
+                    <p className="font-bold">{profile?.father_name || "N/A"}</p>
+                  </div>
+                </div>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Department</p>
+                    <p className="font-bold">{formSubmitted ? (profile?.department_name || "N/A") : "Hidden until form submission"}</p>
+                  </div>
+                </div>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Current CGPA</p>
+                    <p className="font-bold">{formSubmitted ? (profile?.cgpa || "0.00") : "Hidden until form submission"}</p>
+                  </div>
+                </div>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Official Email</p>
+                    <p className="font-bold truncate">{profile?.email}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Clearance Progress Grid */}
+          <div className="xl:col-span-2 space-y-8">
+            <Card className="glass-card shadow-2xl border-none">
+              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-2xl font-black uppercase tracking-tighter">Clearance Tracking</CardTitle>
+                  <Button variant="outline" className="rounded-full gap-2 border-2 hover:bg-slate-100">
+                    <History className="w-4 h-4" /> Full History
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <AnimatePresence>
+                    {clearanceData.length === 0 ? (
+                      <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
+                        <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-xl font-bold text-slate-400">Application not yet initiated.</p>
+                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
+                          Start Clearance Now <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : !formSubmitted ? (
+                      <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
+                        <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-xl font-bold text-slate-400">You have not filled the clearance form yet.</p>
+                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
+                          Fill Clearance Form <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      clearanceData.map((item, index) => (
+                        <motion.div 
+                          key={item.id}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="group p-6 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-xl"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className={`p-4 rounded-2xl ${
+                              item.status === 'cleared' ? 'bg-emerald-500/10 text-emerald-500' : 
+                              item.status === 'issue' ? 'bg-rose-500/10 text-rose-500' : 'bg-amber-500/10 text-amber-500'
+                            }`}>
+                              {getDepartmentIcon(item.department_key)}
+                            </div>
+                            <StatusBadge status={item.status} className="h-8 rounded-full px-4 text-[10px] font-black uppercase tracking-widest" />
+                          </div>
+                          
+                          <h4 className="text-lg font-black uppercase tracking-tight">{item.department_key.replace(/_/g, ' ')}</h4>
+                          
+                          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            {item.status === 'cleared' ? (
+                              <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm">
+                                <CheckCircle2 className="w-4 h-4" />
+                                <span>{item.department_key.replace(/_/g, ' ').toUpperCase()} cleared you!</span>
+                              </div>
+                            ) : item.status === 'issue' ? (
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-rose-500 font-bold text-sm">
+                                  <AlertTriangle className="w-4 h-4" />
+                                  <span>Issue Reported</span>
+                                </div>
+                                <p className="text-xs bg-rose-50 text-rose-600 p-3 rounded-xl italic font-medium">
+                                  &quot;{item.remarks}&quot;
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                                <Clock className="w-4 h-4" />
+                                <span>Pending Approval</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <p className="text-[10px] text-muted-foreground mt-4 uppercase tracking-widest font-black opacity-50">
+                            Last Update: {formatDate(item.updated_at)}
+                          </p>
+                        </motion.div>
+                      ))
+                    )}
+                  </AnimatePresence>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card shadow-2xl border-none">
+              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
+                <CardTitle className="text-xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
+                  <Phone className="w-6 h-6" /> Portal Contact Directory
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                    { name: 'Administration', phone: '+92 300 1234567', color: 'blue' },
+                    { name: 'Transport Dept', phone: '+92 305 4128282', color: 'amber' },
+                    { name: 'Main Library', phone: '+92 321 9876543', color: 'violet' },
+                    { name: 'IT Department', phone: '+92 345 6789012', color: 'emerald' },
+                    { name: 'Accounts Office', phone: '+92 333 4445556', color: 'rose' }
+                  ].map((dept) => (
+                    <div key={dept.name} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                      <div className={`p-3 rounded-xl bg-${dept.color}-500/10 text-${dept.color}-500`}>
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{dept.name}</p>
+                        <p className="font-bold text-sm tracking-tighter">{dept.phone}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card bg-slate-900 text-white border-none shadow-2xl p-8 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 group-hover:scale-110 transition-transform duration-700" />
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter">Need Assistance?</h3>
+                  <p className="text-white/60 mt-2 font-medium italic">Contact the administration office for urgent clearance queries.</p>
+                </div>
+                <Button onClick={() => window.open('tel:+923054128282')} className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 h-14 font-black uppercase tracking-widest shadow-xl shadow-primary/20">
+                  Call Admin Office
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
+
+function History(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M12 7v5l4 2" />
+    </svg>
+  )
+}
