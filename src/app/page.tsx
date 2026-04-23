@@ -34,14 +34,14 @@ export default function LandingPage() {
       icon: Truck, 
       color: "amber", 
       desc: "Approve or flag transport dues", 
-      href: "/login/staff" 
+      href: "/login/staff?role=staff&dept=transport" 
     },
     { 
       name: "Library Portal", 
       icon: BookOpen, 
       color: "violet", 
       desc: "Manage library returns and fines", 
-      href: "/login/staff" 
+      href: "/login/staff?role=staff&dept=library" 
     },
     { 
       name: "Admin Portal", 

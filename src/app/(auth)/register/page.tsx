@@ -15,6 +15,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [role, setRole] = useState<"student" | "department">("student")
   const [registrationType, setRegistrationType] = useState<string | null>(null)
+  const [lockedDept, setLockedDept] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
   const lockStudent = registrationType === "student"
@@ -41,6 +42,12 @@ export default function RegisterPage() {
     if (typeof window === "undefined") return
     const params = new URLSearchParams(window.location.search)
     setRegistrationType(params.get("type"))
+    const deptParam = params.get("dept")
+    if (deptParam) {
+      const decoded = decodeURIComponent(deptParam)
+      setLockedDept(decoded)
+      setDepartmentName(decoded)
+    }
   }, [])
 
   useEffect(() => {
@@ -81,7 +88,7 @@ export default function RegisterPage() {
           data: {
             full_name: fullName,
             role: normalizedRole,
-            department_name: departmentName
+            department_name: role === "student" ? departmentName : (lockedDept || departmentName)
           }
         }
       })
@@ -112,7 +119,7 @@ export default function RegisterPage() {
               full_name: fullName,
               email,
               role: normalizedRole,
-              department_name: departmentName,
+              department_name: role === "student" ? departmentName : (lockedDept || departmentName),
               is_approved: role === "student",
             },
             { onConflict: "id" }
@@ -206,15 +213,19 @@ export default function RegisterPage() {
                 <label className="text-xs font-semibold text-slate-500">{role === "student" ? "Academic Department" : "Portal Department"}</label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
-                  <select
-                    value={departmentName}
-                    onChange={(e) => setDepartmentName(e.target.value)}
-                    className="w-full h-12 pl-11 pr-4 rounded-md border bg-background text-sm"
-                  >
-                    {(role === "student" ? academicDepartments : staffDepartments).map((dept) => (
-                      <option key={dept} value={dept}>{dept}</option>
-                    ))}
-                  </select>
+                  {role === "department" && lockedDept ? (
+                    <Input value={lockedDept} className="pl-11 h-12" disabled />
+                  ) : (
+                    <select
+                      value={departmentName}
+                      onChange={(e) => setDepartmentName(e.target.value)}
+                      className="w-full h-12 pl-11 pr-4 rounded-md border bg-background text-sm"
+                    >
+                      {(role === "student" ? academicDepartments : staffDepartments).map((dept) => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 

@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [portal, setPortal] = useState('student')
   const [roleType, setRoleType] = useState<string | null>(null)
+  const [lockedDept, setLockedDept] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
   const lockStudent = roleType === "student"
@@ -27,6 +28,13 @@ export default function LoginPage() {
     if (typeof window === "undefined") return
     const params = new URLSearchParams(window.location.search)
     setRoleType(params.get("role"))
+    const deptParam = params.get("dept")
+    if (deptParam) setLockedDept(decodeURIComponent(deptParam))
+
+    const pendingError = params.get("error")
+    if (pendingError) {
+      toast.error("Admin has not approved your request yet.")
+    }
   }, [])
 
   useEffect(() => {
@@ -134,9 +142,21 @@ export default function LoginPage() {
         // Approval check for staff (Students and Admin are auto-approved)
         if (!profile.is_approved && profile.role !== 'admin' && profile.role !== 'student') {
           await supabase.auth.signOut()
-          toast.error("Your staff account is pending admin approval.")
+          toast.error("Admin has not approved your request yet.")
           setLoading(false)
           return
+        }
+
+        // If user entered via faculty department portal, lock to that department
+        if (portal === "staff" && lockedDept && profile.role === "department") {
+          const actualDept = profile.department_name?.toLowerCase().trim()
+          const expectedDept = lockedDept.toLowerCase().trim()
+          if (actualDept !== expectedDept) {
+            await supabase.auth.signOut()
+            toast.error(`This account is not assigned to ${lockedDept}.`)
+            setLoading(false)
+            return
+          }
         }
 
         // Redirect logic
@@ -287,7 +307,7 @@ export default function LoginPage() {
                     {portal === "student" ? (
                       <>No account? <Link href="/register/student" className="text-primary font-black ml-1 hover:underline">Enroll Now</Link></>
                     ) : portal === "staff" ? (
-                      <>No account? <Link href="/register/staff" className="text-primary font-black ml-1 hover:underline">Request Access</Link></>
+                      <>No account? <Link href={lockedDept ? `/register/staff?dept=${encodeURIComponent(lockedDept)}` : "/register/staff"} className="text-primary font-black ml-1 hover:underline">Request Access</Link></>
                     ) : (
                       <>Admin registration is disabled</>
                     )}

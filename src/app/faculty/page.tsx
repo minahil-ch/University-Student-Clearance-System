@@ -30,7 +30,7 @@ export default function FacultyPortalPage() {
           {departments.map((dept) => (
             <button
               key={dept}
-              onClick={() => router.push(`/login/staff?dept=${encodeURIComponent(dept)}`)}
+              onClick={() => router.push(`/login/staff?role=staff&dept=${encodeURIComponent(dept)}`)}
               className="text-left p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg hover:border-primary/40 transition-all group"
             >
               <div className="flex items-center justify-between">

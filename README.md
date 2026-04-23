@@ -1,5 +1,4 @@
-![alt text](<Screenshot 2026-04-19 140812.png>) ![alt text](<Screenshot 2026-04-21 184047.png>) ![alt text](<Screenshot 2026-04-21 184013.png>) ![alt text](<Screenshot 2026-04-21 181940.png>) ![alt text](<Screenshot 2026-04-21 083334.png>) ![alt text](<Screenshot 2026-04-21 083326.png>) ![alt text](<Screenshot 2026-04-19 144444.png>)T,
-his is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
