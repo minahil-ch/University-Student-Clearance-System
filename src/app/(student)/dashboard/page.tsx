@@ -1,416 +1,401 @@
-'use client'
+"use client"
 
 import { useEffect, useState } from "react"
-import { createBrowserClient } from '@supabase/ssr'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Clock, XCircle, Send, AlertCircle } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { Sidebar } from "@/components/layout/Sidebar"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { StatusBadge } from "@/components/ui/StatusBadge"
+import { motion, AnimatePresence } from "framer-motion"
+import { formatDate } from "@/lib/utils"
+import { getPortalContact } from "@/lib/portalContacts"
+import { 
+  GraduationCap, 
+  Phone, 
+  Mail, 
+  User, 
+  CheckCircle2, 
+  Clock, 
+  AlertTriangle,
+  Building2,
+  Truck,
+  BookOpen,
+  ArrowRight
+} from "lucide-react"
+import { Button } from "@/components/ui/Button"
+import { toast } from "sonner"
 
+// Initializing Student Dashboard Node
 export default function StudentDashboard() {
+  const [profile, setProfile] = useState<any>(null)
+  const [clearanceData, setClearanceData] = useState<any[]>([])
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [selectedDept, setSelectedDept] = useState<any>(null)
-  
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabase = createClient()
+  const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
+
+  const desiredOrder = ['library', 'transport', 'finance', 'hostel', academicDeptKey]
+  const clearanceMap = new Map(clearanceData.map((row) => [row.department_key, row]))
+  const orderedClearanceData = desiredOrder.map((key, idx) => {
+    const found = clearanceMap.get(key)
+    if (found) return found
+    return {
+      id: `virtual-${key}-${idx}`,
+      department_key: key,
+      status: "pending",
+      remarks: "Waiting for workflow routing.",
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+    }
+  })
+  const isFinalCleared = orderedClearanceData.length > 0 && orderedClearanceData.every((item) => item.status === "cleared")
+
+  const fetchData = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    // Fetch Profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+    
+    setProfile(profile)
+
+    // Fetch Clearance Status
+    const { data: clearance } = await supabase
+      .from('clearance_status')
+      .select('*')
+      .eq('student_id', user.id)
+
+    const { data: futureData } = await supabase
+      .from("future_data")
+      .select("id")
+      .eq("student_id", user.id)
+      .maybeSingle()
+    
+    setClearanceData(clearance || [])
+    setFormSubmitted(Boolean(futureData))
+    setLoading(false)
+  }
 
   useEffect(() => {
     fetchData()
 
+    // Real-time subscription
     const channel = supabase
-      .channel('student_updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'clearance_requests' }, () => fetchData())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'department_status' }, () => fetchData())
+      .channel('clearance-updates')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'clearance_status' },
+        (payload) => {
+          if (payload.new.student_id === profile?.id) {
+            toast.info(`${payload.new.department_key.replace(/_/g, ' ').toUpperCase()} has updated your status!`)
+            fetchData()
+          }
+        }
+      )
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
-  }, [])
-
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user) return
-
-      const { data: userProfile } = await supabase.from('users').select('*').eq('id', userData.user.id).single()
-      setProfile(userProfile)
-
-      const { data: studentData } = await supabase.from('students').select('*').eq('user_id', userData.user.id).single()
-      if (!studentData) return
-
-      if (userProfile) {
-        setFormData(prev => ({
-          ...prev,
-          name: userProfile.name || '',
-          registration_no: studentData.registration_no || '',
-          department: studentData.department || '',
-          cgpa: userProfile.cgpa || '',
-          phone: userProfile.phone || ''
-        }))
-      }
-
-      const { data: requestData } = await supabase.from('clearance_requests').select('*').eq('student_id', studentData.id).single()
-      
-      if (requestData) {
-        setRequest(requestData)
-        const { data: statuses } = await supabase.from('department_status').select('*').eq('request_id', requestData.id)
-        setDepartmentStatuses(statuses || [])
-      } else {
-        setRequest(null)
-        setDepartmentStatuses([])
-      }
-    } catch (err: any) {
-      if (err.code !== 'PGRST116') { // Ignore row not found
-         setError(err.message)
-      }
-    } finally {
-      setLoading(false)
+    return () => {
+      supabase.removeChannel(channel)
     }
-  }
+  }, [profile?.id])
 
-  const handleSubmitRequest = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      setSubmitting(true)
-      const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user) return
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <p className="text-sm font-black uppercase tracking-widest text-muted-foreground animate-pulse">Checking Clearance Profile...</p>
+    </div>
+  )
 
-      // Update profile with form data
-      const { error: profileError } = await supabase.from('users').update({
-        name: formData.name,
-        cgpa: formData.cgpa,
-        phone: formData.phone
-      }).eq('id', userData.user.id)
-
-      if (profileError) throw profileError
-
-      const { data: studentData } = await supabase.from('students').select('*').eq('user_id', userData.user.id).single()
-      
-      if (studentData) {
-        // Update student record
-        await supabase.from('students').update({
-          registration_no: formData.registration_no,
-          department: formData.department
-        }).eq('id', studentData.id)
-
-        const { data: newRequest, error } = await supabase.from('clearance_requests').insert({ student_id: studentData.id }).select().single()
-        if (error) throw error
-        
-        // Log to Google Sheet via GAS
-        const gasUrl = process.env.NEXT_PUBLIC_GAS_WEBHOOK_URL
-        const gasToken = process.env.NEXT_PUBLIC_GAS_SECRET_TOKEN
-        if (gasUrl) {
-          await fetch(gasUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              token: gasToken || "SECURE_KEY_123",
-              type: "FORM_SUBMISSION",
-              payload: {
-                reg_no: formData.registration_no,
-                name: formData.name,
-                email: userData.user.email,
-                phone: formData.phone,
-                department: formData.department,
-                cgpa: formData.cgpa
-              }
-            })
-          })
-        }
-
-        setIsFormOpen(false)
-        fetchData()
-      }
-    } catch (err: any) {
-      alert("Error: " + err.message)
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  if (loading) return <div className="flex justify-center p-12"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
-
-  const getStatusIcon = (status: string) => {
-    if (status === 'approved') return <CheckCircle className="w-6 h-6 text-green-500" />
-    if (status === 'rejected') return <XCircle className="w-6 h-6 text-red-500" />
-    return <Clock className="w-6 h-6 text-yellow-500" />
-  }
-
-  const getStatusColor = (status: string) => {
-    if (status === 'approved') return 'bg-green-100 text-green-800 border-green-200'
-    if (status === 'rejected') return 'bg-red-100 text-red-800 border-red-200'
-    return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-  }
-
-  const deptContacts: any = {
-    library: "+92 301 1111111",
-    transport: "+92 302 2222222",
-    finance: "+92 303 3333333",
-    hostel: "+92 304 4444444",
-    academic: "+92 305 5555555"
+  const getDepartmentIcon = (key: string) => {
+    if (key === 'transport') return <Truck className="w-5 h-5" />
+    if (key === 'library') return <BookOpen className="w-5 h-5" />
+    if (key === 'finance') return <Building2 className="w-5 h-5" />
+    if (key === 'hostel') return <Building2 className="w-5 h-5" />
+    if (key.startsWith('academic-')) return <GraduationCap className="w-5 h-5" />
+    return <Building2 className="w-5 h-5" />
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-8">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <h1 className="text-4xl font-black text-slate-800 dark:text-white tracking-tight">Welcome, <span className="text-blue-600">{profile?.name}</span></h1>
-          <p className="text-slate-500 mt-2 font-medium">Track your university clearance process in real-time.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => window.location.href = '/settings'}
-            className="p-3 bg-white dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 rounded-2xl hover:bg-slate-50 transition-colors shadow-sm"
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <Sidebar role="student" />
+      
+      <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
+        <header className="mb-10">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <Clock className="w-6 h-6 text-slate-600" />
-          </button>
-        </div>
-      </header>
+            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
+              Student <span className="text-primary text-emerald-500">Workspace</span>
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm font-medium">
+              Welcome, {profile?.full_name || "Student"} - monitor your clearance in real-time.
+            </p>
+          </motion.div>
+        </header>
 
-      {!request ? (
-        <Card className="shadow-2xl border-none ring-1 ring-slate-200 bg-gradient-to-br from-white to-slate-50 overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-          <CardContent className="p-12 text-center relative z-10">
-            <div className="w-20 h-20 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-              <Send className="w-10 h-10 ml-1" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">You need to fill clearance form</h2>
-            <p className="text-slate-600 mb-8 max-w-md mx-auto">Click the button below to provide your details and submit your request to all university departments.</p>
-            <button 
-              onClick={() => setIsFormOpen(true)} 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg shadow-blue-500/30 transform hover:scale-105"
-            >
-              Fill Clearance Form
-            </button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-8">
-          {/* Summary Card */}
-          <Card className="shadow-xl border-none ring-1 ring-slate-200 overflow-hidden rounded-[2rem]">
-            <CardContent className="p-8">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-                <div>
-                  <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Your Identity Details</h3>
-                  <p className="text-slate-500 font-medium">As submitted in your clearance application</p>
-                </div>
-                <div className={`px-6 py-2 rounded-2xl text-sm font-black uppercase tracking-widest border ${getStatusColor(request.status)}`}>
-                  Final Status: {request.status}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* User Profile Card */}
+          <Card className="glass-card shadow-xl border-none overflow-hidden h-fit">
+            <div className="h-24 bg-gradient-to-r from-primary via-emerald-500 to-blue-600"></div>
+            <CardContent className="p-6 -mt-12 text-center">
+              <div className="w-24 h-24 rounded-[2rem] bg-white dark:bg-slate-900 flex items-center justify-center mx-auto mb-4 shadow-xl relative border-[3px] border-white dark:border-slate-800">
+                <GraduationCap className="w-12 h-12 text-primary" />
+                <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white p-1.5 rounded-lg shadow-md">
+                  <CheckCircle2 className="w-4 h-4" />
                 </div>
               </div>
+              <h3 className="text-xl font-black tracking-tight">{profile?.full_name}</h3>
+              <p className="text-xs font-bold text-primary mt-1 uppercase tracking-widest">{profile?.reg_no}</p>
+              {!formSubmitted && (
+                <p className="text-xs text-amber-600 mt-3 font-semibold">
+                  You have not filled the clearance form yet.
+                </p>
+              )}
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Registration No</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-200">{formData.registration_no}</p>
+              <div className="mt-6 grid grid-cols-1 gap-3 text-left">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Father Name</p>
+                    <p className="font-bold">{profile?.father_name || "N/A"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Department</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-200">{formData.department}</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-500">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Department</p>
+                    <p className="font-bold">{formSubmitted ? (profile?.department_name || "N/A") : "Hidden until form submission"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Current CGPA</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-200">{formData.cgpa}</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Current CGPA</p>
+                    <p className="font-bold">{formSubmitted ? (profile?.cgpa || "0.00") : "Hidden until form submission"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Phone Number</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-200">{formData.phone}</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Official Email</p>
+                    <p className="font-bold truncate">{profile?.email}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
-          <Card className={`shadow-xl border-none ring-2 ${request.status === 'approved' ? 'ring-green-400' : request.status === 'rejected' ? 'ring-red-400' : 'ring-yellow-400'} overflow-hidden rounded-[2rem]`}>
-            <div className={`p-8 text-center ${request.status === 'approved' ? 'bg-green-50' : request.status === 'rejected' ? 'bg-red-50' : 'bg-yellow-50'}`}>
-              <div className="flex justify-center mb-4">
-                {request.status === 'approved' && <CheckCircle className="w-16 h-16 text-green-500" />}
-                {request.status === 'rejected' && <XCircle className="w-16 h-16 text-red-500" />}
-                {request.status === 'pending' && <Clock className="w-16 h-16 text-yellow-500 animate-pulse" />}
-              </div>
-              <h2 className="text-3xl font-black text-slate-800 mb-2 uppercase tracking-tight">
-                {request.status === 'approved' ? "You are approved from all departments" : `Current State: ${request.status}`}
-              </h2>
-              {request.status === 'approved' ? (
-                <p className="text-green-700 font-medium">Congratulations! You have been fully cleared. You can now collect your final result card from the registrar's office.</p>
-              ) : request.status === 'rejected' ? (
-                <p className="text-red-700 font-medium">A department has flagged an issue with your request. Please resolve the issue as per the remarks below.</p>
-              ) : (
-                <p className="text-yellow-700 font-medium">Your request is currently being synchronized across all university networks.</p>
-              )}
-            </div>
-          </Card>
 
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2 mt-12 mb-6">
-            <AlertCircle className="text-blue-500" /> Department Authorization Grid
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {['library', 'transport', 'finance', 'hostel', 'academic'].map((dept) => {
-              const status = departmentStatuses.find(s => s.department_name === dept)
-              const state = status?.status || 'pending'
-              return (
-                <div 
-                  key={dept} 
-                  onClick={() => setSelectedDept(status || { department_name: dept, status: 'pending' })}
-                  className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 flex items-center justify-between transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
-                      {getStatusIcon(state)}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-800 dark:text-white capitalize text-lg">{dept} Portal</h4>
-                      <p className="text-slate-500 text-xs font-medium">Click for details</p>
+          {/* Clearance Progress Grid */}
+          <div className="xl:col-span-2 space-y-8">
+            <Card className="glass-card shadow-2xl border-none">
+              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-2xl font-black uppercase tracking-tighter">Clearance Tracking</CardTitle>
+                  <Button variant="outline" className="rounded-full gap-2 border-2 hover:bg-slate-100">
+                    <History className="w-4 h-4" /> Full History
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <AnimatePresence>
+                    {clearanceData.length === 0 ? (
+                      <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
+                        <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-xl font-bold text-slate-400">Application not yet initiated.</p>
+                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
+                          Start Clearance Now <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : !formSubmitted ? (
+                      <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
+                        <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                        <p className="text-xl font-bold text-slate-400">You have not filled the clearance form yet.</p>
+                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
+                          Fill Clearance Form <ArrowRight className="ml-2 w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      orderedClearanceData.map((item, index) => (
+                        <motion.div 
+                          key={item.id}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={`group p-6 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-xl cursor-pointer ${
+                            item.department_key.startsWith("academic-") ? "md:col-span-2 min-h-[220px]" : ""
+                          }`}
+                          onClick={() => setSelectedDept(item)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault()
+                              setSelectedDept(item)
+                            }
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className={`p-4 rounded-2xl ${
+                              item.status === 'cleared' ? 'bg-emerald-500/10 text-emerald-500' : 
+                              item.status === 'issue' ? 'bg-rose-500/10 text-rose-500' : 'bg-amber-500/10 text-amber-500'
+                            }`}>
+                              {getDepartmentIcon(item.department_key)}
+                            </div>
+                            <StatusBadge status={item.status} className="h-8 rounded-full px-4 text-[10px] font-black uppercase tracking-widest" />
+                          </div>
+                          
+                          <h4 className="text-lg font-black uppercase tracking-tight">
+                            {item.department_key.startsWith("academic-")
+                              ? `academic (${item.department_key.replace("academic-", "").replace(/-/g, " ")})`
+                              : item.department_key.replace(/_/g, ' ')}
+                          </h4>
+                          
+                          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            {item.status === 'cleared' ? (
+                              <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm">
+                                <CheckCircle2 className="w-4 h-4" />
+                                <span>
+                                  {item.department_key.startsWith("academic-")
+                                    ? "ACADEMIC approved your final clearance!"
+                                    : `${item.department_key.replace(/_/g, ' ').toUpperCase()} cleared you!`}
+                                </span>
+                              </div>
+                            ) : item.status === 'issue' ? (
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-rose-500 font-bold text-sm">
+                                  <AlertTriangle className="w-4 h-4" />
+                                  <span>Issue Reported</span>
+                                </div>
+                                <p className="text-xs bg-rose-50 text-rose-600 p-3 rounded-xl italic font-medium">
+                                  &quot;{item.remarks}&quot;
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+                                <Clock className="w-4 h-4" />
+                                <span>Pending Approval</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <p className="text-[10px] text-muted-foreground mt-4 uppercase tracking-widest font-black opacity-50">
+                            Last Update: {formatDate(item.updated_at)}
+                          </p>
+                        </motion.div>
+                      ))
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {isFinalCleared && (
+                  <div className="mt-6 rounded-2xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 p-5">
+                    <h4 className="text-xl font-black text-emerald-700 dark:text-emerald-400">
+                      You are approved from all departments
+                    </h4>
+                    <p className="text-sm mt-1 text-emerald-700/80 dark:text-emerald-300/80">
+                      Final academic approval is complete. You can collect your result card.
+                    </p>
+                  </div>
+                )}
+
+                {selectedDept && (
+                  <div className="mt-6 rounded-2xl border bg-slate-50 dark:bg-slate-900 p-5">
+                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Department Details</p>
+                    <h4 className="text-lg font-black mt-1">
+                      {selectedDept.department_key.startsWith("academic-")
+                        ? `ACADEMIC (${selectedDept.department_key.replace("academic-", "").replace(/-/g, " ").toUpperCase()})`
+                        : selectedDept.department_key.replace(/_/g, " ").toUpperCase()}
+                    </h4>
+                    <div className="grid sm:grid-cols-2 gap-3 mt-4 text-sm">
+                      <p>Contact: {getPortalContact(selectedDept.department_key).phone}</p>
+                      <p>Request Submitted: {formatDate(selectedDept.created_at || selectedDept.updated_at)}</p>
+                      <p>Status: {selectedDept.status}</p>
+                      <p>Approval Time: {selectedDept.status === "cleared" ? formatDate(selectedDept.updated_at) : "Pending"}</p>
                     </div>
                   </div>
-                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border ${getStatusColor(state)}`}>
-                    {state}
-                  </span>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card shadow-2xl border-none">
+              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
+                <CardTitle className="text-xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
+                  <Phone className="w-6 h-6" /> Portal Contact Directory
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                    { name: 'Administration', phone: '+92 300 1234567', color: 'blue' },
+                    { name: 'Transport Dept', phone: '+92 305 4128282', color: 'amber' },
+                    { name: 'Main Library', phone: '+92 321 9876543', color: 'violet' },
+                    { name: 'IT Department', phone: '+92 345 6789012', color: 'emerald' },
+                    { name: 'Accounts Office', phone: '+92 333 4445556', color: 'rose' }
+                  ].map((dept) => (
+                    <div key={dept.name} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                      <div className={`p-3 rounded-xl bg-${dept.color}-500/10 text-${dept.color}-500`}>
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{dept.name}</p>
+                        <p className="font-bold text-sm tracking-tighter">{dept.phone}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )
-            })}
-          </div>
+              </CardContent>
+            </Card>
 
+            <Card className="glass-card bg-slate-900 text-white border-none shadow-2xl p-8 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full -mr-32 -mt-32 group-hover:scale-110 transition-transform duration-700" />
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter">Need Assistance?</h3>
+                  <p className="text-white/60 mt-2 font-medium italic">Contact the administration office for urgent clearance queries.</p>
+                </div>
+                <Button onClick={() => window.open('tel:+923054128282')} className="bg-primary hover:bg-primary/90 text-white rounded-full px-8 h-14 font-black uppercase tracking-widest shadow-xl shadow-primary/20">
+                  Call Admin Office
+                </Button>
+              </div>
+            </Card>
+          </div>
         </div>
-      )}
-
-      {/* Detail Dialog */}
-      <Dialog
-        isOpen={!!selectedDept}
-        onClose={() => setSelectedDept(null)}
-        title={`${selectedDept?.department_name} Portal Details`}
-      >
-        <div className="space-y-6">
-          <div className="flex items-center gap-6 p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl">
-            <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center shadow-sm">
-              {getStatusIcon(selectedDept?.status || 'pending')}
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Current Authorization State</p>
-              <h4 className={`text-2xl font-black uppercase tracking-tight ${selectedDept?.status === 'approved' ? 'text-green-600' : 'text-yellow-600'}`}>
-                {selectedDept?.status || 'pending'}
-              </h4>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Department Contact</p>
-              <p className="text-lg font-bold text-slate-800 dark:text-white">{deptContacts[selectedDept?.department_name] || 'N/A'}</p>
-            </div>
-            <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Submission Time</p>
-              <p className="text-lg font-bold text-slate-800 dark:text-white">
-                {request?.submitted_at ? new Date(request.submitted_at).toLocaleString() : 'N/A'}
-              </p>
-            </div>
-            <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl md:col-span-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Final Action Time</p>
-              <p className="text-lg font-bold text-slate-800 dark:text-white">
-                {selectedDept?.timestamp ? new Date(selectedDept.timestamp).toLocaleString() : 'Awaiting processing...'}
-              </p>
-            </div>
-          </div>
-
-          <Button 
-            onClick={() => setSelectedDept(null)}
-            className="w-full h-14 rounded-2xl font-black uppercase tracking-widest"
-          >
-            Close Details
-          </Button>
-        </div>
-      </Dialog>
-
-      {/* Clearance Form Dialog */}
-      <Dialog 
-        isOpen={isFormOpen} 
-        onClose={() => setIsFormOpen(false)} 
-        title="Official Clearance Application"
-      >
-        <form onSubmit={handleSubmitRequest} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
-              <Input 
-                value={formData.name} 
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                placeholder="Ex: John Doe" 
-                className="h-12 rounded-xl"
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Registration No</label>
-              <Input 
-                value={formData.registration_no} 
-                onChange={(e) => setFormData({...formData, registration_no: e.target.value})}
-                placeholder="Ex: FA20-BSE-001" 
-                className="h-12 rounded-xl"
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Current CGPA</label>
-              <Input 
-                type="number" 
-                step="0.01" 
-                min="0" 
-                max="4"
-                value={formData.cgpa} 
-                onChange={(e) => setFormData({...formData, cgpa: e.target.value})}
-                placeholder="Ex: 3.85" 
-                className="h-12 rounded-xl"
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Department</label>
-              <select 
-                value={formData.department} 
-                onChange={(e) => setFormData({...formData, department: e.target.value})}
-                className="w-full h-12 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="">Select Department</option>
-                <option value="CS">Computer Science</option>
-                <option value="SE">Software Engineering</option>
-                <option value="EE">Electrical Engineering</option>
-                <option value="BA">Business Administration</option>
-              </select>
-            </div>
-            <div className="md:col-span-2 space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</label>
-              <Input 
-                value={formData.phone} 
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                placeholder="Ex: +92 300 1234567" 
-                className="h-12 rounded-xl"
-                required 
-              />
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-slate-100 mt-8 flex justify-end gap-4">
-            <button 
-              type="button"
-              onClick={() => setIsFormOpen(false)}
-              className="px-6 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit"
-              disabled={submitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest px-8 py-3 rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98] disabled:opacity-50"
-            >
-              {submitting ? "Processing..." : "Submit Application"}
-            </button>
-          </div>
-        </form>
-      </Dialog>
+      </main>
     </div>
   )
 }
 
+function History(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M12 7v5l4 2" />
+    </svg>
   )
 }

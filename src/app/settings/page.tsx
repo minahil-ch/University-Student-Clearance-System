@@ -11,7 +11,11 @@ import { toast } from "sonner"
 import { Lock, Moon, Sun, ArrowLeft, Settings2, CheckCircle2, ShieldCheck } from "lucide-react"
 
 export default function SettingsPage() {
-  const [name, setName] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [profile, setProfile] = useState<any>(null)
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   
   const supabase = createClient()
   const router = useRouter()
@@ -26,9 +30,8 @@ export default function SettingsPage() {
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { data } = await supabase.from('users').select('*').eq('id', user.id).single()
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
         setProfile(data || { role: 'unknown' })
-        if (data) setName(data.name || "")
       } else {
         router.push('/login')
       }
@@ -43,22 +46,6 @@ export default function SettingsPage() {
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(newTheme)
-  }
-
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-
-    const { error } = await supabase.from('users').update({ name }).eq('id', user.id)
-
-    if (error) {
-      toast.error(error.message)
-    } else {
-      toast.success("Profile updated successfully!")
-    }
-    setLoading(false)
   }
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -87,9 +74,11 @@ export default function SettingsPage() {
     if (!profile) return
     if (profile.role === 'admin') router.push('/admin')
     else if (profile.role === 'student') router.push('/dashboard')
-    else if (profile.role === 'department' || ['academic', 'library', 'transport', 'finance', 'hostel'].includes(profile.role)) {
-      router.push(`/${profile.role}`)
-    } else router.push('/dashboard')
+    else if (profile.role === 'department') {
+      router.push(`/dept/${profile.department_name?.toLowerCase().replace(/\s+/g, '-')}`)
+    } else if (profile.role === 'library') router.push('/library')
+    else if (profile.role === 'transport') router.push('/transport')
+    else router.push('/dashboard')
   }
 
   if (!profile) return (
@@ -102,7 +91,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
         <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-black uppercase tracking-widest gap-2 text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="w-5 h-5" /> Back to Dashboard
+          <ArrowLeft className="w-5 h-5" /> Back to Authorization Hub
         </Button>
 
         <header className="mb-12 flex items-center gap-4">
@@ -116,51 +105,8 @@ export default function SettingsPage() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Profile Panel */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-500 p-8 text-white">
-                <CardTitle className="text-2xl font-black uppercase tracking-widest flex items-center gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-white" /> Profile Identity
-                </CardTitle>
-                <CardDescription className="text-blue-100 font-medium">Manage your personal identification</CardDescription>
-              </CardHeader>
-              <CardContent className="p-8">
-                <form onSubmit={handleUpdateProfile} className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                    <Input 
-                      type="text" 
-                      placeholder="Your Name" 
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="h-14 rounded-2xl border-none bg-slate-100 dark:bg-slate-900 font-medium" 
-                      required 
-                    />
-                  </div>
-                  <div className="space-y-2 opacity-50 cursor-not-allowed">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address (Primary Key)</label>
-                    <Input 
-                      type="email" 
-                      value={profile.email}
-                      disabled
-                      className="h-14 rounded-2xl border-none bg-slate-100 dark:bg-slate-900 font-medium" 
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98]"
-                  >
-                    {loading ? "Updating..." : "Save Identity"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
-
           {/* Security Panel */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
               <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
                 <CardTitle className="text-2xl font-black uppercase tracking-widest flex items-center gap-3">
@@ -170,6 +116,15 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleUpdatePassword} className="space-y-6">
+                  {profile.role === 'admin' && (
+                    <div className="p-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mb-6">
+                      <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" /> Admin Override Active
+                      </p>
+                      <p className="text-sm font-medium mt-1">You can freely reset your root access password from this terminal.</p>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Terminal Password</label>
                     <div className="relative">
@@ -207,43 +162,41 @@ export default function SettingsPage() {
                     disabled={loading || !newPassword}
                     className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
                   >
-                    {loading ? "Reconfiguring..." : "Update Password"}
+                    {loading ? "Reconfiguring..." : "Update Security Token"}
                   </Button>
                 </form>
               </CardContent>
             </Card>
           </motion.div>
-        </div>
 
-        {/* Preferences Panel */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8">
-          <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-            <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
-              <CardTitle className="text-2xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
-                <Sun className="w-6 h-6" /> System Preferences
-              </CardTitle>
-              <CardDescription className="font-medium text-muted-foreground">Adjust local client interfaces</CardDescription>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-900 rounded-2xl">
-                <div>
-                  <h4 className="font-black uppercase tracking-widest text-sm">Visual Theme</h4>
-                  <p className="text-xs text-muted-foreground font-medium mt-1">Switch between light/dark environments</p>
+          {/* Preferences Panel */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
+              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
+                <CardTitle className="text-2xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
+                  <Sun className="w-6 h-6" /> System Preferences
+                </CardTitle>
+                <CardDescription className="font-medium text-muted-foreground">Adjust local client interfaces</CardDescription>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-900 rounded-2xl">
+                  <div>
+                    <h4 className="font-black uppercase tracking-widest text-sm">Visual Theme</h4>
+                    <p className="text-xs text-muted-foreground font-medium mt-1">Switch between light/dark environments</p>
+                  </div>
+                  <Button 
+                    onClick={toggleTheme} 
+                    variant="outline" 
+                    className="h-14 w-14 rounded-2xl border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
+                  >
+                    {theme === 'light' ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
+                  </Button>
                 </div>
-                <Button 
-                  onClick={toggleTheme} 
-                  variant="outline" 
-                  className="h-14 w-14 rounded-2xl border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
-                >
-                  {theme === 'light' ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
-  )
-}
   )
 }

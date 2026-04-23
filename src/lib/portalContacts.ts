@@ -33,6 +33,33 @@ export function getPortalContact(key: string): PortalContact {
     }
   }
 
+  if (normalizedKey === "finance") {
+    return {
+      key: "finance",
+      label: "Finance",
+      email: process.env.NEXT_PUBLIC_FINANCE_EMAIL || `finance@${DEFAULT_PORTAL_EMAIL_DOMAIN}`,
+      phone: process.env.NEXT_PUBLIC_FINANCE_PHONE || "+923334445556",
+    }
+  }
+
+  if (normalizedKey === "hostel") {
+    return {
+      key: "hostel",
+      label: "Hostel",
+      email: process.env.NEXT_PUBLIC_HOSTEL_EMAIL || `hostel@${DEFAULT_PORTAL_EMAIL_DOMAIN}`,
+      phone: process.env.NEXT_PUBLIC_HOSTEL_PHONE || "+923456789012",
+    }
+  }
+
+  if (normalizedKey.startsWith("academic-")) {
+    return {
+      key: normalizedKey,
+      label: `Academic (${key.replace(/^academic-/, "")})`,
+      email: process.env.NEXT_PUBLIC_ACADEMIC_EMAIL || `academic@${DEFAULT_PORTAL_EMAIL_DOMAIN}`,
+      phone: process.env.NEXT_PUBLIC_ACADEMIC_PHONE || "+923001112233",
+    }
+  }
+
   return {
     key: normalizedKey,
     label: key,

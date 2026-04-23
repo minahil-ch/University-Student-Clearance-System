@@ -11,9 +11,6 @@ import { toast } from "sonner"
 import { 
   Send, 
   User, 
-  Hash, 
-  Phone, 
-  Mail, 
   Building2, 
   GraduationCap, 
   Globe, 
@@ -181,8 +178,13 @@ export default function ClearanceForm() {
       if (fError) throw fError
 
       // 3. Initialize Clearance Rows
-      const dbDept = profile.department_name.toLowerCase().replace(/\s+/g, '-')
-      const commonDepts = Array.from(new Set(['library', 'transport', dbDept]))
+      // Core flow: library/transport/finance/hostel first; academic is final authority.
+      const commonDepts = Array.from(new Set([
+        'library',
+        'transport',
+        'finance',
+        'hostel',
+      ]))
       
       for (const deptKey of commonDepts) {
         await supabase
@@ -235,9 +237,10 @@ export default function ClearanceForm() {
 
       // b) Related portals receive request notification
       const portalTargets = [
-        getPortalContact(profile.department_name),
         getPortalContact("transport"),
         getPortalContact("library"),
+        getPortalContact("finance"),
+        getPortalContact("hostel"),
       ]
 
       await Promise.allSettled(
@@ -268,7 +271,7 @@ export default function ClearanceForm() {
         )
       )
 
-      toast.success("Alumni Survey & Clearance Profile Submitted Globally!")
+      toast.success("Clearance form submitted successfully.")
       setStep(3) // Success step
     } catch (error: any) {
       toast.error(error.message || "Failed to submit form")
@@ -603,7 +606,7 @@ export default function ClearanceForm() {
                         </select>
                       </div>
                       <p className="text-[10px] text-muted-foreground italic mt-2 px-2">
-                        * Your request will be automatically routed to Transport and Library in addition to the selected department.
+                        * Your request will be automatically routed to Library, Transport, Finance, and Hostel first, then to your selected Academic department.
                       </p>
                     </div>
 

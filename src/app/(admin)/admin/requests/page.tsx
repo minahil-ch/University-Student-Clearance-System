@@ -26,6 +26,12 @@ export default function AdminRequests() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState<'pending' | 'working'>('pending')
+  const [manualStaff, setManualStaff] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    departmentName: "finance",
+  })
   
   const supabase = createClient()
 
@@ -99,6 +105,28 @@ export default function AdminRequests() {
     setTimeout(() => fetchRequests(), 500)
   }
 
+  const handleManualCreate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const derivedRole =
+      manualStaff.departmentName === "library" || manualStaff.departmentName === "transport"
+        ? manualStaff.departmentName
+        : "department"
+
+    const response = await fetch("/api/admin/create-staff", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...manualStaff, role: derivedRole }),
+    })
+    const result = await response.json()
+    if (!response.ok) {
+      toast.error(result.error || "Failed to create staff")
+      return
+    }
+    toast.success("Staff account created and approved.")
+    setManualStaff({ fullName: "", email: "", password: "", departmentName: "finance" })
+    fetchRequests()
+  }
+
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -160,6 +188,28 @@ export default function AdminRequests() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          <Card className="glass-card border-none shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-lg font-black">Manual Staff Creation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleManualCreate} className="grid md:grid-cols-5 gap-3">
+                <Input placeholder="Name" value={manualStaff.fullName} onChange={(e) => setManualStaff((p) => ({ ...p, fullName: e.target.value }))} required />
+                <Input type="email" placeholder="Email" value={manualStaff.email} onChange={(e) => setManualStaff((p) => ({ ...p, email: e.target.value }))} required />
+                <Input type="password" placeholder="Password" value={manualStaff.password} onChange={(e) => setManualStaff((p) => ({ ...p, password: e.target.value }))} required />
+                <select className="h-10 rounded-md border px-3 bg-background" value={manualStaff.departmentName} onChange={(e) => setManualStaff((p) => ({ ...p, departmentName: e.target.value }))}>
+                  <option value="library">Library</option>
+                  <option value="transport">Transport</option>
+                  <option value="finance">Finance</option>
+                  <option value="hostel">Hostel</option>
+                  <option value="academic-computer-science">Academic (CS)</option>
+                  <option value="academic-software-engineering">Academic (SE)</option>
+                </select>
+                <Button type="submit">Add Staff</Button>
+              </form>
+            </CardContent>
+          </Card>
+
           <AnimatePresence mode="popLayout" initial={false}>
             {filteredList.length > 0 ? (
               filteredList.map((req, i) => (

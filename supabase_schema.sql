@@ -1,3 +1,165 @@
+-- University Student Clearance Management System
+-- Supabase SQL schema (Auth + PostgreSQL + Realtime + RBAC)
+
+create extension if not exists pgcrypto;
+
+do $$ begin
+  create type user_role as enum ('admin', 'student', 'department', 'transport', 'library');
+exception when duplicate_object then null;
+end $$;
+
+do $$ begin
+  create type clearance_state as enum ('pending', 'cleared', 'issue');
+exception when duplicate_object then null;
+end $$;
+
+create table if not exists profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text unique not null,
+  full_name text not null default 'Student',
+  role user_role not null default 'student',
+  is_approved boolean not null default false,
+  department_name text,
+  reg_no text,
+  cgpa text,
+  phone text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists clearance_status (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references profiles(id) on delete cascade,
+  department_key text not null,
+  status clearance_state not null default 'pending',
+  remarks text,
+  updated_by uuid references profiles(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (student_id, department_key)
+);
+
+create table if not exists future_data (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid unique not null references profiles(id) on delete cascade,
+  personal_email text,
+  alternate_phone text,
+  company_name text,
+  job_title text,
+  experience text,
+  salary_range text,
+  skills text,
+  higher_education_uni text,
+  country text,
+  degree text,
+  feedback text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  actor_id uuid references profiles(id),
+  action text not null,
+  target_student_id uuid references profiles(id),
+  department_key text,
+  details jsonb,
+  created_at timestamptz not null default now()
+);
+
+create or replace function set_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists tg_profiles_updated_at on profiles;
+create trigger tg_profiles_updated_at before update on profiles
+for each row execute procedure set_updated_at();
+
+drop trigger if exists tg_clearance_updated_at on clearance_status;
+create trigger tg_clearance_updated_at before update on clearance_status
+for each row execute procedure set_updated_at();
+
+create or replace function handle_new_user()
+returns trigger as $$
+declare
+  v_role_text text;
+  v_role user_role;
+begin
+  v_role_text := lower(coalesce(new.raw_user_meta_data->>'role', 'student'));
+  if v_role_text in ('admin', 'student', 'department', 'transport', 'library') then
+    v_role := v_role_text::user_role;
+  else
+    v_role := 'student'::user_role;
+  end if;
+
+  insert into profiles (
+    id, email, full_name, role, is_approved, department_name
+  ) values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    v_role,
+    case when v_role = 'student' then true else false end,
+    new.raw_user_meta_data->>'department_name'
+  )
+  on conflict (id) do update set
+    email = excluded.email,
+    full_name = excluded.full_name,
+    role = excluded.role,
+    is_approved = excluded.is_approved,
+    department_name = excluded.department_name;
+
+  return new;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute procedure handle_new_user();
+
+alter table profiles enable row level security;
+alter table clearance_status enable row level security;
+alter table future_data enable row level security;
+alter table audit_logs enable row level security;
+
+drop policy if exists profiles_select on profiles;
+drop policy if exists profiles_insert on profiles;
+drop policy if exists profiles_update on profiles;
+drop policy if exists profiles_delete on profiles;
+drop policy if exists clearance_all on clearance_status;
+drop policy if exists future_data_all on future_data;
+drop policy if exists audit_all on audit_logs;
+
+create policy profiles_select on profiles
+for select to authenticated using (true);
+
+create policy profiles_insert on profiles
+for insert to authenticated with check (auth.uid() = id);
+
+create policy profiles_update on profiles
+for update to authenticated using (auth.uid() = id or exists (
+  select 1 from profiles p where p.id = auth.uid() and p.role = 'admin'
+));
+
+create policy profiles_delete on profiles
+for delete to authenticated using (auth.uid() = id);
+
+create policy clearance_all on clearance_status
+for all to authenticated using (true) with check (true);
+
+create policy future_data_all on future_data
+for all to authenticated using (true) with check (true);
+
+create policy audit_all on audit_logs
+for all to authenticated using (true) with check (true);
+
+alter publication supabase_realtime add table clearance_status;
+alter publication supabase_realtime add table profiles;
+alter publication supabase_realtime add table audit_logs;
 -- ===============================================
 -- 🛡️ V9 FINAL PRODUCTION SQL - RUN THIS IN SUPABASE
 -- ===============================================

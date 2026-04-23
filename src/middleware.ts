@@ -25,58 +25,77 @@ export async function middleware(request: NextRequest) {
     }
   )
 
+  // Refresh session - do NOT call getUser() more than once per request
   const { data: { user } } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname.startsWith('/login/') || pathname.startsWith('/register/')
-  const isPublicRoute = isAuthPage || pathname === '/'
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === '/forgot-password' ||
+    pathname.startsWith('/login/') ||
+    pathname.startsWith('/register/')
+  const isPublicRoute = isAuthPage || pathname === '/' || pathname === '/faculty' || pathname === '/academic'
 
+  // Redirect unauthenticated users away from protected pages
   if (!user && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  const getPortalPath = (role: string) => {
+  const getPortalPath = (role: string, deptName?: string) => {
+    const normalizedDept = deptName?.toLowerCase().trim()
     switch (role) {
       case 'admin': return '/admin';
-      case 'academic': return '/academic';
-      case 'library': return '/library';
+      case 'department':
+        if (normalizedDept === 'transport') return '/transport'
+        if (normalizedDept === 'library') return '/library'
+        return `/dept/${deptName?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`;
       case 'transport': return '/transport';
-      case 'finance': return '/finance';
-      case 'hostel': return '/hostel';
-      case 'student': return '/dashboard';
-      default: return '/login';
+      case 'library': return '/library';
+      default: return '/dashboard';
     }
   }
 
+  // Redirect already-authenticated users away from auth pages
   if (user && isAuthPage) {
-    const { data: profile } = await supabase.from('users').select('role').eq('id', user.id).single()
+    const { data: profile } = await supabase.from('profiles').select('role, department_name').eq('id', user.id).single()
     if (!profile) return supabaseResponse
-    return NextResponse.redirect(new URL(getPortalPath(profile.role), request.url))
+    return NextResponse.redirect(new URL(getPortalPath(profile.role, profile.department_name), request.url))
   }
 
+  // Enforce strict portal authorization boundaries and approval check
   if (user && !isPublicRoute && pathname !== '/settings') {
     const { data: profile } = await supabase
-      .from('users')
-      .select('role, approved, email')
+      .from('profiles')
+      .select('role, department_name, is_approved, email')
       .eq('id', user.id)
       .single()
 
     if (profile) {
+      // Master Admin Bypass
       const isMasterAdmin = profile.email === 'admin@university.com'
-      const isApproved = profile.approved || isMasterAdmin
+      const isApproved = profile.is_approved || isMasterAdmin
       const pRole = profile.role
-      const correctPath = getPortalPath(pRole)
+      const deptSlug = profile.department_name?.toLowerCase().trim().replace(/\s+/g, '-')
+      const correctPath = getPortalPath(pRole, profile.department_name)
 
+      // 1. Check Approval for staff/admin roles
       if (pRole !== 'student' && !isApproved) {
+        // If not approved, kick them back to login or a pending page
+        // For simplicity, we redirect to login with a query param
         const redirectUrl = new URL('/login', request.url)
         redirectUrl.searchParams.set('error', 'Your account is pending administrative approval.')
         return NextResponse.redirect(redirectUrl)
       }
 
+      // 2. Check Role-Path consistency
       let isAllowed = false
       if (pRole === 'admin' && pathname.startsWith('/admin')) isAllowed = true
-      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/notifications'))) isAllowed = true
-      else if (['academic', 'library', 'transport', 'finance', 'hostel'].includes(pRole) && pathname.startsWith(`/${pRole}`)) isAllowed = true
+      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/notifications'))) isAllowed = true
+      else if (pRole === 'transport' && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
+      else if (pRole === 'library' && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
+      else if (pRole === 'department' && pathname.startsWith('/history')) isAllowed = true
+      else if (pRole === 'department' && deptSlug && pathname === `/dept/${deptSlug}`) isAllowed = true
 
       if (!isAllowed) {
         return NextResponse.redirect(new URL(correctPath, request.url))
