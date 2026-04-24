@@ -29,11 +29,6 @@ export default function StaffHistoryPage() {
       if (pData) {
         setProfile(pData)
         
-        let deptKey = pData.role
-        if (pData.role === 'department') {
-          deptKey = pData.department_name.toLowerCase().replace(/\s+/g, '-')
-        }
-
         // Fetch logs
         const { data: logs } = await supabase
           .from('audit_logs')

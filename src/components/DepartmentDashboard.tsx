@@ -85,7 +85,6 @@ export default function DepartmentDashboard({ departmentName }: { departmentName
     return () => {
       supabase.removeChannel(channel)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departmentName])
 
   const handleStatusUpdate = async (statusId: string, requestId: string, newStatus: string, studentEmail: string, studentName: string, regNo: string, studentDept: string) => {

@@ -13,10 +13,9 @@ function createWindow() {
     // icon: path.join(__dirname, 'public/favicon.ico')
   });
 
-  // Default to the production URL or localhost for dev
-  // You can change this to your actual Vercel deployment URL
-  // Replace 'https://your-app-url.vercel.app' with your actual Vercel deployment URL
-  const productionUrl = 'https://university-student-clearance.vercel.app';
+  // Default to localhost for testing, or use your production Vercel URL
+  // To use your live site, change this to: 'https://your-app.vercel.app'
+  const productionUrl = 'https://university-student-clearance-system-alpha.vercel.app';
   const startUrl = process.env.ELECTRON_START_URL || productionUrl;
   
   win.loadURL(startUrl);

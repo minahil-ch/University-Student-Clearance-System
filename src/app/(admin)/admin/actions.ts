@@ -16,7 +16,7 @@ export async function adminCreateUser(formData: { name: string, email: string, r
 
   const password = formData.password || Math.random().toString(36).slice(-8)
 
-  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+  const { error } = await supabaseAdmin.auth.admin.createUser({
     email: formData.email,
     password: password,
     email_confirm: true,
