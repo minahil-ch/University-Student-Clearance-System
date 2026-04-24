@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { departmentPortalPathSlug } from "@/lib/departmentKeys"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
@@ -75,7 +76,7 @@ export default function SettingsPage() {
     if (profile.role === 'admin') router.push('/admin')
     else if (profile.role === 'student') router.push('/dashboard')
     else if (profile.role === 'department') {
-      router.push(`/dept/${profile.department_name?.toLowerCase().replace(/\s+/g, '-')}`)
+      router.push(`/dept/${departmentPortalPathSlug(profile.department_name)}`)
     } else if (profile.role === 'library') router.push('/library')
     else if (profile.role === 'transport') router.push('/transport')
     else router.push('/dashboard')

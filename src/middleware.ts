@@ -1,14 +1,22 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { departmentPortalPathSlug } from '@/lib/departmentKeys'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
 
+  // If env is missing (often causes "failed to fetch"), do not block navigation.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !supabaseAnon) {
+    return supabaseResponse
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnon,
     {
       cookies: {
         getAll() {
@@ -26,7 +34,14 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refresh session - do NOT call getUser() more than once per request
-  const { data: { user } } = await supabase.auth.getUser()
+  let user: any = null
+  try {
+    const result = await supabase.auth.getUser()
+    user = result.data.user
+  } catch {
+    // If Supabase is temporarily unreachable, continue safely on public routes.
+    user = null
+  }
 
   const pathname = request.nextUrl.pathname
   const isAuthPage =
@@ -36,6 +51,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/login/') ||
     pathname.startsWith('/register/')
   const isPublicRoute = isAuthPage || pathname === '/' || pathname === '/faculty' || pathname === '/academic'
+  const forceSwitch = request.nextUrl.searchParams.get("switch") === "1"
 
   // Redirect unauthenticated users away from protected pages
   if (!user && !isPublicRoute) {
@@ -49,7 +65,7 @@ export async function middleware(request: NextRequest) {
       case 'department':
         if (normalizedDept === 'transport') return '/transport'
         if (normalizedDept === 'library') return '/library'
-        return `/dept/${deptName?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`;
+        return `/dept/${departmentPortalPathSlug(deptName)}`;
       case 'transport': return '/transport';
       case 'library': return '/library';
       default: return '/dashboard';
@@ -57,7 +73,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect already-authenticated users away from auth pages
-  if (user && isAuthPage) {
+  if (user && isAuthPage && !forceSwitch) {
     const { data: profile } = await supabase.from('profiles').select('role, department_name').eq('id', user.id).single()
     if (!profile) return supabaseResponse
     return NextResponse.redirect(new URL(getPortalPath(profile.role, profile.department_name), request.url))
@@ -76,7 +92,7 @@ export async function middleware(request: NextRequest) {
       const isMasterAdmin = profile.email === 'admin@university.com'
       const isApproved = profile.is_approved || isMasterAdmin
       const pRole = profile.role
-      const deptSlug = profile.department_name?.toLowerCase().trim().replace(/\s+/g, '-')
+      const deptSlug = departmentPortalPathSlug(profile.department_name)
       const correctPath = getPortalPath(pRole, profile.department_name)
 
       // 1. Check Approval for staff/admin roles
@@ -91,7 +107,7 @@ export async function middleware(request: NextRequest) {
       // 2. Check Role-Path consistency
       let isAllowed = false
       if (pRole === 'admin' && pathname.startsWith('/admin')) isAllowed = true
-      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/notifications'))) isAllowed = true
+      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications'))) isAllowed = true
       else if (pRole === 'transport' && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'library' && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'department' && pathname.startsWith('/history')) isAllowed = true

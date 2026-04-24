@@ -7,17 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { StatusBadge } from "@/components/ui/StatusBadge"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Mail, User, BookOpen } from "lucide-react"
 import { toast } from "sonner"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
+import {
+  canonicalClearanceDepartmentKey,
+  departmentPortalPathSlug,
+  isAcademicClearancePortal,
+} from "@/lib/departmentKeys"
 
 export default function DepartmentDashboard() {
   const { dept } = useParams()
+  const router = useRouter()
   const departmentKey = (dept as string) || ''
   const [students, setStudents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [accessReady, setAccessReady] = useState(false)
+  const [sidebarRole, setSidebarRole] = useState<'department' | 'transport' | 'library'>('department')
+  const [sidebarDeptName, setSidebarDeptName] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState("")
   const [currentTab, setCurrentTab] = useState<'pending' | 'today' | 'month' | 'all'>('pending')
   const [remarks, setRemarks] = useState<{ [key: string]: string }>({})
@@ -26,10 +35,80 @@ export default function DepartmentDashboard() {
   useEffect(() => {
     if (!departmentKey) return
 
+    async function verifyAccess() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        toast.error("Please login first.")
+        router.replace(`/login/staff?role=staff&dept=${encodeURIComponent(departmentKey.replace(/-/g, " "))}`)
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, department_name, is_approved")
+        .eq("id", user.id)
+        .single()
+
+      if (!profile) {
+        await supabase.auth.signOut()
+        router.replace("/login")
+        return
+      }
+
+      if (profile.role === "admin") {
+        router.replace("/admin")
+        return
+      }
+      if (profile.role === "student") {
+        router.replace("/dashboard")
+        return
+      }
+      if (!profile.is_approved) {
+        await supabase.auth.signOut()
+        toast.error("Your account is pending admin approval.")
+        router.replace("/login/staff?role=staff")
+        return
+      }
+
+      const routeSlug = departmentKey.toLowerCase().trim()
+      const requestedClearance = canonicalClearanceDepartmentKey(departmentKey)
+
+      const allowed =
+        (profile.role === "library" && routeSlug === "library") ||
+        (profile.role === "transport" && routeSlug === "transport") ||
+        (profile.role === "department" &&
+          requestedClearance === canonicalClearanceDepartmentKey(profile.department_name || ""))
+
+      if (!allowed) {
+        toast.error("Access denied for this portal.")
+        if (profile.role === "library") router.replace("/library")
+        else if (profile.role === "transport") router.replace("/transport")
+        else if (profile.role === "department" && profile.department_name)
+          router.replace(`/dept/${departmentPortalPathSlug(profile.department_name)}`)
+        else router.replace("/login/staff?role=staff")
+        return
+      }
+
+      if (profile.role === "library" || profile.role === "transport") {
+        setSidebarRole(profile.role)
+        setSidebarDeptName(profile.role)
+      } else {
+        setSidebarRole("department")
+        setSidebarDeptName(profile.department_name || departmentKey.replace(/-/g, " "))
+      }
+
+      setAccessReady(true)
+    }
+
+    verifyAccess()
+  }, [departmentKey, router, supabase])
+
+  useEffect(() => {
+    if (!departmentKey || !accessReady) return
+
     async function fetchStudents() {
       setLoading(true)
-      // The department slug (e.g., 'computer-science') matches the department_key in DB
-      const dbKey = departmentKey.toLowerCase()
+      const dbKey = canonicalClearanceDepartmentKey(departmentKey)
 
       let query = supabase
         .from('clearance_status')
@@ -72,7 +151,7 @@ export default function DepartmentDashboard() {
     }
 
     fetchStudents()
-  }, [departmentKey, currentTab])
+  }, [departmentKey, currentTab, accessReady])
 
   const openWhatsApp = (phone: string, name: string) => {
     if (!phone) { toast.error("No phone number on record."); return }
@@ -82,7 +161,7 @@ export default function DepartmentDashboard() {
 
   const handleUpdateStatus = async (clearanceId: string, status: 'cleared' | 'issue', studentProfile: any) => {
     try {
-      const isAcademicPortal = departmentKey.startsWith("academic-")
+      const isAcademicPortal = isAcademicClearancePortal(departmentKey)
       if (isAcademicPortal) {
         const { data: statuses, error: statusesError } = await supabase
           .from("clearance_status")
@@ -143,7 +222,7 @@ export default function DepartmentDashboard() {
       }).catch(console.warn)
 
       // Auto-forward to academic department after core departments clear.
-      if (!departmentKey.startsWith("academic-") && status === "cleared") {
+      if (!isAcademicClearancePortal(departmentKey) && status === "cleared") {
         const { data: statuses } = await supabase
           .from("clearance_status")
           .select("department_key,status")
@@ -187,7 +266,7 @@ export default function DepartmentDashboard() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <Sidebar role="department" />
+      <Sidebar role={sidebarRole} departmentName={sidebarDeptName} />
 
       <main className="flex-1 w-full lg:max-w-[calc(100%-16rem)] lg:ml-64 p-6 md:p-8">
         <header className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">

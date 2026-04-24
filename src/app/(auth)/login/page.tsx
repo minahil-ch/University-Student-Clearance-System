@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Mail, Lock, LogIn, ArrowRight, ShieldCheck, UserCircle2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import { canonicalClearanceDepartmentKey, departmentPortalPathSlug } from "@/lib/departmentKeys"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const [portal, setPortal] = useState('student')
   const [roleType, setRoleType] = useState<string | null>(null)
   const [lockedDept, setLockedDept] = useState<string | null>(null)
+  const [forceSwitchMode, setForceSwitchMode] = useState(false)
   const router = useRouter()
   const supabase = createClient()
   const lockStudent = roleType === "student"
@@ -34,6 +36,12 @@ export default function LoginPage() {
     const pendingError = params.get("error")
     if (pendingError) {
       toast.error("Admin has not approved your request yet.")
+    }
+
+    const forceSwitch = params.get("switch") === "1"
+    setForceSwitchMode(forceSwitch)
+    if (forceSwitch) {
+      supabase.auth.signOut().catch(() => null)
     }
   }, [])
 
@@ -147,13 +155,20 @@ export default function LoginPage() {
           return
         }
 
-        // If user entered via faculty department portal, lock to that department
-        if (portal === "staff" && lockedDept && profile.role === "department") {
-          const actualDept = profile.department_name?.toLowerCase().trim()
-          const expectedDept = lockedDept.toLowerCase().trim()
-          if (actualDept !== expectedDept) {
+        // Portal link must match the account (finance/hostel/academic slugs, library, transport)
+        if (portal === "staff" && lockedDept) {
+          const ld = lockedDept.toLowerCase().trim()
+          let portalOk = false
+          if (profile.role === "library" && ld === "library") portalOk = true
+          else if (profile.role === "transport" && ld === "transport") portalOk = true
+          else if (profile.role === "department") {
+            const expectedKey = canonicalClearanceDepartmentKey(lockedDept)
+            const actualKey = canonicalClearanceDepartmentKey(profile.department_name || "")
+            if (expectedKey && actualKey && expectedKey === actualKey) portalOk = true
+          }
+          if (!portalOk) {
             await supabase.auth.signOut()
-            toast.error(`This account is not assigned to ${lockedDept}.`)
+            toast.error(`This account is not authorized for the ${lockedDept} portal.`)
             setLoading(false)
             return
           }
@@ -173,10 +188,10 @@ export default function LoginPage() {
            router.push('/library')
         }
         else if (profile.role === 'department') {
-          const deptKey = profile.department_name?.toLowerCase().trim().replace(/\s+/g, '-') || 'unknown'
-          if (deptKey === 'transport') router.push('/transport')
-          else if (deptKey === 'library') router.push('/library')
-          else router.push(`/dept/${deptKey}`)
+          const portalSlug = departmentPortalPathSlug(profile.department_name)
+          if (portalSlug === 'transport') router.push('/transport')
+          else if (portalSlug === 'library') router.push('/library')
+          else router.push(`/dept/${portalSlug}`)
         }
         else {
           router.push('/dashboard')
@@ -305,9 +320,9 @@ export default function LoginPage() {
                 ) : (
                   <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
                     {portal === "student" ? (
-                      <>No account? <Link href="/register/student" className="text-primary font-black ml-1 hover:underline">Enroll Now</Link></>
+                      <>No account? <Link href="/register/student?switch=1" className="text-primary font-black ml-1 hover:underline">Enroll Now</Link></>
                     ) : portal === "staff" ? (
-                      <>No account? <Link href={lockedDept ? `/register/staff?dept=${encodeURIComponent(lockedDept)}` : "/register/staff"} className="text-primary font-black ml-1 hover:underline">Request Access</Link></>
+                      <>No account? <Link href={lockedDept ? `/register/staff?dept=${encodeURIComponent(lockedDept)}&switch=1` : "/register/staff?switch=1"} className="text-primary font-black ml-1 hover:underline">Request Access</Link></>
                     ) : (
                       <>Admin registration is disabled</>
                     )}
@@ -317,6 +332,12 @@ export default function LoginPage() {
             </form>
           </CardContent>
         </Card>
+
+        {forceSwitchMode && (
+          <p className="text-center text-[10px] mt-4 uppercase tracking-widest text-muted-foreground">
+            Switch account mode enabled
+          </p>
+        )}
 
         {/* System Status Mock */}
         <div className="mt-8 flex justify-center gap-6">

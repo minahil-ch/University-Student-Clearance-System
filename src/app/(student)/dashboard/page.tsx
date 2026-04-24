@@ -28,7 +28,10 @@ import { toast } from "sonner"
 export default function StudentDashboard() {
   const [profile, setProfile] = useState<any>(null)
   const [clearanceData, setClearanceData] = useState<any[]>([])
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  /** Step 1: University Form (future_data) */
+  const [uniFormDone, setUniFormDone] = useState(false)
+  /** Step 2: Clearance Form submitted (clearance rows exist) */
+  const [clearanceStarted, setClearanceStarted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedDept, setSelectedDept] = useState<any>(null)
   const supabase = createClient()
@@ -76,7 +79,8 @@ export default function StudentDashboard() {
       .maybeSingle()
     
     setClearanceData(clearance || [])
-    setFormSubmitted(Boolean(futureData))
+    setUniFormDone(Boolean(futureData))
+    setClearanceStarted((clearance || []).length > 0)
     setLoading(false)
   }
 
@@ -151,9 +155,14 @@ export default function StudentDashboard() {
               </div>
               <h3 className="text-xl font-black tracking-tight">{profile?.full_name}</h3>
               <p className="text-xs font-bold text-primary mt-1 uppercase tracking-widest">{profile?.reg_no}</p>
-              {!formSubmitted && (
+              {!uniFormDone && (
                 <p className="text-xs text-amber-600 mt-3 font-semibold">
-                  You have not filled the clearance form yet.
+                  Start registration: complete the University Form first, then the Clearance Form.
+                </p>
+              )}
+              {uniFormDone && !clearanceStarted && (
+                <p className="text-xs text-emerald-600 mt-3 font-semibold">
+                  University Form received. Continue with the Clearance Form to open departmental tracking.
                 </p>
               )}
               
@@ -173,7 +182,7 @@ export default function StudentDashboard() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Department</p>
-                    <p className="font-bold">{formSubmitted ? (profile?.department_name || "N/A") : "Hidden until form submission"}</p>
+                    <p className="font-bold">{clearanceStarted ? (profile?.department_name || "N/A") : "Hidden until clearance form"}</p>
                   </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
@@ -182,7 +191,7 @@ export default function StudentDashboard() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Current CGPA</p>
-                    <p className="font-bold">{formSubmitted ? (profile?.cgpa || "0.00") : "Hidden until form submission"}</p>
+                    <p className="font-bold">{clearanceStarted ? (profile?.cgpa || "0.00") : "Hidden until clearance form"}</p>
                   </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center gap-4">
@@ -212,21 +221,30 @@ export default function StudentDashboard() {
               <CardContent className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <AnimatePresence>
-                    {clearanceData.length === 0 ? (
+                    {!clearanceStarted ? (
                       <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
                         <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <p className="text-xl font-bold text-slate-400">Application not yet initiated.</p>
-                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
-                          Start Clearance Now <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
-                      </div>
-                    ) : !formSubmitted ? (
-                      <div className="col-span-2 text-center py-20 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-dashed">
-                        <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <p className="text-xl font-bold text-slate-400">You have not filled the clearance form yet.</p>
-                        <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => window.location.href='/form'}>
-                          Fill Clearance Form <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
+                        {!uniFormDone ? (
+                          <>
+                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Step 1 — University Form</p>
+                            <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+                              Submit the University Form first (admin copy). You will move to the Clearance Form automatically next.
+                            </p>
+                            <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => { window.location.href = "/uni-form" }}>
+                              Start registration — University Form <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Step 2 — Clearance Form</p>
+                            <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+                              University Form is complete. Submit your clearance details to notify Library, Transport, Finance, and Hostel.
+                            </p>
+                            <Button className="mt-6 rounded-full px-8 bg-emerald-600 hover:bg-emerald-700 shadow-xl" onClick={() => { window.location.href = "/form" }}>
+                              Continue to Clearance Form <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     ) : (
                       orderedClearanceData.map((item, index) => (

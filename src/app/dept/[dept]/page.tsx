@@ -1,3 +1,3 @@
 "use client"
 
-export { default } from "@/app/(department)/[dept]/page"
+export { default } from "../../(department)/[dept]/page"

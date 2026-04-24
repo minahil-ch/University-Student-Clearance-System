@@ -122,9 +122,10 @@ export default function AdminRequests() {
       toast.error(result.error || "Failed to create staff")
       return
     }
-    toast.success("Staff account created and approved.")
+    toast.success("New staff added. They appear under Approved Staff and can log in to their portal now.")
     setManualStaff({ fullName: "", email: "", password: "", departmentName: "finance" })
-    fetchRequests()
+    setActiveTab("working")
+    await fetchRequests()
   }
 
   if (loading) return (
@@ -153,17 +154,17 @@ export default function AdminRequests() {
             animate={{ opacity: 1, x: 0 }}
           >
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter flex items-center gap-4">
-              System <span className="text-primary italic">Admins</span>
+              Staff <span className="text-primary italic">Access</span>
               <ShieldCheck className="w-10 h-10 text-primary" />
             </h2>
             <p className="text-muted-foreground mt-3 text-lg font-medium max-w-xl leading-relaxed">
-              Manage organizational verified identities, access control, and active clearance representatives.
+              Approve sign-ups, revoke access, and add pre-approved staff who appear under Approved Staff and can log in at once.
             </p>
           </motion.div>
           <div className="relative">
              <Search className="absolute left-4 top-4 w-5 h-5 text-muted-foreground" />
              <Input 
-              placeholder={`Search ${activeTab === 'working' ? 'admins' : 'pending'}...`} 
+              placeholder={`Search ${activeTab === 'working' ? 'approved staff' : 'pending'}...`} 
               className="pl-12 w-full md:w-80 h-14 rounded-2xl glass-card border-none shadow-xl text-md font-medium" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -183,7 +184,7 @@ export default function AdminRequests() {
             onClick={() => setActiveTab('working')}
             className={`px-8 py-3.5 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${activeTab === 'working' ? 'bg-white dark:bg-slate-900 shadow-xl text-emerald-500 scale-105' : 'text-slate-500 hover:text-slate-700 hover:scale-105'}`}
           >
-            System Admins {workingStaff.length > 0 && <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full text-[10px] ml-1">{workingStaff.length}</span>}
+            Approved Staff {workingStaff.length > 0 && <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full text-[10px] ml-1">{workingStaff.length}</span>}
           </button>
         </div>
 
@@ -202,8 +203,11 @@ export default function AdminRequests() {
                   <option value="transport">Transport</option>
                   <option value="finance">Finance</option>
                   <option value="hostel">Hostel</option>
-                  <option value="academic-computer-science">Academic (CS)</option>
-                  <option value="academic-software-engineering">Academic (SE)</option>
+                  <option value="Computer Science">Academic (CS)</option>
+                  <option value="Software Engineering">Academic (SE)</option>
+                  <option value="Mathematics">Academic (Mathematics)</option>
+                  <option value="Humanities">Academic (Humanities)</option>
+                  <option value="Environmental Sciences">Academic (Environmental Sciences)</option>
                 </select>
                 <Button type="submit">Add Staff</Button>
               </form>

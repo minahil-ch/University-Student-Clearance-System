@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
@@ -12,19 +13,16 @@ import {
   Send, 
   User, 
   Building2, 
-  GraduationCap, 
-  Globe, 
-  ArrowRight, 
-  ArrowLeft,
   CheckCircle2,
-  BookOpen,
   ShieldCheck
 } from "lucide-react"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
 import { getPortalContact } from "@/lib/portalContacts"
 
 export default function ClearanceForm() {
-  const [step, setStep] = useState(1)
+  const router = useRouter()
+  const [step, setStep] = useState<2 | 3 | 4>(2)
+  const [pageReady, setPageReady] = useState(false)
   const [loading, setLoading] = useState(false)
   const [profile, setProfile] = useState({
     full_name: "",
@@ -37,83 +35,56 @@ export default function ClearanceForm() {
     graduated_year: new Date().getFullYear().toString()
   })
 
-  const [futureData, setFutureData] = useState({
-    personal_email: "",
-    alternate_phone: "",
-    job_secured: "No",
-    company_name: "",
-    job_title: "",
-    salary_range: "",
-    pursuing_higher_ed: "No",
-    higher_education_uni: "",
-    country: "",
-    degree: "",
-    placement_satisfaction: "Satisfied",
-    how_cui_helped: "",
-    feedback: "",
-    willing_to_mentor: "Yes"
-  })
-
   const supabase = createClient()
 
   useEffect(() => {
     async function getData() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        // Load profile
-        const { data: pData } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-        if (pData) {
-          setProfile(prev => ({
-            ...prev,
-            full_name: pData.full_name || "",
-            father_name: pData.father_name || "",
-            reg_no: pData.reg_no || "",
-            phone: pData.phone || "",
-            email: pData.email || "",
-            cgpa: pData.cgpa || "",
-            department_name: pData.department_name || "Computer Science"
-          }))
-        } else {
-          // If trigger failed, autofill from raw metadata
-          setProfile(prev => ({
-            ...prev,
-            full_name: user?.user_metadata?.full_name || "",
-            father_name: user?.user_metadata?.father_name || "",
-            reg_no: user?.user_metadata?.reg_no || "",
-            phone: user?.user_metadata?.phone || "",
-            email: user?.email || "",
-            cgpa: user?.user_metadata?.cgpa || "",
-            department_name: user?.user_metadata?.department_name || "Computer Science"
-          }))
-        }
-        
-        // Load existing future data if any
-        const { data: fData } = await supabase.from('future_data').select('*').eq('student_id', user.id).single()
-        if (fData) {
-          setFutureData(prev => ({
-            ...prev,
-            ...fData,
-            personal_email: fData.personal_email || "",
-            alternate_phone: fData.alternate_phone || "",
-            job_secured: fData.experience || "No",
-            company_name: fData.company_name || "",
-            job_title: fData.job_title || "",
-            salary_range: fData.salary_range || "",
-            pursuing_higher_ed: fData.degree ? "Yes" : "No",
-            higher_education_uni: fData.higher_education_uni || "",
-            country: fData.country || "",
-            degree: fData.degree || "",
-            willing_to_mentor: fData.skills || "Yes",
-            feedback: fData.feedback || ""
-          }))
-        }
-        
-        // Prevent duplicate form submissions based on actual submitted form data
-        if (fData) setStep(4)
+      if (!user) {
+        router.replace("/login/student?switch=1")
+        return
       }
+
+      const { data: pData } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+      if (pData) {
+        setProfile(prev => ({
+          ...prev,
+          full_name: pData.full_name || "",
+          father_name: pData.father_name || "",
+          reg_no: pData.reg_no || "",
+          phone: pData.phone || "",
+          email: pData.email || "",
+          cgpa: pData.cgpa || "",
+          department_name: pData.department_name || "Computer Science"
+        }))
+      } else {
+        setProfile(prev => ({
+          ...prev,
+          full_name: user?.user_metadata?.full_name || "",
+          father_name: user?.user_metadata?.father_name || "",
+          reg_no: user?.user_metadata?.reg_no || "",
+          phone: user?.user_metadata?.phone || "",
+          email: user?.email || "",
+          cgpa: user?.user_metadata?.cgpa || "",
+          department_name: user?.user_metadata?.department_name || "Computer Science"
+        }))
+      }
+
+      const { data: uniForm } = await supabase
+        .from("future_data")
+        .select("id")
+        .eq("student_id", user.id)
+        .maybeSingle()
+
+      if (!uniForm) {
+        router.replace("/uni-form")
+        return
+      }
+
+      setPageReady(true)
     }
     getData()
-  }, [])
+  }, [router, supabase])
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -155,28 +126,6 @@ export default function ClearanceForm() {
         if (pError) throw pError
       }
 
-      // 2. Upsert Future Data (Mapping alumni fields to existing schema columns to prevent crash)
-      const combinedFeedback = `Satisfaction: ${futureData.placement_satisfaction} | CUI Help: ${futureData.how_cui_helped} | Mentoring: ${futureData.willing_to_mentor} | Suggestions: ${futureData.feedback} | Graduating Year: ${profile.graduated_year}`
-      
-      const { error: fError } = await supabase
-        .from('future_data')
-        .upsert({
-          student_id: user.id,
-          personal_email: futureData.personal_email,
-          alternate_phone: futureData.alternate_phone,
-          company_name: futureData.company_name,
-          job_title: futureData.job_title,
-          experience: futureData.job_secured,
-          salary_range: futureData.salary_range,
-          skills: futureData.willing_to_mentor,
-          higher_education_uni: futureData.higher_education_uni,
-          country: futureData.country,
-          degree: futureData.degree,
-          feedback: combinedFeedback
-        })
-
-      if (fError) throw fError
-
       // 3. Initialize Clearance Rows
       // Core flow: library/transport/finance/hostel first; academic is final authority.
       const commonDepts = Array.from(new Set([
@@ -205,7 +154,7 @@ export default function ClearanceForm() {
           regNo: profile.reg_no,
           department: profile.department_name,
           eventType: 'form_submission',
-          futureData: { ...futureData, graduated_year: profile.graduated_year }
+          futureData: { graduated_year: profile.graduated_year }
         })
       }
 
@@ -272,12 +221,21 @@ export default function ClearanceForm() {
       )
 
       toast.success("Clearance form submitted successfully.")
-      setStep(3) // Success step
+      setStep(3)
     } catch (error: any) {
       toast.error(error.message || "Failed to submit form")
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!pageReady) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Preparing clearance form…</p>
+      </div>
+    )
   }
 
   return (
@@ -298,219 +256,35 @@ export default function ClearanceForm() {
             </p>
           </motion.div>
 
-          {/* Progress Indicator */}
+          {/* Progress: clearance form → submitted */}
           <div className="flex items-center justify-center gap-4 mt-8">
-            {[1, 2, 3].map((s) => (
-              <div key={s} className="flex items-center">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-300 ${
-                  step === s ? "bg-primary text-white scale-110 shadow-2xl shadow-primary/20" : 
-                  step > s ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
-                }`}>
-                  {step > s ? <CheckCircle2 className="w-6 h-6" /> : s}
-                </div>
-                {s < 3 && <div className={`w-16 h-1 ${step > s ? "bg-emerald-500" : "bg-slate-200 dark:bg-slate-800"}`} />}
-              </div>
-            ))}
+            {(() => {
+              const submitted = step >= 3 || step === 4
+              return (
+                <>
+                  <div className="flex items-center">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-300 ${
+                      submitted ? "bg-emerald-500 text-white" :
+                      step === 2 ? "bg-primary text-white scale-110 shadow-2xl shadow-primary/20" :
+                      "bg-slate-200 dark:bg-slate-800 text-slate-400"
+                    }`}>
+                      {submitted ? <CheckCircle2 className="w-6 h-6" /> : 1}
+                    </div>
+                    <div className={`w-16 h-1 ${submitted ? "bg-emerald-500" : "bg-slate-200 dark:bg-slate-800"}`} />
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-300 ${
+                      submitted ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
+                    }`}>
+                      {submitted ? <CheckCircle2 className="w-6 h-6" /> : 2}
+                    </div>
+                  </div>
+                </>
+              )
+            })()}
           </div>
         </header>
 
         <div className="max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
-                <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2.5rem]">
-                  <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-800">
-                    <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
-                      <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-                        <GraduationCap className="w-8 h-8" />
-                      </div> 
-                      Detailed Alumni Survey
-                    </CardTitle>
-                    <p className="text-muted-foreground font-medium">This survey is mandatory for university records and goes directly to the administration before clearance can proceed.</p>
-                  </CardHeader>
-                  <CardContent className="p-10 space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Personal Email Address</label>
-                        <Input 
-                          placeholder="johndoe@gmail.com" 
-                          value={futureData.personal_email}
-                          onChange={(e) => setFutureData({...futureData, personal_email: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Alternate Phone (Optional)</label>
-                        <Input 
-                          placeholder="+92 3XX XXXXXXX" 
-                          value={futureData.alternate_phone}
-                          onChange={(e) => setFutureData({...futureData, alternate_phone: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Did you secure a job before graduation?</label>
-                        <select 
-                          className="w-full h-14 px-4 rounded-2xl bg-slate-50 border-none shadow-sm focus:ring-2"
-                          value={futureData.job_secured}
-                          onChange={(e) => setFutureData({...futureData, job_secured: e.target.value})}
-                        >
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Current Employer / Company Name</label>
-                        <Input 
-                          placeholder="e.g. Google, Systems Ltd" 
-                          value={futureData.company_name}
-                          onChange={(e) => setFutureData({...futureData, company_name: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                          disabled={futureData.job_secured === "No"}
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Job Title / Designation</label>
-                        <Input 
-                          placeholder="e.g. Associate Software Engineer" 
-                          value={futureData.job_title}
-                          onChange={(e) => setFutureData({...futureData, job_title: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                          disabled={futureData.job_secured === "No"}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Salary Range (Monthly/Yearly)</label>
-                        <Input 
-                          placeholder="e.g. 50k - 100k PKR" 
-                          value={futureData.salary_range}
-                          onChange={(e) => setFutureData({...futureData, salary_range: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                          disabled={futureData.job_secured === "No"}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-4 pt-8 border-t border-slate-100 dark:border-slate-800">
-                      <h4 className="font-black uppercase tracking-widest text-sm flex items-center gap-2 text-primary">
-                        <Globe className="w-5 h-5" /> Higher Education Information
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Pursuing Higher Education?</label>
-                          <select 
-                            className="w-full h-14 px-4 rounded-2xl bg-slate-50 border-none shadow-sm focus:ring-2"
-                            value={futureData.pursuing_higher_ed}
-                            onChange={(e) => setFutureData({...futureData, pursuing_higher_ed: e.target.value})}
-                          >
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Institution Name</label>
-                          <Input 
-                            placeholder="University Name" 
-                            value={futureData.higher_education_uni}
-                            onChange={(e) => setFutureData({...futureData, higher_education_uni: e.target.value})}
-                            className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                            disabled={futureData.pursuing_higher_ed === "No"}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Country of Institution</label>
-                          <Input 
-                            placeholder="e.g. Pakistan, UK, USA" 
-                            value={futureData.country}
-                            onChange={(e) => setFutureData({...futureData, country: e.target.value})}
-                            className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                            disabled={futureData.pursuing_higher_ed === "No"}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Degree Program</label>
-                          <Input 
-                            placeholder="e.g. Master's in Data Science" 
-                            value={futureData.degree}
-                            onChange={(e) => setFutureData({...futureData, degree: e.target.value})}
-                            className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                            disabled={futureData.pursuing_higher_ed === "No"}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6 pt-8 border-t border-slate-100 dark:border-slate-800">
-                       <h4 className="font-black uppercase tracking-widest text-sm flex items-center gap-2 text-primary">
-                        <BookOpen className="w-5 h-5" /> Experience & Feedback
-                      </h4>
-                      
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Satisfied with placement support by CUI?</label>
-                        <select 
-                          className="w-full h-14 px-4 rounded-2xl bg-slate-50 border-none shadow-sm focus:ring-2"
-                          value={futureData.placement_satisfaction}
-                          onChange={(e) => setFutureData({...futureData, placement_satisfaction: e.target.value})}
-                        >
-                          <option value="Very Satisfied">Very Satisfied</option>
-                          <option value="Satisfied">Satisfied</option>
-                          <option value="Neutral">Neutral</option>
-                          <option value="Dissatisfied">Dissatisfied</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">How did CUI help you in securing your first job?</label>
-                        <textarea 
-                          className="w-full p-4 rounded-2xl border-none bg-slate-50 min-h-[80px] shadow-sm text-sm"
-                          placeholder="Your experience..."
-                          value={futureData.how_cui_helped}
-                          onChange={(e) => setFutureData({...futureData, how_cui_helped: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Any suggestions to improve the CUI Placement network?</label>
-                        <textarea 
-                          className="w-full p-4 rounded-2xl border-none bg-slate-50 min-h-[80px] shadow-sm text-sm"
-                          placeholder="Your suggestions..."
-                          value={futureData.feedback}
-                          onChange={(e) => setFutureData({...futureData, feedback: e.target.value})}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Are you willing to mentor current CUI students?</label>
-                        <select 
-                          className="w-full h-14 px-4 rounded-2xl bg-slate-50 border-none shadow-sm focus:ring-2"
-                          value={futureData.willing_to_mentor}
-                          onChange={(e) => setFutureData({...futureData, willing_to_mentor: e.target.value})}
-                        >
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end pt-8">
-                       <Button onClick={() => setStep(2)} className="h-14 px-12 rounded-2xl bg-primary shadow-xl shadow-primary/20 font-black uppercase tracking-widest gap-3 transition-transform active:scale-95">
-                        Continue to Clearance <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -610,10 +384,7 @@ export default function ClearanceForm() {
                       </p>
                     </div>
 
-                    <div className="flex justify-between items-center pt-10">
-                      <Button variant="ghost" onClick={() => setStep(1)} className="h-14 px-8 rounded-2xl font-black uppercase tracking-widest gap-2">
-                        <ArrowLeft className="w-5 h-5" /> Previous
-                      </Button>
+                    <div className="flex justify-end items-center pt-10">
                       <Button onClick={handleSubmit} disabled={loading} className="h-14 px-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 font-black uppercase tracking-widest gap-3 transition-transform active:scale-95">
                         {loading ? "Transmitting..." : (
                           <>Finalize Submission <Send className="w-5 h-5" /></>

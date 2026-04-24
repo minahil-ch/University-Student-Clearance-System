@@ -20,49 +20,49 @@ export default function LandingPage() {
       icon: GraduationCap, 
       color: "blue", 
       desc: "Apply for clearance and track your status", 
-      href: "/login/student" 
-    },
-    { 
-      name: "Academic Portal", 
-      icon: Building2, 
-      color: "emerald", 
-      desc: "Academic department portals by student department", 
-      href: "/academic" 
+      href: "/login/student?switch=1" 
     },
     { 
       name: "Transport Portal", 
       icon: Truck, 
       color: "amber", 
       desc: "Approve or flag transport dues", 
-      href: "/login/staff?role=staff&dept=transport" 
+      href: "/login/staff?role=staff&dept=transport&switch=1" 
     },
     { 
       name: "Library Portal", 
       icon: BookOpen, 
       color: "violet", 
       desc: "Manage library returns and fines", 
-      href: "/login/staff?role=staff&dept=library" 
+      href: "/login/staff?role=staff&dept=library&switch=1" 
     },
     {
       name: "Finance Portal",
       icon: Building2,
       color: "teal",
       desc: "Handle finance dues and approvals",
-      href: "/login/staff?role=staff&dept=finance"
+      href: "/login/staff?role=staff&dept=finance&switch=1"
     },
     {
       name: "Hostel Portal",
       icon: Building2,
       color: "cyan",
       desc: "Handle hostel clearance and approvals",
-      href: "/login/staff?role=staff&dept=hostel"
+      href: "/login/staff?role=staff&dept=hostel&switch=1"
     },
     { 
       name: "Admin Portal", 
       icon: ShieldAlert, 
       color: "rose", 
       desc: "Supervise full university clearance metrics", 
-      href: "/login/admin" 
+      href: "/login/admin?switch=1" 
+    },
+    { 
+      name: "Academic Portal", 
+      icon: Building2, 
+      color: "emerald", 
+      desc: "Final authority by student selected department", 
+      href: "/academic?switch=1" 
     },
   ]
 
@@ -95,7 +95,9 @@ export default function LandingPage() {
             transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.02, translateY: -5 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer flex items-center p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
+            className={`group cursor-pointer flex items-center p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden ${
+              portal.name === "Academic Portal" ? "md:col-span-2 lg:col-span-2 min-h-[150px]" : ""
+            }`}
           >
             <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
             

@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { departmentPortalPathSlug } from "@/lib/departmentKeys"
 import { 
   LayoutDashboard, 
   FileText, 
@@ -33,6 +34,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
   const navItems = {
     student: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "University Form", href: "/uni-form", icon: FileText },
       { label: "Clearance Form", href: "/form", icon: FileText },
       { label: "Notifications", href: "/notifications", icon: Mail },
     ],
@@ -41,7 +43,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
         label: "Dashboard", 
         href: departmentName?.toLowerCase() === 'library' ? '/library' :
               departmentName?.toLowerCase() === 'transport' ? '/transport' :
-              `/dept/${departmentName?.toLowerCase().replace(/\s+/g, '-')}`, 
+              `/dept/${departmentPortalPathSlug(departmentName)}`, 
         icon: LayoutDashboard 
       },
       { label: "History", href: "/history", icon: FileText },
