@@ -29,7 +29,7 @@ export default function RegisterPage() {
     "Environmental Sciences",
   ]
 
-  const staffDepartments = [...academicDepartments, "transport", "library"]
+  const staffDepartments = [...academicDepartments, "transport", "library", "hostel", "finance"]
 
   // Minimal signup states
   const [fullName, setFullName] = useState("")
@@ -75,7 +75,7 @@ export default function RegisterPage() {
         (role === "student" ? email.split("@")[0] : fullName).trim() || "Student"
 
       const normalizedRole =
-        role === "department" && (departmentName === "transport" || departmentName === "library")
+        role === "department" && ["transport", "library", "hostel", "finance"].includes(departmentName)
           ? departmentName
           : role
 

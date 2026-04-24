@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 
 export default function DepartmentDashboard({ departmentName }: { departmentName: string }) {
   const [requests, setRequests] = useState<any[]>([])
@@ -14,30 +14,11 @@ export default function DepartmentDashboard({ departmentName }: { departmentName
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  useEffect(() => {
-    fetchRequests()
-
-    const channel = supabase
-      .channel('department_status_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'department_status', filter: `department_name=eq.${departmentName}` },
-        (payload) => {
-          fetchRequests()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [departmentName])
-
   const fetchRequests = async () => {
     try {
       setLoading(true)
       
-      let query = supabase
+      const query = supabase
         .from('department_status')
         .select(`
           id,
@@ -55,12 +36,6 @@ export default function DepartmentDashboard({ departmentName }: { departmentName
         `)
         .eq('department_name', departmentName)
 
-      // If Academic, only show requests where ALL other departments are approved
-      if (departmentName === 'academic') {
-        const { data: allStatuses } = await supabase.from('department_status').select('request_id, department_name, status')
-        // Filter out logic handled on client for simplicity or via a View in Prod
-      }
-
       const { data, error } = await query
 
       if (error) throw error
@@ -71,8 +46,10 @@ export default function DepartmentDashboard({ departmentName }: { departmentName
       if (departmentName === 'academic') {
         const { data: allStatuses } = await supabase.from('department_status').select('request_id, department_name, status')
         if (allStatuses) {
-           filteredData = data?.filter(req => {
-              const reqStatuses = allStatuses.filter(s => s.request_id === req.clearance_requests.id)
+           filteredData = data?.filter((req: any) => {
+              const cr = req.clearance_requests as any
+              const crId = Array.isArray(cr) ? cr[0]?.id : cr?.id
+              const reqStatuses = allStatuses.filter(s => s.request_id === crId)
               const deps = ['library', 'transport', 'finance', 'hostel']
               const allDepsApproved = deps.every(dep => {
                  const depStatus = reqStatuses.find(s => s.department_name === dep)
@@ -90,6 +67,26 @@ export default function DepartmentDashboard({ departmentName }: { departmentName
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchRequests()
+
+    const channel = supabase
+      .channel('department_status_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'department_status', filter: `department_name=eq.${departmentName}` },
+        () => {
+          fetchRequests()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [departmentName])
 
   const handleStatusUpdate = async (statusId: string, requestId: string, newStatus: string, studentEmail: string, studentName: string, regNo: string, studentDept: string) => {
     try {

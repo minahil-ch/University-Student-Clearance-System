@@ -65,9 +65,13 @@ export async function middleware(request: NextRequest) {
       case 'department':
         if (normalizedDept === 'transport') return '/transport'
         if (normalizedDept === 'library') return '/library'
+        if (normalizedDept === 'hostel') return '/hostel'
+        if (normalizedDept === 'finance') return '/finance'
         return `/dept/${departmentPortalPathSlug(deptName)}`;
       case 'transport': return '/transport';
       case 'library': return '/library';
+      case 'hostel': return '/hostel';
+      case 'finance': return '/finance';
       default: return '/dashboard';
     }
   }
@@ -110,6 +114,8 @@ export async function middleware(request: NextRequest) {
       else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications'))) isAllowed = true
       else if (pRole === 'transport' && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'library' && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
+      else if (pRole === 'hostel' && (pathname.startsWith('/hostel') || pathname.startsWith('/history'))) isAllowed = true
+      else if (pRole === 'finance' && (pathname.startsWith('/finance') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'department' && pathname.startsWith('/history')) isAllowed = true
       else if (pRole === 'department' && deptSlug && pathname === `/dept/${deptSlug}`) isAllowed = true
 

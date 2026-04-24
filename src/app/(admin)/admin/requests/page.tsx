@@ -107,25 +107,30 @@ export default function AdminRequests() {
 
   const handleManualCreate = async (e: React.FormEvent) => {
     e.preventDefault()
-    const derivedRole =
-      manualStaff.departmentName === "library" || manualStaff.departmentName === "transport"
-        ? manualStaff.departmentName
-        : "department"
+    try {
+      const derivedRole =
+        ["library", "transport", "hostel", "finance"].includes(manualStaff.departmentName)
+          ? manualStaff.departmentName
+          : "department"
 
-    const response = await fetch("/api/admin/create-staff", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...manualStaff, role: derivedRole }),
-    })
-    const result = await response.json()
-    if (!response.ok) {
-      toast.error(result.error || "Failed to create staff")
-      return
+      const response = await fetch("/api/admin/create-staff", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...manualStaff, role: derivedRole }),
+      })
+      const result = await response.json()
+      if (!response.ok) {
+        toast.error(result.error || "Failed to create staff")
+        return
+      }
+      toast.success("New staff added. They appear under Approved Staff and can log in to their portal now.")
+      setManualStaff({ fullName: "", email: "", password: "", departmentName: "finance" })
+      setActiveTab("working")
+      await fetchRequests()
+    } catch (err: any) {
+      console.error("Manual create error:", err)
+      toast.error(err.message || "Network error. Please check your connection and try again.")
     }
-    toast.success("New staff added. They appear under Approved Staff and can log in to their portal now.")
-    setManualStaff({ fullName: "", email: "", password: "", departmentName: "finance" })
-    setActiveTab("working")
-    await fetchRequests()
   }
 
   if (loading) return (

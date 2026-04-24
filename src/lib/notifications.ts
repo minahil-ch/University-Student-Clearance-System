@@ -61,6 +61,6 @@ export async function sendWhatsAppNotification(data: NotificationData) {
   }
 }
 
-export async function logNotification(studentId: string, type: 'email' | 'whatsapp', message: string, status: 'sent' | 'failed') {
+export async function logNotification(_studentId: string, _type: 'email' | 'whatsapp', _message: string, _status: 'sent' | 'failed') {
   // This would be called to update the notifications table in Supabase
 }

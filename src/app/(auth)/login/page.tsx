@@ -187,10 +187,18 @@ export default function LoginPage() {
         else if (profile.role === 'library' || profile.department_name === 'library') {
            router.push('/library')
         }
+        else if (profile.role === 'hostel' || profile.department_name === 'hostel') {
+           router.push('/hostel')
+        }
+        else if (profile.role === 'finance' || profile.department_name === 'finance') {
+           router.push('/finance')
+        }
         else if (profile.role === 'department') {
           const portalSlug = departmentPortalPathSlug(profile.department_name)
           if (portalSlug === 'transport') router.push('/transport')
           else if (portalSlug === 'library') router.push('/library')
+          else if (portalSlug === 'hostel') router.push('/hostel')
+          else if (portalSlug === 'finance') router.push('/finance')
           else router.push(`/dept/${portalSlug}`)
         }
         else {
