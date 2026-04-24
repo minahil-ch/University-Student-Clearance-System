@@ -1,11 +1,12 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
-import { Mail, Lock, LogIn, ArrowRight, ShieldCheck, UserCircle2 } from "lucide-react"
+import { Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { canonicalClearanceDepartmentKey, departmentPortalPathSlug } from "@/lib/departmentKeys"
 import { useRouter } from "next/navigation"

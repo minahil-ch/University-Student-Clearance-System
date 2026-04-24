@@ -1,20 +1,19 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Sidebar } from "@/components/layout/Sidebar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { StatusBadge } from "@/components/ui/StatusBadge"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, Check, X, BookOpen, Phone, Mail, User } from "lucide-react"
+import { Search, BookOpen } from "lucide-react"
 import { toast } from "sonner"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
 
 export default function LibraryPortal() {
   const [students, setStudents] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [currentTab, setCurrentTab] = useState<'pending' | 'today' | 'month' | 'all'>('pending')
   const [remarks, setRemarks] = useState<{ [key: string]: string }>({})
@@ -22,7 +21,6 @@ export default function LibraryPortal() {
 
   useEffect(() => {
     async function fetchStudents() {
-      setLoading(true)
       let query = supabase
         .from('clearance_status')
         .select(`
@@ -59,7 +57,6 @@ export default function LibraryPortal() {
       } else {
         setStudents(data || [])
       }
-      setLoading(false)
     }
 
     fetchStudents()

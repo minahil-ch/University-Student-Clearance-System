@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -12,14 +13,12 @@ import {
   Clock, 
   ShieldCheck,
   Mail,
-  Phone,
   Building2,
   Search,
   CheckCircle2
 } from "lucide-react"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/Input"
-import { formatDate } from "@/lib/utils"
 
 export default function AdminRequests() {
   const [allStaff, setAllStaff] = useState<any[]>([])
@@ -221,7 +220,7 @@ export default function AdminRequests() {
 
           <AnimatePresence mode="popLayout" initial={false}>
             {filteredList.length > 0 ? (
-              filteredList.map((req, i) => (
+              filteredList.map((req) => (
                 <motion.div
                   key={req.id}
                   layout

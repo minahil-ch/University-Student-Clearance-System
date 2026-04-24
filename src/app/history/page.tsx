@@ -1,13 +1,13 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Sidebar } from "@/components/layout/Sidebar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/Card"
 import { motion, AnimatePresence } from "framer-motion"
 import { formatDate } from "@/lib/utils"
 import { 
-  Building2, 
   History as HistoryIcon,
   CheckCircle2, 
   AlertTriangle,

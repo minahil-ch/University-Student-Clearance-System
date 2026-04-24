@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -12,7 +13,6 @@ import {
   Clock, 
   AlertCircle, 
   Download, 
-  Filter,
   MoreVertical,
   History,
   ArrowUpRight,
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
     // Real-time subscription for audit logs
     const channel = supabase
       .channel('admin-updates')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'audit_logs' }, (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'audit_logs' }, () => {
         // Refresh logs (simplified)
         fetchData()
       })

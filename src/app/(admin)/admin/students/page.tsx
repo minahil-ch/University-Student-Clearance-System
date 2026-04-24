@@ -1,4 +1,5 @@
 "use client"
+export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -43,15 +44,7 @@ export default function AdminStudents() {
     fetchData()
   }, [])
 
-  const handleWhatsApp = (phone: string | null, name: string) => {
-    if (!phone) {
-      toast.error("No phone number available for this student.")
-      return
-    }
-    const cleanPhone = phone.replace(/[^0-9]/g, '')
-    const msg = `Hello ${name}, this is the Admin Office regarding your University Clearance.`
-    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank')
-  }
+
 
   const processedStudents = students.map(s => {
     const total = s.clearance_status?.length || 0
