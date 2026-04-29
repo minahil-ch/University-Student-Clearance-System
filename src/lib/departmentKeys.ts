@@ -3,21 +3,18 @@
  * Portal URLs use short academic slugs (e.g. /dept/software-engineering).
  */
 
-const ACADEMIC_SUBJECT_SLUGS = new Set([
-  "computer-science",
-  "software-engineering",
-  "mathematics",
-  "humanities",
-  "environmental-sciences",
-])
+
 
 /** clearance_status.department_key and student dashboard keys */
 export function canonicalClearanceDepartmentKey(dept: string | null | undefined): string {
   const raw = (dept || "").toLowerCase().trim().replace(/\s+/g, "-")
   if (!raw) return ""
   if (raw.startsWith("academic-")) return raw
-  if (ACADEMIC_SUBJECT_SLUGS.has(raw)) return `academic-${raw}`
-  return raw
+  
+  const coreDepts = ["library", "transport", "finance", "hostel", "admin", "student"]
+  if (coreDepts.includes(raw)) return raw
+  
+  return `academic-${raw}`
 }
 
 /** Last segment of /dept/[slug] for academic staff (short slug) */

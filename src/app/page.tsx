@@ -3,7 +3,6 @@
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { 
-  ShieldAlert, 
   Building2, 
   Truck,
   BookOpen,
@@ -51,13 +50,6 @@ export default function LandingPage() {
       href: "/login/staff?role=staff&dept=hostel&switch=1"
     },
     { 
-      name: "Admin Portal", 
-      icon: ShieldAlert, 
-      color: "rose", 
-      desc: "Supervise full university clearance metrics", 
-      href: "/login/admin?switch=1" 
-    },
-    { 
       name: "Academic Portal", 
       icon: Building2, 
       color: "emerald", 
@@ -95,9 +87,7 @@ export default function LandingPage() {
             transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.02, translateY: -5 }}
             onClick={() => router.push(portal.href)}
-            className={`group cursor-pointer flex items-center p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden ${
-              portal.name === "Academic Portal" ? "md:col-span-2 lg:col-span-2 min-h-[150px]" : ""
-            }`}
+            className="group cursor-pointer flex items-center p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
             

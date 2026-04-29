@@ -19,10 +19,14 @@ import {
   Building2,
   Truck,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  FileText,
+  Edit2
 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { toast } from "sonner"
+import { Dialog } from "@/components/ui/Dialog"
+import { Input } from "@/components/ui/Input"
 
 // Initializing Student Dashboard Node
 export default function StudentDashboard() {
@@ -34,10 +38,26 @@ export default function StudentDashboard() {
   const [clearanceStarted, setClearanceStarted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedDept, setSelectedDept] = useState<any>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showCertificate, setShowCertificate] = useState(false)
+  const [editProfile, setEditProfile] = useState({
+    full_name: "",
+    father_name: "",
+    phone: "",
+    cgpa: ""
+  })
   const supabase = createClient()
   const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
+  
+  // Dynamic order: all non-academic first, then academic
+  const existingKeys = Array.from(new Set(clearanceData.map(c => c.department_key)))
+  const nonAcademicKeys = existingKeys.filter(k => !k.startsWith('academic-'))
+  // Ensure common ones are always present even if not started? 
+  // Actually, better to just show what's in the DB plus the academic one.
+  const baseOrder = ['library', 'transport', 'finance', 'hostel']
+  const allNonAcademic = Array.from(new Set([...baseOrder, ...nonAcademicKeys]))
+  const desiredOrder = [...allNonAcademic, academicDeptKey]
 
-  const desiredOrder = ['library', 'transport', 'finance', 'hostel', academicDeptKey]
   const clearanceMap = new Map(clearanceData.map((row) => [row.department_key, row]))
   const orderedClearanceData = desiredOrder.map((key, idx) => {
     const found = clearanceMap.get(key)
@@ -46,7 +66,7 @@ export default function StudentDashboard() {
       id: `virtual-${key}-${idx}`,
       department_key: key,
       status: "pending",
-      remarks: "Waiting for workflow routing.",
+      remarks: key.startsWith('academic-') ? "Waiting for other departments." : "Waiting for workflow routing.",
       updated_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
     }
@@ -81,6 +101,14 @@ export default function StudentDashboard() {
     setClearanceData(clearance || [])
     setUniFormDone(Boolean(futureData))
     setClearanceStarted((clearance || []).length > 0)
+    if (profile) {
+      setEditProfile({
+        full_name: profile.full_name || "",
+        father_name: profile.father_name || "",
+        phone: profile.phone || "",
+        cgpa: profile.cgpa || ""
+      })
+    }
     setLoading(false)
   }
 
@@ -134,12 +162,22 @@ export default function StudentDashboard() {
             animate={{ opacity: 1, x: 0 }}
           >
             <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-              Student <span className="text-primary text-emerald-500">Workspace</span>
+              Welcome, <span className="text-primary text-emerald-500">{profile?.full_name || "Student"}</span>
             </h2>
             <p className="text-muted-foreground mt-1 text-sm font-medium">
-              Welcome, {profile?.full_name || "Student"} - monitor your clearance in real-time.
+              Monitor your clearance in real-time.
             </p>
           </motion.div>
+          <div className="mt-4 flex gap-3">
+             <Button 
+               variant="outline" 
+               size="sm" 
+               onClick={() => setShowEditModal(true)}
+               className="rounded-xl border-slate-200 dark:border-slate-800 font-bold gap-2 text-[10px] uppercase tracking-widest"
+             >
+               <Edit2 className="w-3.5 h-3.5" /> Edit Profile
+             </Button>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -154,15 +192,12 @@ export default function StudentDashboard() {
                 </div>
               </div>
               <h3 className="text-xl font-black tracking-tight">{profile?.full_name}</h3>
-              <p className="text-xs font-bold text-primary mt-1 uppercase tracking-widest">{profile?.reg_no}</p>
-              {!uniFormDone && (
+              <p className="text-xs font-bold text-primary mt-1 uppercase tracking-widest">
+                {clearanceStarted ? profile?.reg_no : "Hidden until clearance form"}
+              </p>
+              {!clearanceStarted && (
                 <p className="text-xs text-amber-600 mt-3 font-semibold">
-                  Start registration: complete the University Form first, then the Clearance Form.
-                </p>
-              )}
-              {uniFormDone && !clearanceStarted && (
-                <p className="text-xs text-emerald-600 mt-3 font-semibold">
-                  University Form received. Continue with the Clearance Form to open departmental tracking.
+                  Your clearance form is pending. Please complete it.
                 </p>
               )}
               
@@ -226,19 +261,19 @@ export default function StudentDashboard() {
                         <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                         {!uniFormDone ? (
                           <>
-                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Step 1 — University Form</p>
+                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Your clearance form is pending. Please complete it.</p>
                             <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                              Submit the University Form first (admin copy). You will move to the Clearance Form automatically next.
+                              Submit the University Form first, then the Clearance Form.
                             </p>
                             <Button className="mt-6 rounded-full px-8 bg-primary shadow-xl" onClick={() => { window.location.href = "/uni-form" }}>
-                              Start registration — University Form <ArrowRight className="ml-2 w-4 h-4" />
+                              Start registration <ArrowRight className="ml-2 w-4 h-4" />
                             </Button>
                           </>
                         ) : (
                           <>
-                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Step 2 — Clearance Form</p>
+                            <p className="text-xl font-bold text-slate-600 dark:text-slate-300">Your clearance form is pending. Please complete it.</p>
                             <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                              University Form is complete. Submit your clearance details to notify Library, Transport, Finance, and Hostel.
+                              University Form is complete. Submit your clearance details to notify departments.
                             </p>
                             <Button className="mt-6 rounded-full px-8 bg-emerald-600 hover:bg-emerald-700 shadow-xl" onClick={() => { window.location.href = "/form" }}>
                               Continue to Clearance Form <ArrowRight className="ml-2 w-4 h-4" />
@@ -320,13 +355,25 @@ export default function StudentDashboard() {
                 </div>
 
                 {isFinalCleared && (
-                  <div className="mt-6 rounded-2xl border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 p-5">
-                    <h4 className="text-xl font-black text-emerald-700 dark:text-emerald-400">
-                      You are approved from all departments
-                    </h4>
-                    <p className="text-sm mt-1 text-emerald-700/80 dark:text-emerald-300/80">
-                      Final academic approval is complete. You can collect your result card.
-                    </p>
+                  <div className="mt-8 p-1 bg-gradient-to-r from-emerald-500 via-primary to-blue-500 rounded-[2.2rem] shadow-2xl">
+                    <div className="bg-white dark:bg-slate-900 rounded-[2.1rem] p-8">
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div>
+                          <h4 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">
+                            Congratulations! Your clearance is complete.
+                          </h4>
+                          <p className="text-muted-foreground mt-2 font-medium">
+                            All departments have verified your status. You are officially cleared for graduation.
+                          </p>
+                        </div>
+                        <Button 
+                          onClick={() => setShowCertificate(true)}
+                          className="h-16 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest gap-3 shadow-xl shadow-emerald-500/20 active:scale-95 transition-all"
+                        >
+                          <FileText className="w-6 h-6" /> View Official Certificate
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -393,6 +440,134 @@ export default function StudentDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Profile Edit Modal */}
+      <Dialog isOpen={showEditModal} onClose={() => setShowEditModal(false)} title="Edit Profile">
+        <div className="space-y-4 py-4">
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
+            <Input 
+              value={editProfile.full_name} 
+              onChange={(e) => setEditProfile({...editProfile, full_name: e.target.value})}
+              className="rounded-xl border-none bg-slate-50 dark:bg-slate-800"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Father Name</label>
+            <Input 
+              value={editProfile.father_name} 
+              onChange={(e) => setEditProfile({...editProfile, father_name: e.target.value})}
+              className="rounded-xl border-none bg-slate-50 dark:bg-slate-800"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone</label>
+            <Input 
+              value={editProfile.phone} 
+              onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})}
+              className="rounded-xl border-none bg-slate-50 dark:bg-slate-800"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">CGPA</label>
+            <Input 
+              value={editProfile.cgpa} 
+              onChange={(e) => setEditProfile({...editProfile, cgpa: e.target.value})}
+              className="rounded-xl border-none bg-slate-50 dark:bg-slate-800"
+            />
+          </div>
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button variant="ghost" onClick={() => setShowEditModal(false)} className="rounded-xl font-bold uppercase text-[10px]">Cancel</Button>
+          <Button 
+            onClick={async () => {
+              const { error } = await supabase.from('profiles').update({
+                full_name: editProfile.full_name,
+                father_name: editProfile.father_name,
+                phone: editProfile.phone,
+                cgpa: editProfile.cgpa
+              }).eq('id', profile.id)
+              if (error) toast.error(error.message)
+              else {
+                toast.success("Profile updated successfully")
+                setShowEditModal(false)
+                fetchData()
+              }
+            }}
+            className="rounded-xl font-black uppercase text-[10px] tracking-widest bg-primary text-white"
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* Certificate Modal */}
+      <Dialog isOpen={showCertificate} onClose={() => setShowCertificate(false)} title="University Clearance Certificate">
+         <div className="p-4 relative overflow-hidden" id="clearance-certificate">
+            {/* Ornate Border */}
+            <div className="absolute inset-2 border-[8px] border-double border-slate-100 dark:border-slate-800 pointer-events-none rounded-[2rem]" />
+            <div className="absolute inset-4 border border-slate-200 dark:border-slate-700 pointer-events-none rounded-[1.5rem]" />
+            
+            <div className="relative z-10 text-center space-y-6">
+               <div className="flex justify-center mb-2">
+                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary border-4 border-primary/20 shadow-inner">
+                     <GraduationCap className="w-10 h-10" />
+                  </div>
+               </div>
+               
+               <div className="space-y-1">
+                  <h2 className="text-4xl font-black tracking-tighter uppercase italic text-slate-900 dark:text-white">
+                     Certificate <span className="text-primary">of Clearance</span>
+                  </h2>
+                  <p className="text-xs font-black tracking-[0.4em] uppercase text-slate-400">University Student Administration</p>
+               </div>
+               
+               <div className="py-6 space-y-4">
+                  <p className="text-base font-medium text-slate-600 dark:text-slate-300 italic">This document certifies that the student</p>
+                  <div className="space-y-1">
+                     <h3 className="text-3xl font-black tracking-tight text-primary">{profile?.full_name}</h3>
+                     <p className="text-lg font-bold tracking-widest uppercase text-slate-500">{profile?.reg_no}</p>
+                  </div>
+                  <div className="max-w-md mx-auto pt-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+                     <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                        Has successfully completed all university clearance protocols from Library, Transport, Finance, Hostel, and the 
+                        <span className="font-bold text-slate-900 dark:text-white uppercase ml-1">{profile?.department_name}</span> department.
+                     </p>
+                  </div>
+               </div>
+               
+               <div className="grid grid-cols-3 gap-6 pt-4">
+                  <div className="space-y-2">
+                     <div className="h-0.5 bg-slate-200 dark:bg-slate-800 w-full mb-2" />
+                     <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Registrar Signature</p>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                     <div className="w-12 h-12 rounded-full border-4 border-emerald-500/20 flex items-center justify-center relative">
+                        <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                     </div>
+                     <p className="text-[9px] font-black uppercase tracking-widest text-emerald-500 mt-2">Verified System Copy</p>
+                  </div>
+                  <div className="space-y-2">
+                     <div className="h-0.5 bg-slate-200 dark:bg-slate-800 w-full mb-2" />
+                     <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Department Head</p>
+                  </div>
+               </div>
+               
+               <div className="pt-6 text-[8px] font-bold text-slate-300 dark:text-slate-600 uppercase tracking-widest">
+                  Generated on {new Date().toLocaleDateString()} • ID: {profile?.id.slice(0, 8).toUpperCase()}
+               </div>
+            </div>
+         </div>
+         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3 rounded-b-3xl">
+            <Button variant="ghost" onClick={() => setShowCertificate(false)} className="rounded-xl font-bold uppercase text-[10px]">Close</Button>
+            <Button 
+              onClick={() => window.print()} 
+              className="rounded-xl font-black uppercase text-[10px] tracking-widest bg-slate-900 text-white"
+            >
+              Print Certificate
+            </Button>
+         </div>
+      </Dialog>
     </div>
   )
 }

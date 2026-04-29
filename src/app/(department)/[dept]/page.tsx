@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/Input"
 import { StatusBadge } from "@/components/ui/StatusBadge"
 import { useParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Mail, User, BookOpen } from "lucide-react"
+import { Search, Mail, User, BookOpen, Building2, Truck, GraduationCap, ShieldCheck } from "lucide-react"
 import { toast } from "sonner"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
 import {
@@ -18,15 +18,16 @@ import {
   departmentPortalPathSlug,
   isAcademicClearancePortal,
 } from "@/lib/departmentKeys"
+import { CLEARANCE_MESSAGES, getWhatsAppLink } from "@/lib/messages"
 
-export default function DepartmentDashboard() {
+export default function DepartmentDashboard(props: any) {
   const { dept } = useParams()
   const router = useRouter()
-  const departmentKey = (dept as string) || ''
+  const departmentKey = props.departmentName || (dept as string) || ''
   const [students, setStudents] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [accessReady, setAccessReady] = useState(false)
-  const [sidebarRole, setSidebarRole] = useState<'department' | 'transport' | 'library'>('department')
+  const [sidebarRole, setSidebarRole] = useState<'department' | 'transport' | 'library' | 'admin' | 'student'>('department')
   const [sidebarDeptName, setSidebarDeptName] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState("")
   const [currentTab, setCurrentTab] = useState<'pending' | 'today' | 'month' | 'all'>('pending')
@@ -154,10 +155,34 @@ export default function DepartmentDashboard() {
     fetchStudents()
   }, [departmentKey, currentTab, accessReady])
 
-  const openWhatsApp = (phone: string, name: string) => {
+  const handleOpenWhatsApp = (phone: string, name: string, studentStatus: string, studentRemarks: string) => {
     if (!phone) { toast.error("No phone number on record."); return }
-    const msg = `Hello ${name}, I am contacting you from the ${departmentKey.replace(/-/g, ' ')} department regarding your university clearance.`
-    window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank')
+    
+    let msg = `Hello ${name}, I am contacting you from the ${departmentKey.replace(/-/g, ' ').toUpperCase()} department regarding your university clearance.`
+    
+    if (studentStatus === 'cleared') {
+      msg = CLEARANCE_MESSAGES.CERTIFICATE_READY(name)
+    } else if (studentStatus === 'issue') {
+      msg = CLEARANCE_MESSAGES.ISSUE_REPORTED(name, departmentKey, studentRemarks || "Please check the portal for details.")
+    }
+    
+    const link = getWhatsAppLink(phone, msg)
+    if (link) window.open(link, '_blank')
+  }
+
+  const handleOpenEmail = (email: string, name: string, studentStatus: string, studentRemarks: string) => {
+    if (!email) { toast.error("No email address on record."); return }
+    
+    const subject = `University Clearance Update - ${departmentKey.replace(/-/g, ' ').toUpperCase()}`
+    let body = `Hello ${name},\n\nI am contacting you from the ${departmentKey.replace(/-/g, ' ').toUpperCase()} department regarding your university clearance.\n\n`
+    
+    if (studentStatus === 'cleared') {
+      body += `Your clearance has been approved by our department.`
+    } else if (studentStatus === 'issue') {
+      body += `There is an issue with your clearance: ${studentRemarks || "Please check the portal for details."}`
+    }
+    
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
   const handleUpdateStatus = async (clearanceId: string, status: 'cleared' | 'issue', studentProfile: any) => {
@@ -340,7 +365,12 @@ export default function DepartmentDashboard() {
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold">
-                              {student.profiles?.full_name?.[0] || 'U'}
+                              {departmentKey === 'library' ? <BookOpen className="w-5 h-5" /> :
+                               departmentKey === 'transport' ? <Truck className="w-5 h-5" /> :
+                               departmentKey === 'finance' ? <Building2 className="w-5 h-5" /> :
+                               departmentKey === 'hostel' ? <ShieldCheck className="w-5 h-5" /> :
+                               isAcademicClearancePortal(departmentKey) ? <GraduationCap className="w-5 h-5" /> :
+                               student.profiles?.full_name?.[0] || 'U'}
                             </div>
                             <div>
                               <div className="font-black text-slate-900 dark:text-white">
@@ -375,13 +405,22 @@ export default function DepartmentDashboard() {
                           <div className="flex items-center gap-2 flex-wrap">
                             {/* WhatsApp */}
                             <button
-                              onClick={() => openWhatsApp(student.profiles?.phone, student.profiles?.full_name)}
-                              title="WhatsApp"
-                              className="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition-colors"
+                              onClick={() => handleOpenWhatsApp(student.profiles?.phone, student.profiles?.full_name, student.status, student.remarks)}
+                              title="WhatsApp Student"
+                              className="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition-colors border border-emerald-100"
                             >
                               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.52.909 3.292 1.389 5.096 1.391 5.514 0 10.005-4.49 10.008-10.007.002-2.673-1.04-5.186-2.935-7.082-1.895-1.896-4.407-2.937-7.08-2.938-5.517 0-10.008 4.489-10.01 10.007-.001 1.83.479 3.618 1.391 5.174l-.912 3.33 3.442-.904z" />
                               </svg>
+                            </button>
+
+                            {/* Email */}
+                            <button
+                              onClick={() => handleOpenEmail(student.profiles?.email, student.profiles?.full_name, student.status, student.remarks)}
+                              title="Email Student"
+                              className="w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors border border-blue-100"
+                            >
+                              <Mail className="w-4 h-4" />
                             </button>
 
                             {student.status !== 'cleared' ? (

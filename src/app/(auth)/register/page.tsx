@@ -72,8 +72,7 @@ export default function RegisterPage() {
         throw new Error("Password must be at least 6 characters")
       }
 
-      const normalizedName =
-        (role === "student" ? email.split("@")[0] : fullName).trim() || "Student"
+      const normalizedName = fullName.trim() || (role === "student" ? email.split("@")[0] : "Student")
 
       const normalizedRole =
         role === "department" && ["transport", "library", "hostel", "finance"].includes(departmentName)
@@ -88,23 +87,33 @@ export default function RegisterPage() {
           data: {
             full_name: normalizedName,
             role: normalizedRole,
-            department_name: role === "student" ? departmentName : (lockedDept || departmentName)
+            department_name: role === "student" ? null : (lockedDept || departmentName)
           }
         }
       })
 
+      // FAILSAFE: If trigger fails, try a minimal signup
       if (authResponse.error?.message?.toLowerCase().includes("database error saving new user")) {
         authResponse = await supabase.auth.signUp({ email, password })
+      }
+
+      // SECOND FAILSAFE: If it STILL fails with database error, try to sign in.
+      // Often Supabase returns 500 but the user is actually created in auth.users.
+      if (authResponse.error?.message?.toLowerCase().includes("database error saving new user") || authResponse.error?.status === 500) {
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+        if (!signInError && signInData.user) {
+          authResponse = { data: signInData, error: null }
+        }
       }
 
       const { data, error } = authResponse
 
       if (error) {
         if (error.message.includes("rate limit")) {
-          throw new Error("Too many attempts. Please disable 'Confirm Email' in Supabase to register instantly.")
+          throw new Error("Too many attempts. Please try again in a few minutes.")
         }
         if (error.message.toLowerCase().includes("database error saving new user") || error.status === 500) {
-          throw new Error("Supabase auth trigger failed. Run AUTH_HOTFIX.sql in Supabase SQL Editor, then try again.")
+          throw new Error("Supabase Auth Error: The database trigger is failing. Please run FINAL_FIX.sql in your Supabase SQL Editor to fix this permanently.")
         }
         throw error
       }
@@ -119,7 +128,7 @@ export default function RegisterPage() {
               full_name: normalizedName,
               email,
               role: normalizedRole,
-              department_name: role === "student" ? departmentName : (lockedDept || departmentName),
+              department_name: role === "student" ? null : (lockedDept || departmentName),
               is_approved: role === "student",
             },
             { onConflict: "id" }
@@ -177,15 +186,13 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent className="p-8 pt-2">
             <form onSubmit={handleRegister} className="grid grid-cols-1 gap-5">
-              {role !== "student" && (
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-500">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
-                    <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter full name" className="pl-11 h-12" required />
-                  </div>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-slate-500">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                  <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Enter full name" className="pl-11 h-12" required />
                 </div>
-              )}
+              </div>
 
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-slate-500">Email</label>
@@ -211,25 +218,27 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-500">{role === "student" ? "Academic Department" : "Portal Department"}</label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
-                  {role === "department" && lockedDept ? (
-                    <Input value={lockedDept} className="pl-11 h-12" disabled />
-                  ) : (
-                    <select
-                      value={departmentName}
-                      onChange={(e) => setDepartmentName(e.target.value)}
-                      className="w-full h-12 pl-11 pr-4 rounded-md border bg-background text-sm"
-                    >
-                      {(role === "student" ? academicDepartments : staffDepartments).map((dept) => (
-                        <option key={dept} value={dept}>{dept}</option>
-                      ))}
-                    </select>
-                  )}
+              {role !== "student" && (
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-500">Portal Department</label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                    {lockedDept ? (
+                      <Input value={lockedDept} className="pl-11 h-12" disabled />
+                    ) : (
+                      <select
+                        value={departmentName}
+                        onChange={(e) => setDepartmentName(e.target.value)}
+                        className="w-full h-12 pl-11 pr-4 rounded-md border bg-background text-sm"
+                      >
+                        {staffDepartments.map((dept) => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <Button type="submit" disabled={loading} className="h-12 mt-2">
                 {loading ? "Please wait..." : "Signup"} <ArrowRight className="w-4 h-4 ml-2" />

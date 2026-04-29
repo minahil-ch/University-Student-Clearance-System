@@ -57,8 +57,8 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const MASTER_ADMIN = process.env.NEXT_PUBLIC_MASTER_ADMIN_EMAIL || 'admin@university.com'
-      const MASTER_PASS = process.env.NEXT_PUBLIC_MASTER_ADMIN_PASSWORD
+      const MASTER_ADMIN = 'minahilch821@gmail.com'
+      const MASTER_PASS = 'Admin123'
       
       let authResult;
 
@@ -257,7 +257,7 @@ export default function LoginPage() {
                     Staff
                   </button>
                 )}
-                {!lockStudent && !lockStaff && (
+                {lockAdmin && (
                   <button 
                     onClick={() => setPortal("admin")}
                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${portal === 'admin' ? 'bg-white dark:bg-slate-700 shadow-lg text-rose-500' : 'text-slate-400 hover:text-slate-600'}`}
