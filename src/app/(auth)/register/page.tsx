@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
-import { Mail, Lock, User, ArrowRight, Building2 } from "lucide-react"
+import { Mail, Lock, User, ArrowRight, Building2, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -155,8 +155,15 @@ export default function RegisterPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
-        <Card className="border-none shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2rem] overflow-hidden">
-          <CardHeader className="p-8 pb-4">
+        <Card className="border-none shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2rem] overflow-hidden relative">
+          <button 
+            onClick={() => router.push('/')}
+            className="absolute top-6 left-8 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 z-10"
+            title="Back to Portals"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <CardHeader className="p-8 pb-4 pt-14">
             <CardTitle className="text-3xl font-black tracking-tight">
               {role === "student" ? "Student Signup" : "Faculty/Staff Signup"}
             </CardTitle>

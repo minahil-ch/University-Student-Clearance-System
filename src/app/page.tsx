@@ -7,8 +7,7 @@ import {
   Truck,
   BookOpen,
   ArrowRight,
-  GraduationCap,
-  ShieldCheck
+  GraduationCap
 } from "lucide-react"
 
 export default function LandingPage() {
@@ -56,13 +55,6 @@ export default function LandingPage() {
       color: "emerald", 
       desc: "Final authority by student selected department", 
       href: "/academic?switch=1" 
-    },
-    { 
-      name: "Admin Control", 
-      icon: ShieldCheck, 
-      color: "rose", 
-      desc: "Universal control center for staff and students", 
-      href: "/login/admin?role=admin&switch=1" 
     },
   ]
 

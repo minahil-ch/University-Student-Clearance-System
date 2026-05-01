@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
-import { Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react"
+import { Mail, Lock, ArrowRight, ShieldCheck, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { canonicalClearanceDepartmentKey, departmentPortalPathSlug } from "@/lib/departmentKeys"
 import { useRouter } from "next/navigation"
@@ -223,16 +223,7 @@ export default function LoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-[480px]"
       >
-        <div className="text-center mb-10 relative">
-           <Link 
-             href="/" 
-             className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
-           >
-             <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10">
-               <ArrowRight className="w-4 h-4 rotate-180" />
-             </div>
-             Back to Home
-           </Link>
+        <div className="text-center mb-10">
            <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-primary shadow-2xl shadow-primary/30 text-white mb-6">
               <ShieldCheck className="w-10 h-10" />
            </div>
@@ -242,8 +233,15 @@ export default function LoginPage() {
            <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Professional Clearance Protocol V5.0</p>
         </div>
 
-        <Card className="border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[3rem] overflow-hidden">
-          <CardHeader className="p-10 pb-4">
+        <Card className="border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[3rem] overflow-hidden relative">
+          <button 
+            onClick={() => router.push('/')}
+            className="absolute top-6 left-8 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 z-10"
+            title="Back to Portals"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <CardHeader className="p-10 pb-4 pt-16">
              <CardTitle className="text-xl font-black uppercase tracking-widest text-slate-800 dark:text-white flex items-center gap-2">
                 {portal === 'admin' ? 'Admin Gateway' : portal === 'staff' ? 'Staff Portal' : 'Student Access'} <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
              </CardTitle>
