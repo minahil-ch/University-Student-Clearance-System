@@ -32,6 +32,9 @@ export default function DepartmentDashboard(props: any) {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentTab, setCurrentTab] = useState<'pending' | 'today' | 'month' | 'all'>('pending')
   const [remarks, setRemarks] = useState<{ [key: string]: string }>({})
+  const [googleFormLink, setGoogleFormLink] = useState("")
+  const [isEditingLink, setIsEditingLink] = useState(false)
+  const isAcademic = isAcademicClearancePortal(departmentKey)
   const supabase = createClient()
 
   useEffect(() => {
@@ -118,6 +121,7 @@ export default function DepartmentDashboard(props: any) {
           id,
           status,
           remarks,
+          form_submitted,
           updated_at,
           profiles:student_id (
             id,
@@ -152,8 +156,36 @@ export default function DepartmentDashboard(props: any) {
       setLoading(false)
     }
 
+    async function fetchSettings() {
+      if (isAcademic) {
+        const { data } = await supabase
+          .from('department_settings')
+          .select('google_form_link')
+          .eq('department_key', canonicalClearanceDepartmentKey(departmentKey))
+          .maybeSingle()
+        if (data) {
+          setGoogleFormLink(data.google_form_link || "")
+        }
+      }
+    }
+
     fetchStudents()
-  }, [departmentKey, currentTab, accessReady])
+    fetchSettings()
+  }, [departmentKey, currentTab, accessReady, isAcademic])
+
+  const saveGoogleFormLink = async () => {
+    try {
+      const dbKey = canonicalClearanceDepartmentKey(departmentKey)
+      const { error } = await supabase
+        .from('department_settings')
+        .upsert({ department_key: dbKey, google_form_link: googleFormLink })
+      if (error) throw error
+      toast.success("Google Form link saved successfully")
+      setIsEditingLink(false)
+    } catch (err: any) {
+      toast.error("Failed to save link: " + err.message)
+    }
+  }
 
   const handleOpenWhatsApp = (phone: string, name: string, studentStatus: string, studentRemarks: string) => {
     if (!phone) { toast.error("No phone number on record."); return }
@@ -191,7 +223,7 @@ export default function DepartmentDashboard(props: any) {
       if (isAcademicPortal) {
         const { data: statuses, error: statusesError } = await supabase
           .from("clearance_status")
-          .select("department_key,status")
+          .select("department_key,status,form_submitted")
           .eq("student_id", studentProfile.id)
 
         if (statusesError) throw statusesError
@@ -199,6 +231,12 @@ export default function DepartmentDashboard(props: any) {
         const allNonAcademicCleared = nonAcademic.length > 0 && nonAcademic.every((s) => s.status === "cleared")
         if (!allNonAcademicCleared) {
           toast.error("Academic approval is locked until all departments clear the student.")
+          return
+        }
+
+        const studentStatus = statuses?.find(s => s.department_key === canonicalClearanceDepartmentKey(departmentKey))
+        if (status === 'cleared' && googleFormLink && !studentStatus?.form_submitted) {
+          toast.error("Student has not yet marked the Google Form as completed.")
           return
         }
       }
@@ -303,6 +341,29 @@ export default function DepartmentDashboard(props: any) {
             <p className="text-muted-foreground mt-2 text-lg font-medium">
               Manage student clearances for your department.
             </p>
+            {isAcademic && (
+              <div className="mt-4 flex items-center gap-2 max-w-md">
+                {isEditingLink ? (
+                  <>
+                    <Input 
+                      placeholder="Paste Google Form Link..." 
+                      value={googleFormLink} 
+                      onChange={e => setGoogleFormLink(e.target.value)} 
+                      className="bg-white"
+                    />
+                    <Button size="sm" onClick={saveGoogleFormLink}>Save</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditingLink(false)}>Cancel</Button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium">
+                      Form Link: {googleFormLink ? <a href={googleFormLink} target="_blank" className="text-blue-500 underline">View Link</a> : <span className="text-slate-400 italic">None set</span>}
+                    </p>
+                    <Button size="sm" variant="outline" onClick={() => setIsEditingLink(true)}>Edit Form Link</Button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-3">
@@ -453,6 +514,15 @@ export default function DepartmentDashboard(props: any) {
                               </div>
                             )}
                           </div>
+                          {isAcademic && (
+                            <div className="mt-2 text-[10px] font-bold">
+                              {student.form_submitted ? (
+                                <span className="text-emerald-500">✓ Form Submitted</span>
+                              ) : (
+                                <span className="text-rose-500">✗ Form Pending</span>
+                              )}
+                            </div>
+                          )}
                         </td>
                       </motion.tr>
                     ))}

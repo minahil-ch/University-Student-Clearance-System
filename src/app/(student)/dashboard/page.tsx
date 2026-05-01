@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { StatusBadge } from "@/components/ui/StatusBadge"
 import { motion, AnimatePresence } from "framer-motion"
 import { formatDate } from "@/lib/utils"
-import { getPortalContact } from "@/lib/portalContacts"
+import { getPortalContact, normalizeDepartmentKey } from "@/lib/portalContacts"
 import { 
   GraduationCap, 
   Phone, 
@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/Button"
 import { toast } from "sonner"
 import { Dialog } from "@/components/ui/Dialog"
 import { Input } from "@/components/ui/Input"
+import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
 
 // Initializing Student Dashboard Node
 export default function StudentDashboard() {
@@ -38,6 +39,8 @@ export default function StudentDashboard() {
   const [clearanceStarted, setClearanceStarted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedDept, setSelectedDept] = useState<any>(null)
+  const [academicFormLink, setAcademicFormLink] = useState<string>("")
+  const [submittingFormStatus, setSubmittingFormStatus] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
   const [editProfile, setEditProfile] = useState({
@@ -97,6 +100,18 @@ export default function StudentDashboard() {
       .select("id")
       .eq("student_id", user.id)
       .maybeSingle()
+
+    if (profile?.department_name) {
+      const acKey = `academic-${profile.department_name.toLowerCase().replace(/\s+/g, "-")}`
+      const { data: settings } = await supabase
+        .from("department_settings")
+        .select("google_form_link")
+        .eq("department_key", acKey)
+        .maybeSingle()
+      if (settings) {
+        setAcademicFormLink(settings.google_form_link || "")
+      }
+    }
     
     setClearanceData(clearance || [])
     setUniFormDone(Boolean(futureData))
@@ -343,6 +358,78 @@ export default function StudentDashboard() {
                                 <span>Pending Approval</span>
                               </div>
                             )}
+
+                            {item.department_key.startsWith("academic-") && academicFormLink && item.status !== 'cleared' && (
+                              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                {item.form_submitted ? (
+                                  <div className="text-emerald-500 text-xs font-bold flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4" /> Form submitted, awaiting academic head approval
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-col gap-2">
+                                    <p className="text-xs text-rose-500 font-bold">Action Required: Fill out the academic clearance form before approval.</p>
+                                    <a href={academicFormLink} target="_blank" className="text-xs text-blue-500 underline font-medium w-fit mb-2">Open Google Form</a>
+                                    <Button 
+                                      size="sm" 
+                                      className="w-fit text-[10px] uppercase tracking-widest font-black rounded-xl"
+                                      disabled={submittingFormStatus}
+                                      onClick={async (e) => {
+                                        e.stopPropagation()
+                                        setSubmittingFormStatus(true)
+                                        const { error } = await supabase
+                                          .from('clearance_status')
+                                          .update({ form_submitted: true })
+                                          .eq('id', item.id)
+                                        if (!error) {
+                                          toast.success("Form marked as submitted. Notification sent to Academic Head.")
+                                          
+                                          // Notify Academic Head
+                                          const { data: headProfile } = await supabase
+                                            .from('profiles')
+                                            .select('email, phone')
+                                            .eq('role', 'department')
+                                            .eq('department_name', profile.department_name)
+                                            .single()
+
+                                          if (headProfile) {
+                                            await Promise.allSettled([
+                                              sendEmailNotification({
+                                                name: profile.full_name,
+                                                email: profile.email,
+                                                phone: profile.phone,
+                                                recipientEmail: headProfile.email,
+                                                recipientPhone: headProfile.phone,
+                                                regNo: profile.reg_no,
+                                                department: `ACADEMIC - ${profile.department_name}`,
+                                                eventType: "portal_alert",
+                                                remarks: `Student ${profile.full_name} (${profile.reg_no}) has filled the Google Form. Please verify and approve.`
+                                              }),
+                                              sendWhatsAppNotification({
+                                                name: profile.full_name,
+                                                email: profile.email,
+                                                phone: profile.phone,
+                                                recipientPhone: headProfile.phone,
+                                                regNo: profile.reg_no,
+                                                department: `ACADEMIC - ${profile.department_name}`,
+                                                eventType: "portal_alert",
+                                                remarks: `Student ${profile.full_name} has filled the form. Check the portal.`
+                                              })
+                                            ])
+                                          }
+
+                                          fetchData()
+                                        } else {
+                                          toast.error(error.message)
+                                        }
+                                        setSubmittingFormStatus(false)
+                                      }}
+                                    >
+                                      I have filled the form
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                           
                           <p className="text-[10px] text-muted-foreground mt-4 uppercase tracking-widest font-black opacity-50">
@@ -404,23 +491,45 @@ export default function StudentDashboard() {
               </CardHeader>
               <CardContent className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[
-                    { name: 'Administration', phone: '+92 300 1234567', color: 'blue' },
-                    { name: 'Transport Dept', phone: '+92 305 4128282', color: 'amber' },
-                    { name: 'Main Library', phone: '+92 321 9876543', color: 'violet' },
-                    { name: 'IT Department', phone: '+92 345 6789012', color: 'emerald' },
-                    { name: 'Accounts Office', phone: '+92 333 4445556', color: 'rose' }
-                  ].map((dept) => (
-                    <div key={dept.name} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
-                      <div className={`p-3 rounded-xl bg-${dept.color}-500/10 text-${dept.color}-500`}>
-                        <Phone className="w-4 h-4" />
+                  {['transport', 'library', 'finance', 'hostel', profile?.department_name || 'Academic'].map((key) => {
+                    const portal = getPortalContact(key.startsWith('Academic') ? `academic-${normalizeDepartmentKey(profile?.department_name || '')}` : key);
+                    const colors: any = { transport: 'amber', library: 'violet', finance: 'rose', hostel: 'emerald' };
+                    const color = colors[portal.key] || 'blue';
+                    
+                    return (
+                      <div key={portal.key} className="flex flex-col gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-4">
+                          <div className={`p-3 rounded-xl bg-${color}-500/10 text-${color}-500`}>
+                            {portal.key === 'library' ? <BookOpen className="w-5 h-5" /> : 
+                             portal.key === 'transport' ? <Truck className="w-5 h-5" /> :
+                             portal.key === 'finance' ? <Building2 className="w-5 h-5" /> : <Phone className="w-5 h-5" />}
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{portal.label}</p>
+                            <p className="font-bold text-sm tracking-tighter">{portal.phone}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 border-t pt-4 border-slate-100 dark:border-slate-800">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 rounded-xl text-[9px] uppercase font-black"
+                            onClick={() => window.open(`https://wa.me/${portal.phone.replace(/\+/g, '')}`, '_blank')}
+                          >
+                            WhatsApp
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 rounded-xl text-[9px] uppercase font-black"
+                            onClick={() => window.location.href = `mailto:${portal.email}`}
+                          >
+                            Email
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{dept.name}</p>
-                        <p className="font-bold text-sm tracking-tighter">{dept.phone}</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
