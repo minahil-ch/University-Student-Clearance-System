@@ -127,15 +127,11 @@ export default function ClearanceForm() {
       }
 
       // 3. Initialize Clearance Rows
-      // Core flow: library/transport/finance/hostel first; academic is final authority.
-      const commonDepts = Array.from(new Set([
-        'library',
-        'transport',
-        'finance',
-        'hostel',
-      ]))
+      // Core flow: library/transport/finance/hostel; academic is final authority.
+      const academicKey = `academic-${(profile.department_name || "Computer Science").toLowerCase().trim().replace(/\s+/g, "-")}`
+      const allDepts = ['library', 'transport', 'finance', 'hostel', academicKey]
       
-      for (const deptKey of commonDepts) {
+      for (const deptKey of allDepts) {
         await supabase
           .from('clearance_status')
           .upsert({

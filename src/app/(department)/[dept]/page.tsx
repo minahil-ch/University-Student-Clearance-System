@@ -295,19 +295,20 @@ export default function DepartmentDashboard(props: any) {
         const nonAcademic = (statuses || []).filter((s) => !s.department_key.startsWith("academic-"))
         const allNonAcademicCleared = nonAcademic.length > 0 && nonAcademic.every((s) => s.status === "cleared")
         if (allNonAcademicCleared) {
-          const academicKey = `academic-${(studentProfile?.department_name || "").toLowerCase().replace(/\s+/g, "-")}`
-          await supabase
-            .from("clearance_status")
-            .upsert(
-              {
-                student_id: studentProfile.id,
-                department_key: academicKey,
-                status: "pending",
-                remarks: "Auto-forwarded after all departments approved",
-                updated_at: new Date().toISOString(),
-              },
-              { onConflict: "student_id,department_key" }
-            )
+          const academicKey = `academic-${(studentProfile?.department_name || "").toLowerCase().trim().replace(/\s+/g, "-")}`
+          if (academicKey !== "academic-") {
+            await supabase
+              .from("clearance_status")
+              .upsert(
+                {
+                  student_id: studentProfile.id,
+                  department_key: academicKey,
+                  status: "pending",
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: "student_id,department_key" }
+              )
+          }
         }
       }
 
