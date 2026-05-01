@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Building2, ArrowRight } from "lucide-react"
+import { Building2, ArrowRight, ArrowLeft } from "lucide-react"
 
 const academicDepartments = [
   "Computer Science",
@@ -15,8 +15,14 @@ export default function AcademicPortalPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-10">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-10 relative">
       <div className="max-w-6xl mx-auto">
+        <button 
+          onClick={() => router.push('/')}
+          className="mb-6 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to Home
+        </button>
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
             Academic Portal
