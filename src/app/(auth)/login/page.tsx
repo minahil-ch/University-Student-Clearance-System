@@ -223,7 +223,16 @@ export default function LoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-[480px]"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 relative">
+           <Link 
+             href="/" 
+             className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
+           >
+             <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary/10">
+               <ArrowRight className="w-4 h-4 rotate-180" />
+             </div>
+             Back to Home
+           </Link>
            <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-primary shadow-2xl shadow-primary/30 text-white mb-6">
               <ShieldCheck className="w-10 h-10" />
            </div>
