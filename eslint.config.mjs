@@ -21,6 +21,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "electron-main.js",
+    "gas_email_script.js",
+    "google-apps-script.gs",
+    "dist/**",
+    "scratch/**"
   ]),
 ]);
 
