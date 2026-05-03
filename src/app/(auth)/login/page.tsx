@@ -12,6 +12,9 @@ import { canonicalClearanceDepartmentKey, departmentPortalPathSlug } from "@/lib
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
+import { Logo } from "@/components/ui/Logo"
+
+const MASTER_ADMIN = "minahilch821@gmail.com"
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
@@ -30,7 +33,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (typeof window === "undefined") return
     const params = new URLSearchParams(window.location.search)
-    setRoleType(params.get("role"))
+    setRoleType(params.get("role")?.toLowerCase() || null)
     const deptParam = params.get("dept")
     if (deptParam) setLockedDept(decodeURIComponent(deptParam))
 
@@ -162,6 +165,8 @@ export default function LoginPage() {
           let portalOk = false
           if (profile.role === "library" && ld === "library") portalOk = true
           else if (profile.role === "transport" && ld === "transport") portalOk = true
+          else if (profile.role === "hostel" && ld === "hostel") portalOk = true
+          else if (profile.role === "finance" && ld === "finance") portalOk = true
           else if (profile.role === "department") {
             const expectedKey = canonicalClearanceDepartmentKey(lockedDept)
             const actualKey = canonicalClearanceDepartmentKey(profile.department_name || "")
@@ -224,13 +229,11 @@ export default function LoginPage() {
         className="w-full max-w-[480px]"
       >
         <div className="text-center mb-10">
-           <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-primary shadow-2xl shadow-primary/30 text-white mb-6">
-              <ShieldCheck className="w-10 h-10" />
-           </div>
+           <Logo className="w-24 h-24 mx-auto mb-6" />
            <h1 className="text-4xl font-black italic uppercase tracking-tighter">
-             Portal <span className="text-primary italic">Access</span>
+             CUI VEHARI <span className="text-primary italic">CLEARANCE</span>
            </h1>
-           <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Professional Clearance Protocol V5.0</p>
+           <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Official Institutional Portal V5.0</p>
         </div>
 
         <Card className="border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[3rem] overflow-hidden relative">
@@ -243,9 +246,11 @@ export default function LoginPage() {
           </button>
           <CardHeader className="p-10 pb-4 pt-16">
              <CardTitle className="text-xl font-black uppercase tracking-widest text-slate-800 dark:text-white flex items-center gap-2">
-                {portal === 'admin' ? 'Admin Gateway' : portal === 'staff' ? 'Staff Portal' : 'Student Access'} <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                {lockAdmin || portal === 'admin' ? 'Admin Gateway' : portal === 'staff' ? 'Staff Portal' : 'Student Access'} <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
              </CardTitle>
-             <CardDescription className="text-slate-400 font-medium">Verify your {portal} identity to continue</CardDescription>
+             <CardDescription className="text-slate-400 font-medium">
+                Verify your {lockAdmin || portal === 'admin' ? 'Master Control' : portal} identity to continue
+             </CardDescription>
 
              <div className="flex items-center gap-2 mt-6 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl w-fit">
                 {!lockStaff && !lockAdmin && (

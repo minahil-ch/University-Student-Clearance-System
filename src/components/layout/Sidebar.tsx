@@ -21,9 +21,10 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
+import { Logo } from "@/components/ui/Logo"
 
 interface SidebarProps {
-  role: 'admin' | 'student' | 'department' | 'transport' | 'library'
+  role: 'admin' | 'student' | 'department' | 'transport' | 'library' | 'hostel' | 'finance'
   departmentName?: string
 }
 
@@ -31,7 +32,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
-  const navItems = {
+  const navItems: Record<string, { label: string; href: string; icon: any }[]> = {
     student: [
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { label: "University Form", href: "/uni-form", icon: FileText },
@@ -43,6 +44,8 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
         label: "Dashboard", 
         href: departmentName?.toLowerCase() === 'library' ? '/library' :
               departmentName?.toLowerCase() === 'transport' ? '/transport' :
+              departmentName?.toLowerCase() === 'hostel' ? '/hostel' :
+              departmentName?.toLowerCase() === 'finance' ? '/finance' :
               `/dept/${departmentPortalPathSlug(departmentName)}`, 
         icon: LayoutDashboard 
       },
@@ -54,6 +57,14 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
     ],
     library: [
       { label: "Dashboard", href: "/library", icon: BookOpen },
+      { label: "History", href: "/history", icon: FileText },
+    ],
+    hostel: [
+      { label: "Dashboard", href: "/hostel", icon: LayoutDashboard },
+      { label: "History", href: "/history", icon: FileText },
+    ],
+    finance: [
+      { label: "Dashboard", href: "/finance", icon: LayoutDashboard },
       { label: "History", href: "/history", icon: FileText },
     ],
     admin: [
@@ -83,11 +94,12 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full p-6">
-          <div className="flex items-center gap-2 mb-10">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <CheckCircle className="text-white w-5 h-5" />
+          <div className="flex items-center gap-3 mb-10 px-2">
+            <Logo className="w-10 h-10" />
+            <div>
+              <h1 className="text-foreground font-black leading-tight text-sm tracking-tight italic">CUI VEHARI</h1>
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Clearance System</p>
             </div>
-            <h1 className="font-bold text-xl tracking-tight">Clearance<span className="text-primary">Sys</span></h1>
           </div>
 
           <nav className="flex-1 space-y-2">
@@ -119,8 +131,8 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
                 {role[0].toUpperCase()}
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-semibold truncate capitalize">{role === 'admin' ? 'System Admin' : role}</p>
-                <p className="text-xs text-muted-foreground truncate">{departmentName || (role === 'admin' ? 'All Portals' : 'General')}</p>
+                <p className="text-sm font-semibold truncate capitalize">{role === 'admin' ? 'System Admin' : departmentName || role}</p>
+                <p className="text-xs text-muted-foreground truncate">{role === 'admin' ? 'All Portals' : `${role.charAt(0).toUpperCase() + role.slice(1)} Department`}</p>
               </div>
             </div>
             

@@ -72,6 +72,7 @@ export async function middleware(request: NextRequest) {
       case 'library': return '/library';
       case 'hostel': return '/hostel';
       case 'finance': return '/finance';
+      case 'student': return '/dashboard';
       default: return '/dashboard';
     }
   }
@@ -92,8 +93,8 @@ export async function middleware(request: NextRequest) {
       .single()
 
     if (profile) {
-      // Master Admin Bypass
-      const isMasterAdmin = profile.email === 'admin@university.com'
+      // Master Admin Bypass — uses the real admin gmail
+      const isMasterAdmin = profile.email === 'minahilch821@gmail.com'
       const isApproved = profile.is_approved || isMasterAdmin
       const pRole = profile.role
       const deptSlug = departmentPortalPathSlug(profile.department_name)
@@ -101,8 +102,6 @@ export async function middleware(request: NextRequest) {
 
       // 1. Check Approval for staff/admin roles
       if (pRole !== 'student' && !isApproved) {
-        // If not approved, kick them back to login or a pending page
-        // For simplicity, we redirect to login with a query param
         const redirectUrl = new URL('/login', request.url)
         redirectUrl.searchParams.set('error', 'Your account is pending administrative approval.')
         return NextResponse.redirect(redirectUrl)
@@ -110,14 +109,15 @@ export async function middleware(request: NextRequest) {
 
       // 2. Check Role-Path consistency
       let isAllowed = false
-      if (pRole === 'admin' && pathname.startsWith('/admin')) isAllowed = true
+      // Admin can access everything
+      if (pRole === 'admin' || isMasterAdmin) isAllowed = true
       else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications'))) isAllowed = true
       else if (pRole === 'transport' && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'library' && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'hostel' && (pathname.startsWith('/hostel') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'finance' && (pathname.startsWith('/finance') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'department' && pathname.startsWith('/history')) isAllowed = true
-      else if (pRole === 'department' && deptSlug && pathname === `/dept/${deptSlug}`) isAllowed = true
+      else if (pRole === 'department' && deptSlug && (pathname === `/dept/${deptSlug}` || pathname.startsWith(`/dept/${deptSlug}`))) isAllowed = true
 
       if (!isAllowed) {
         return NextResponse.redirect(new URL(correctPath, request.url))

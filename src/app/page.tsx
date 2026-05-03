@@ -10,6 +10,8 @@ import {
   GraduationCap
 } from "lucide-react"
 
+import { Logo } from "@/components/ui/Logo"
+
 export default function LandingPage() {
   const router = useRouter()
 
@@ -51,7 +53,7 @@ export default function LandingPage() {
     },
     { 
       name: "Academic Portal", 
-      icon: Building2, 
+      icon: BookOpen, 
       color: "emerald", 
       desc: "Final authority by student selected department", 
       href: "/academic?switch=1" 
@@ -65,16 +67,14 @@ export default function LandingPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-16"
       >
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center shadow-2xl shadow-primary/20">
-            <GraduationCap className="text-white w-10 h-10" />
-          </div>
-          <h1 className="text-5xl font-black tracking-tighter text-slate-900 dark:text-white">
-            Clearance<span className="text-primary text-emerald-500 italic">Sys</span>
+        <div className="flex flex-col items-center justify-center gap-6 mb-8">
+          <Logo className="w-24 h-24" />
+          <h1 className="text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase italic">
+            CUI VEHARI <span className="text-primary italic">CLEARANCE</span>
           </h1>
         </div>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
-          The official unified clearance portal for university students and departments.
+          The official institutional clearance portal for COMSATS University Vehari Campus.
         </p>
       </motion.div>
 
@@ -109,9 +109,17 @@ export default function LandingPage() {
         ))}
       </div>
 
-      <p className="mt-20 text-slate-400 dark:text-slate-500 text-sm font-medium tracking-widest uppercase">
-        &copy; 2026 University Student Clearance System
-      </p>
+      <div className="mt-16 flex flex-col items-center gap-4">
+        <button 
+          onClick={() => router.push('/login/admin?switch=1')}
+          className="px-8 py-3 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl"
+        >
+          System Administration
+        </button>
+        <p className="text-slate-400 dark:text-slate-500 text-xs font-medium tracking-widest uppercase">
+          &copy; 2026 CUI Vehari Clearance System
+        </p>
+      </div>
     </div>
   )
 }

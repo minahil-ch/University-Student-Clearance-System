@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { motion } from "framer-motion"
 import { toast } from "sonner"
-import { GraduationCap, Globe, ArrowRight } from "lucide-react"
+import { GraduationCap, Globe, ArrowRight, AlertCircle } from "lucide-react"
 import { sendEmailNotification } from "@/lib/notifications"
 
 export default function UniversityFormPage() {
@@ -30,6 +30,7 @@ export default function UniversityFormPage() {
     feedback: "",
     willing_to_mentor: "Yes",
   })
+  const [rejectionRemarks, setRejectionRemarks] = useState("")
 
   useEffect(() => {
     async function boot() {
@@ -45,7 +46,28 @@ export default function UniversityFormPage() {
         .maybeSingle()
 
       if (fData) {
-        window.location.href = "/form"
+        if (fData.status === 'rejected') {
+          // Allow re-submission
+          setFutureData({
+            personal_email: fData.personal_email || "",
+            alternate_phone: fData.alternate_phone || "",
+            job_secured: fData.experience || "No",
+            company_name: fData.company_name || "",
+            job_title: fData.job_title || "",
+            salary_range: fData.salary_range || "",
+            pursuing_higher_ed: fData.higher_education_uni ? "Yes" : "No",
+            higher_education_uni: fData.higher_education_uni || "",
+            country: fData.country || "",
+            degree: fData.degree || "",
+            placement_satisfaction: "Satisfied",
+            how_cui_helped: "",
+            feedback: "",
+            willing_to_mentor: "Yes",
+          })
+          setRejectionRemarks(fData.admin_remarks || "")
+        } else {
+          window.location.href = "/form"
+        }
         return
       }
     }
@@ -75,6 +97,8 @@ export default function UniversityFormPage() {
           country: futureData.country,
           degree: futureData.degree,
           feedback: combinedFeedback,
+          status: 'pending',
+          admin_remarks: null
         })
 
       if (error) throw error
@@ -109,9 +133,22 @@ export default function UniversityFormPage() {
             <h2 className="text-4xl font-extrabold tracking-tight">
               University <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 uppercase italic">Form</span>
             </h2>
-            <p className="text-muted-foreground mt-4 text-lg font-medium">
-              This form goes to Admin only. After submission you can start clearance.
-            </p>
+            
+            {rejectionRemarks ? (
+              <div className="mt-6 p-6 bg-rose-50 border border-rose-100 rounded-3xl text-left">
+                <div className="flex items-center gap-3 text-rose-600 font-black uppercase text-xs mb-2">
+                  <AlertCircle className="w-5 h-5" /> Submission Rejected
+                </div>
+                <p className="text-sm text-rose-800 font-medium leading-relaxed italic">
+                  &quot;{rejectionRemarks}&quot;
+                </p>
+                <p className="text-[10px] font-black text-rose-400 uppercase mt-4 tracking-widest">Please correct your details and re-submit.</p>
+              </div>
+            ) : (
+              <p className="text-muted-foreground mt-4 text-lg font-medium">
+                This form goes to Admin only. After submission you can start clearance.
+              </p>
+            )}
           </motion.div>
         </header>
 

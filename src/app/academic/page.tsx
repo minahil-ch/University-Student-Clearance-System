@@ -11,6 +11,8 @@ const academicDepartments = [
   "Environmental Sciences",
 ]
 
+import { Logo } from "@/components/ui/Logo"
+
 export default function AcademicPortalPage() {
   const router = useRouter()
 
@@ -19,17 +21,20 @@ export default function AcademicPortalPage() {
       <div className="max-w-6xl mx-auto">
         <button 
           onClick={() => router.push('/')}
-          className="mb-6 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+          className="mb-8 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-sm"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Home
+          <ArrowLeft className="w-4 h-4" /> Back to System Home
         </button>
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-            Academic Portal
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Select your academic department. Library, Transport, Finance, and Hostel are separate portals.
-          </p>
+        <div className="mb-12 flex flex-col md:flex-row items-center gap-6">
+          <Logo className="w-20 h-20" />
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
+              ACADEMIC <span className="text-primary">AUTHORITY</span>
+            </h1>
+            <p className="text-muted-foreground mt-2 font-medium">
+              Official Departmental Clearance Hub for COMSATS University Vehari Campus.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

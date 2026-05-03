@@ -6,8 +6,8 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "University Student Clearance System",
-  description: "Real-time, Secure Multi-Portal University Clearance System",
+  title: "CUI Vehari Clearance System",
+  description: "Official COMSATS University Vehari Campus Clearance Protocol",
 };
 
 export default function RootLayout({

@@ -38,6 +38,8 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/Input"
 import { formatDate } from "@/lib/utils"
 
+import { Logo } from "@/components/ui/Logo"
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<any>({
     totalStudents: 0,
@@ -54,69 +56,100 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
   
   const [allStudents, setAllStudents] = useState<any[]>([])
-  const [fullyApprovedStudents, setFullyApprovedStudents] = useState<any[]>([])
+  const [fullyApprovedStudents, setFullyApprovedStudents] = useState<string[]>([])
   const [showOnlyApproved, setShowOnlyApproved] = useState(false)
   const [isAddingStaff, setIsAddingStaff] = useState(false)
   const [newStaff, setNewStaff] = useState({ fullName: '', email: '', password: '', role: 'department', departmentName: 'Computer Science' })
 
+  const academicDepartments = [
+    "Computer Science",
+    "Software Engineering",
+    "Mathematics",
+    "Humanities",
+    "Environmental Sciences",
+  ]
+  const staffDepartments = [...academicDepartments, "transport", "library", "hostel", "finance"]
+
   const supabase = createClient()
 
-  const fetchData = async () => {
-    // 1. Fetch Basic Stats
-    const { data: students } = await supabase.from('profiles').select('*').eq('role', 'student')
-    const { data: clearance } = await supabase.from('clearance_status').select('*')
-    const { data: pendingRequests } = await supabase.from('profiles').select('*').eq('is_approved', false).neq('role', 'student')
 
-    setRequests(pendingRequests || [])
+  async function fetchData() {
+    setLoading(true)
+    
+    // 1. Get overall student stats
+    const { data: students, error: studentError } = await supabase
+      .from('profiles')
+      .select('id, is_approved, role')
+      .eq('role', 'student')
 
-    if (students && clearance) {
+    if (students) {
       const total = students.length
-      const clearedCount = clearance.filter(c => c.status === 'cleared').length
-      const pendingCount = clearance.filter(c => c.status === 'pending').length
-      const issuesCount = clearance.filter(c => c.status === 'issue').length
-
-      setStats({
-        totalStudents: total,
-        cleared: clearedCount,
-        pending: pendingCount,
-        issues: issuesCount
-      })
-
-      const depts: Record<string, any> = {}
-      clearance.forEach(c => {
-        if (!depts[c.department_key]) depts[c.department_key] = { name: c.department_key.replace(/_/g, ' '), cleared: 0, total: 0 }
-        depts[c.department_key].total++
-        if (c.status === 'cleared') depts[c.department_key].cleared++
-      })
-      setDepartmentStats(Object.values(depts))
-
-      const studentClearanceMap: Record<string, any[]> = {}
-      clearance.forEach(c => {
-        if (!studentClearanceMap[c.student_id]) studentClearanceMap[c.student_id] = []
-        studentClearanceMap[c.student_id].push(c)
-      })
-
-      const fullyApproved = students.filter(s => {
-        const statuses = studentClearanceMap[s.id] || []
-        const required = ['library', 'transport', 'finance', 'hostel']
-        const hasAllCommon = required.every(r => statuses.some(st => st.department_key === r && st.status === 'cleared'))
-        const hasAcademic = statuses.some(st => st.department_key.startsWith('academic-') && st.status === 'cleared')
-        return hasAllCommon && hasAcademic
-      })
+      setStats((prev: any) => ({ ...prev, totalStudents: total }))
       setAllStudents(students)
-      setFullyApprovedStudents(fullyApproved)
     }
 
-    // 2. Fetch Recent Audit Logs
+    // 2. Get departmental clearance stats
+    const { data: clearance, error: clearanceError } = await supabase
+      .from('clearance_status')
+      .select('*')
+
+    if (clearance) {
+      const departments = [...new Set(clearance.map(c => c.department_name))]
+      const deptStats = departments.map(dept => {
+        const deptClearances = clearance.filter(c => c.department_name === dept)
+        const cleared = deptClearances.filter(c => c.status === 'approved').length
+        return {
+          name: dept,
+          cleared: cleared,
+          total: deptClearances.length,
+          percentage: (cleared / deptClearances.length) * 100
+        }
+      })
+      setDepartmentStats(deptStats)
+      
+      const overallCleared = clearance.filter(c => c.status === 'approved').length
+      const overallPending = clearance.filter(c => c.status === 'pending').length
+      const overallIssues = clearance.filter(c => c.status === 'issued').length
+      
+      setStats((prev: any) => ({ 
+        ...prev, 
+        cleared: overallCleared,
+        pending: overallPending,
+        issues: overallIssues
+      }))
+
+      // Students who have ALL departments approved
+      const studentGroups = clearance.reduce((acc: any, curr) => {
+        if (!acc[curr.student_id]) acc[curr.student_id] = []
+        acc[curr.student_id].push(curr.status)
+        return acc
+      }, {})
+
+      const fullyCleared = Object.keys(studentGroups).filter(sid => 
+        studentGroups[sid].every((status: string) => status === 'approved')
+      )
+      setFullyApprovedStudents(fullyCleared)
+    }
+
+    // 3. Get audit logs
     const { data: logs } = await supabase
       .from('audit_logs')
-      .select(`*, actor:actor_id (full_name, role), student:target_student_id (full_name, reg_no)`)
+      .select('*')
       .order('created_at', { ascending: false })
-      .limit(10)
-
-    setAuditLogs(logs || [])
+      .limit(100)
     
-    // 3. Fetch Future Data (Alumni Surveys)
+    if (logs) setAuditLogs(logs)
+
+    // 4. Get pending staff requests
+    const { data: staffReqs } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('is_approved', false)
+      .neq('role', 'student')
+    
+    if (staffReqs) setRequests(staffReqs)
+
+    // 5. Get Alumni Data
     const { data: future } = await supabase
       .from('future_data')
       .select(`*, student:profiles!future_data_student_id_fkey(full_name, reg_no, email, department_name)`)
@@ -148,31 +181,22 @@ export default function AdminDashboard() {
 
     if (activeTab === 'dashboard') {
       headers = ["Department", "Cleared", "Total Count", "Percentage"]
-      rows = departmentStats.map(d => [d.name, d.cleared, d.total, `${((d.cleared / d.total) * 100).toFixed(1)}%`])
-      filename = `clearance_report_${new Date().toISOString().split('T')[0]}.csv`
+      rows = departmentStats.map(d => [d.name, d.cleared.toString(), d.total.toString(), `${d.percentage.toFixed(1)}%`])
     } else if (activeTab === 'students') {
-      headers = ["Full Name", "Reg No", "Email", "Department", "CGPA", "Status"]
-      const list = showOnlyApproved ? fullyApprovedStudents : allStudents
-      rows = list.map(s => [s.full_name, s.reg_no, s.email, s.department_name, s.cgpa || 'N/A', fullyApprovedStudents.some(f => f.id === s.id) ? 'Fully Approved' : 'Pending'])
-      filename = `students_report_${new Date().toISOString().split('T')[0]}.csv`
-    } else {
-      toast.error("Export not available for this tab")
-      return
+      headers = ["Student ID", "Status"]
+      rows = allStudents.map(s => [s.id, fullyApprovedStudents.includes(s.id) ? "Fully Cleared" : "In Progress"])
     }
 
-    if (rows.length === 0) return
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n"
+      + rows.map(e => e.join(",")).join("\n")
 
-    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n")
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const encodedUri = encodeURI(csvContent)
     const link = document.createElement("a")
-    const url = URL.createObjectURL(blob)
-    link.setAttribute("href", url)
+    link.setAttribute("href", encodedUri)
     link.setAttribute("download", filename)
-    link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link)
-    toast.success("Report downloaded successfully!")
   }
 
   const handleApproveStaff = async (id: string) => {
@@ -228,12 +252,10 @@ export default function AdminDashboard() {
   ]
 
   if (loading && !stats.totalStudents && !auditLogs.length) return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
-
-  const staffDepartments = ["Computer Science", "Software Engineering", "Mathematics", "Humanities", "Environmental Sciences"]
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -241,12 +263,14 @@ export default function AdminDashboard() {
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">
-              Admin <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">Command Center</span>
-              <ShieldCheck className="w-6 h-6 text-primary" />
-            </h2>
-            <p className="text-muted-foreground mt-1 text-sm font-medium">Real-time metrics and system-wide audit monitoring</p>
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-6">
+            <Logo className="w-20 h-20" />
+            <div>
+              <h2 className="text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic">
+                CUI VEHARI <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">ADMIN HUB</span>
+              </h2>
+              <p className="text-muted-foreground mt-1 text-sm font-medium">Official Campus-Wide Clearance Command Center</p>
+            </div>
           </motion.div>
           <div className="flex gap-4">
             <div className="relative">
@@ -421,10 +445,10 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                      {(showOnlyApproved ? fullyApprovedStudents : allStudents)
+                      {(showOnlyApproved ? allStudents.filter(s => fullyApprovedStudents.includes(s.id)) : allStudents)
                         .filter(s => s.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.reg_no?.toLowerCase().includes(searchTerm.toLowerCase()))
                         .map(student => {
-                          const isFullyApproved = fullyApprovedStudents.some(f => f.id === student.id);
+                          const isFullyApproved = fullyApprovedStudents.includes(student.id);
                           return (
                             <tr key={student.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
                               <td className="px-8 py-5">
