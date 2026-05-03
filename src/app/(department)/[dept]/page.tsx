@@ -966,10 +966,47 @@ export default function DepartmentDashboard(props: any) {
                               })
                               .select()
                               .single()
+                            
                             if (!error) {
                               setDepartmentForms(prev => [...prev, data])
-                              toast.success("New form added")
+                              toast.success("New form added and shared with students!")
+                              
+                              // Notify existing students in this department
+                              const currentDeptName = sidebarDeptName || departmentKey.replace(/-/g, " ")
+                              const { data: studentsToNotify } = await supabase
+                                .from('profiles')
+                                .select('full_name, email, phone')
+                                .eq('role', 'student')
+                                .ilike('department_name', `%${currentDeptName}%`)
+                              
+                              if (studentsToNotify && studentsToNotify.length > 0) {
+                                toast.info(`Notifying ${studentsToNotify.length} students via Email/WhatsApp...`)
+                                studentsToNotify.forEach(student => {
+                                  sendEmailNotification({
+                                    name: student.full_name,
+                                    email: student.email,
+                                    phone: student.phone,
+                                    recipientEmail: student.email,
+                                    eventType: 'portal_alert',
+                                    remarks: `New academic form generated: "${newForm.name}". Please fill it from your student dashboard.`
+                                  }).catch(console.warn)
+                                  
+                                  if (student.phone) {
+                                    sendWhatsAppNotification({
+                                      name: student.full_name,
+                                      email: student.email,
+                                      phone: student.phone,
+                                      recipientPhone: student.phone,
+                                      eventType: 'portal_alert',
+                                      remarks: `A new form "${newForm.name}" has been added to your clearance portal. Please complete it.`
+                                    }).catch(console.warn)
+                                  }
+                                })
+                              }
+                              
                               setNewForm({ name: "", link: "" })
+                            } else {
+                              toast.error(error.message)
                             }
                           }
                         }}
