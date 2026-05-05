@@ -130,7 +130,7 @@ export default function UniversityFormPage() {
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
         <header className="mb-10 text-center max-w-2xl mx-auto">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-4xl font-extrabold tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight px-4">
               University <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 uppercase italic">Form</span>
             </h2>
             
@@ -153,8 +153,8 @@ export default function UniversityFormPage() {
         </header>
 
         <div className="max-w-4xl mx-auto">
-          <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2.5rem]">
-            <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-800">
+          <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-800">
               <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
                 <div className="p-3 rounded-2xl bg-primary/10 text-primary">
                   <GraduationCap className="w-8 h-8" />
@@ -165,7 +165,7 @@ export default function UniversityFormPage() {
                 Submit once. Admin uses this for university records.
               </p>
             </CardHeader>
-            <CardContent className="p-10 space-y-8">
+            <CardContent className="p-6 md:p-10 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Personal Email Address</label>

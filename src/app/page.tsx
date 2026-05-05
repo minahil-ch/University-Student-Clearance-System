@@ -65,20 +65,20 @@ export default function LandingPage() {
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-16"
+        className="text-center mb-12 md:mb-16"
       >
-        <div className="flex flex-col items-center justify-center gap-6 mb-8">
-          <Logo className="w-24 h-24" />
-          <h1 className="text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase italic">
-            CUI VEHARI <span className="text-primary italic">CLEARANCE</span>
+        <div className="flex flex-col items-center justify-center gap-4 mb-6">
+          <Logo className="w-20 h-20 md:w-24 md:h-24" />
+          <h1 className="text-2xl md:text-4xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
+            COMSATS <span className="text-primary italic">UNIVERSITY ISLAMABAD</span>
           </h1>
         </div>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium px-4">
           The official institutional clearance portal for COMSATS University Vehari Campus.
         </p>
       </motion.div>
 
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {portals.map((portal, i) => (
           <motion.div
             key={portal.name}
@@ -87,19 +87,19 @@ export default function LandingPage() {
             transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.02, translateY: -5 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer flex items-center p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
+            className="group cursor-pointer flex items-center p-6 md:p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
             
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 mr-6 shadow-sm`}>
-              <portal.icon className="w-8 h-8 font-bold" />
+            <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 mr-6 shadow-sm shrink-0`}>
+              <portal.icon className="w-7 h-7 md:w-8 md:h-8 font-bold" />
             </div>
             
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+              <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                 {portal.name}
               </h3>
-              <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1 leading-relaxed">
                 {portal.desc}
               </p>
             </div>
@@ -116,7 +116,7 @@ export default function LandingPage() {
         >
           System Administration
         </button>
-        <p className="text-slate-400 dark:text-slate-500 text-xs font-medium tracking-widest uppercase">
+        <p className="text-slate-400 dark:text-slate-500 text-[10px] md:text-xs font-medium tracking-widest uppercase">
           &copy; 2026 CUI Vehari Clearance System
         </p>
       </div>

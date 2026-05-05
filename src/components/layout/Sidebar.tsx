@@ -95,10 +95,10 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
       )}>
         <div className="flex flex-col h-full p-6">
           <div className="flex items-center gap-3 mb-10 px-2">
-            <Logo className="w-10 h-10" />
+            <Logo className="w-12 h-12" />
             <div>
-              <h1 className="text-foreground font-black leading-tight text-sm tracking-tight italic">CUI VEHARI</h1>
-              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Clearance System</p>
+              <h1 className="text-slate-900 dark:text-white font-black leading-tight text-sm tracking-tight italic">COMSATS</h1>
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Vehari Campus</p>
             </div>
           </div>
 

@@ -305,14 +305,14 @@ export default function DepartmentDashboard(props: any) {
 
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
-          <div className="space-y-1 text-center md:text-left">
-            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3 justify-center md:justify-start">
-              <span className="p-3 rounded-2xl bg-primary/10 text-primary">
-                {isAcademic ? <GraduationCap className="w-8 h-8" /> : <Building2 className="w-8 h-8" />}
-              </span>
-              {deptLabel} <span className="text-primary/40 text-2xl font-light">|</span> <span className="gradient-text">PORTAL</span>
-            </h2>
-            <p className="text-slate-500 font-medium ml-1">Department Authority & Survey Hub</p>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center md:text-left">
+            <Logo className="w-16 h-16 md:w-20 md:h-20" />
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic text-slate-900 dark:text-white">
+                COMSATS <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">UNIVERSITY</span>
+              </h2>
+              <p className="text-muted-foreground mt-1 text-xs md:text-sm font-medium">{deptLabel} Clearance Authority Portal</p>
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">

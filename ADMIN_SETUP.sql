@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS department_forms (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. Ensure future_data (alumni survey) table has status column
+-- 6. Ensure future_data (alumni survey) table has status and admin_remarks columns
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -60,6 +60,13 @@ BEGIN
     WHERE table_name = 'future_data' AND column_name = 'status'
   ) THEN
     ALTER TABLE future_data ADD COLUMN status TEXT DEFAULT 'pending';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'future_data' AND column_name = 'admin_remarks'
+  ) THEN
+    ALTER TABLE future_data ADD COLUMN admin_remarks TEXT;
   END IF;
 END $$;
 

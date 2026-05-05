@@ -244,8 +244,8 @@ export default function ClearanceForm() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className="text-4xl font-extrabold tracking-tight">
-              Student <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 uppercase italic">Registration</span>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight px-4 text-slate-900 dark:text-white uppercase italic">
+              COMSATS <span className="gradient-text italic">UNIVERSITY</span>
             </h2>
             <p className="text-muted-foreground mt-4 text-lg font-medium">
               Complete your formal profile to initiate campus-wide clearance.
@@ -288,8 +288,8 @@ export default function ClearanceForm() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2.5rem]">
-                  <CardHeader className="p-10 border-b border-slate-100 dark:border-slate-800">
+                <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
+                  <CardHeader className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-800">
                     <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
                       <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
                         <User className="w-8 h-8" />
@@ -298,7 +298,7 @@ export default function ClearanceForm() {
                     </CardTitle>
                     <p className="text-muted-foreground font-medium">Verify your primary identification for departmental routing.</p>
                   </CardHeader>
-                  <CardContent className="p-10 space-y-8">
+                  <CardContent className="p-6 md:p-10 space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>

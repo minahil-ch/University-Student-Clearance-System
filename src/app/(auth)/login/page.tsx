@@ -230,8 +230,8 @@ export default function LoginPage() {
       >
         <div className="text-center mb-10">
            <Logo className="w-24 h-24 mx-auto mb-6" />
-           <h1 className="text-4xl font-black italic uppercase tracking-tighter">
-             CUI VEHARI <span className="text-primary italic">CLEARANCE</span>
+           <h1 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
+             COMSATS <span className="text-primary italic">UNIVERSITY</span>
            </h1>
            <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Official Institutional Portal V5.0</p>
         </div>
@@ -239,7 +239,7 @@ export default function LoginPage() {
         <Card className="border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[3rem] overflow-hidden relative">
           <button 
             onClick={() => router.push('/')}
-            className="absolute top-6 left-8 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 z-10"
+            className="absolute top-4 left-4 md:top-6 md:left-8 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary transition-all active:scale-95 z-10"
             title="Back to Portals"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -280,7 +280,7 @@ export default function LoginPage() {
               </div>
           </CardHeader>
 
-          <CardContent className="p-10 pt-4">
+          <CardContent className="p-6 md:p-10 pt-4">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Official Identifier</label>

@@ -263,27 +263,27 @@ export default function AdminDashboard() {
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-6">
-            <Logo className="w-20 h-20" />
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center md:text-left">
+            <Logo className="w-16 h-16 md:w-20 md:h-20" />
             <div>
-              <h2 className="text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic">
-                CUI VEHARI <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">ADMIN HUB</span>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic text-slate-900 dark:text-white">
+                COMSATS <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">UNIVERSITY</span>
               </h2>
-              <p className="text-muted-foreground mt-1 text-sm font-medium">Official Campus-Wide Clearance Command Center</p>
+              <p className="text-muted-foreground mt-1 text-xs md:text-sm font-medium">Official Campus-Wide Clearance Command Center</p>
             </div>
           </motion.div>
-          <div className="flex gap-4">
-            <div className="relative">
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+            <div className="relative w-full md:w-64">
                <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                <Input 
                 placeholder="Search..." 
-                className="pl-10 w-64 glass-card border-none shadow-sm h-10 rounded-xl" 
+                className="pl-10 w-full glass-card border-none shadow-sm h-10 rounded-xl" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button onClick={handleExportCSV} className="h-10 rounded-xl gap-2 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-95 px-6">
-              <Download className="w-4 h-4" /> Export CSV
+            <Button onClick={handleExportCSV} className="h-10 rounded-xl gap-2 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-95 px-6 w-full md:w-auto">
+              <Download className="w-4 h-4" /> Export
             </Button>
           </div>
         </header>

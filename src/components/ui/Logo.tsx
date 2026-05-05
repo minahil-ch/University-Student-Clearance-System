@@ -8,7 +8,7 @@ export function Logo({ className = "w-12 h-12" }: { className?: string }) {
     <div className={`relative flex items-center justify-center p-1 rounded-2xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm shadow-sm ${className}`}>
       {!error ? (
         <img 
-          src="https://www.comsats.edu.pk/img/comsats-logo.png" 
+          src="/logo.png" 
           alt="CUI Logo"
           className="w-full h-full object-contain"
           onError={() => setError(true)}

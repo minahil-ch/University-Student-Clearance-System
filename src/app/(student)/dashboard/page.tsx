@@ -143,11 +143,11 @@ export default function StudentDashboard() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start gap-6">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-4xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-              CUI VEHARI <span className="gradient-text">CLEARANCE</span>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic px-4">
+              COMSATS <span className="gradient-text italic">UNIVERSITY</span>
             </h2>
-            <p className="text-slate-500 mt-2 font-medium flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> Official Academic Clearance Protocol.
+            <p className="text-slate-500 mt-2 font-medium flex items-center gap-2 px-4">
+              <Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> Vehari Campus Clearance Portal
             </p>
           </motion.div>
           
