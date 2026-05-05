@@ -55,7 +55,7 @@ function logToSheet(data) {
 }
 
 function sendClearanceEmail(payload) {
-  const { name, email, registrationNo, department, status, remarks } = payload;
+  const { name, email, reg_no, department, status, remarks, sender_email } = payload;
   const timestamp = new Date().toLocaleString();
   
   let subject = "University Clearance Update";
@@ -70,7 +70,7 @@ function sendClearanceEmail(payload) {
         <p>Your university clearance has been fully approved by the <strong>Academic Department</strong>.</p>
         <hr style="border-top: 1px solid #eee; margin: 20px 0;"/>
         <table style="text-align: left; border-collapse: collapse; width: 100%;">
-          <tr><th style="padding: 8px; border-bottom: 1px solid #eee;">Registration Number</th><td style="padding: 8px; border-bottom: 1px solid #eee;">${registrationNo}</td></tr>
+          <tr><th style="padding: 8px; border-bottom: 1px solid #eee;">Registration Number</th><td style="padding: 8px; border-bottom: 1px solid #eee;">${reg_no}</td></tr>
           <tr><th style="padding: 8px; border-bottom: 1px solid #eee;">Department</th><td style="padding: 8px; border-bottom: 1px solid #eee;">${department}</td></tr>
           <tr><th style="padding: 8px; border-bottom: 1px solid #eee;">Status</th><td style="padding: 8px; border-bottom: 1px solid #eee; color: green; font-weight: bold;">✅ ${status}</td></tr>
           <tr><th style="padding: 8px; border-bottom: 1px solid #eee;">Timestamp</th><td style="padding: 8px; border-bottom: 1px solid #eee;">${timestamp}</td></tr>
@@ -114,7 +114,9 @@ function sendClearanceEmail(payload) {
   MailApp.sendEmail({
     to: email,
     subject: subject,
-    htmlBody: htmlBody
+    htmlBody: htmlBody,
+    replyTo: sender_email || "no-reply@cui.edu.pk",
+    name: department + " Portal"
   });
 }
 

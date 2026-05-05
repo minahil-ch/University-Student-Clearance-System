@@ -48,6 +48,7 @@ export default function DepartmentDashboard(props: any) {
   const [stats, setStats] = useState({ pending: 0, cleared: 0, issues: 0, surveys: 0 })
   const [isEditingLink, setIsEditingLink] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
+  const [staffEmail, setStaffEmail] = useState<string>("")
   
   const isAcademic = isAcademicClearancePortal(departmentKey)
   const supabase = createClient()
@@ -65,9 +66,13 @@ export default function DepartmentDashboard(props: any) {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role, department_name, is_approved")
+        .select("role, department_name, is_approved, email")
         .eq("id", user.id)
         .single()
+      
+      if (profile) {
+        setStaffEmail(profile.email || user.email || "")
+      }
 
       if (!profile) {
         await supabase.auth.signOut()
@@ -259,7 +264,15 @@ export default function DepartmentDashboard(props: any) {
       toast.success(`${studentProfile.full_name} is now ${status}`)
       
       // Notify
-      sendEmailNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
+      sendEmailNotification({ 
+        ...studentProfile, 
+        department: departmentKey, 
+        status,
+        remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
+        recipientEmail: studentProfile.email,
+        senderEmail: staffEmail // Pass the staff email who processed this
+      }).catch(console.warn)
+      
       sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
 
       setStudents(prev => prev.map(s => s.id === clearanceId ? { ...s, status } : s))
@@ -285,6 +298,18 @@ export default function DepartmentDashboard(props: any) {
       if (error) throw error
 
       toast.success(`Survey for ${studentProfile.full_name} ${status}`)
+      
+      // Notify for survey status
+      sendEmailNotification({
+        ...studentProfile,
+        department: sidebarDeptName,
+        status: status === 'approved' ? 'cleared' : 'issue',
+        eventType: 'status_update',
+        remarks: remarks[surveyId] || null,
+        recipientEmail: studentProfile.email,
+        senderEmail: staffEmail
+      }).catch(console.warn)
+
       setSurveyData(prev => prev.filter(s => s.id !== surveyId))
       setSelectedStudent(null)
     } catch (err: any) {

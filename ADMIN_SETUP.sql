@@ -88,5 +88,20 @@ BEGIN
   END IF;
 END $$;
 
--- Done! Your system is ready.
-SELECT 'CUI Vehari Clearance System - Setup Complete!' as status;
+-- 8. Ensure notification_logs table for tracking sent emails
+CREATE TABLE IF NOT EXISTS public.notification_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  recipient_email TEXT NOT NULL,
+  sender_email TEXT,
+  department TEXT,
+  status TEXT,
+  remarks TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 9. Fix: Ensure alumni survey has admin_remarks and status
+ALTER TABLE public.future_data ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.future_data ADD COLUMN IF NOT EXISTS admin_remarks TEXT;
+
+-- Done! Your system is perfectly synchronized.
+SELECT 'CUI Vehari Clearance System - Sync Complete!' as status;

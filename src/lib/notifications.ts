@@ -11,6 +11,7 @@ export interface NotificationData {
   remarks?: string;
   futureData?: any;
   profile?: any;
+  senderEmail?: string;
 }
 
 export async function sendEmailNotification(data: NotificationData) {
@@ -31,7 +32,8 @@ export async function sendEmailNotification(data: NotificationData) {
           recipient_email: data.recipientEmail || data.email,
           recipient_phone: data.recipientPhone || data.phone,
           reg_no: data.profile?.reg_no || data.regNo,
-          department: data.department || data.profile?.department_name
+          department: data.department || data.profile?.department_name,
+          sender_email: data.senderEmail || "no-reply@cui.edu.pk"
         }
       }),
     });
