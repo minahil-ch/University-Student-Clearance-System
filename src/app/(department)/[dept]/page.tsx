@@ -26,6 +26,7 @@ import {
   isAcademicClearancePortal,
 } from "@/lib/departmentKeys"
 import { CLEARANCE_MESSAGES, getWhatsAppLink } from "@/lib/messages"
+import { Logo } from "@/components/ui/Logo"
 
 export default function DepartmentDashboard(props: any) {
   const { dept } = useParams()
@@ -261,19 +262,76 @@ export default function DepartmentDashboard(props: any) {
 
       if (error) throw error
 
-      toast.success(`${studentProfile.full_name} is now ${status}`)
-      
-      // Notify
-      sendEmailNotification({ 
-        ...studentProfile, 
-        department: departmentKey, 
-        status,
-        remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
-        recipientEmail: studentProfile.email,
-        senderEmail: staffEmail // Pass the staff email who processed this
-      }).catch(console.warn)
-      
-      sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
+      // After updating, check the full clearance status for this student
+      const { data: allStatuses } = await supabase
+        .from('clearance_status')
+        .select('department_key, status')
+        .eq('student_id', studentProfile.id)
+
+      const nonAcademicStatuses = (allStatuses || []).filter(s => !s.department_key.startsWith('academic-'))
+      const academicStatuses = (allStatuses || []).filter(s => s.department_key.startsWith('academic-'))
+      const allNonAcademicNowCleared = nonAcademicStatuses.length > 0 && nonAcademicStatuses.every(s => s.status === 'cleared')
+      const academicNowCleared = academicStatuses.every(s => s.status === 'cleared') && academicStatuses.length > 0
+      const fullyCleared = allNonAcademicNowCleared && academicNowCleared
+
+      if (status === 'cleared') {
+        if (fullyCleared) {
+          // All departments including academic cleared — student is fully done
+          toast.success(`🎉 ${studentProfile.full_name} is FULLY CLEARED from all departments!`)
+          sendEmailNotification({
+            ...studentProfile,
+            recipientEmail: studentProfile.email,
+            eventType: 'portal_alert',
+            status: 'cleared',
+            remarks: '🎓 Congratulations! You have been fully cleared by all departments including Academic. Your clearance certificate is now available on your dashboard.'
+          }).catch(console.warn)
+          sendWhatsAppNotification({
+            ...studentProfile,
+            recipientPhone: studentProfile.phone,
+            eventType: 'portal_alert',
+            status: 'cleared',
+            remarks: 'Congratulations! You are fully cleared from all departments. Visit your dashboard to download your clearance certificate.'
+          }).catch(console.warn)
+        } else if (allNonAcademicNowCleared && !isAcademic) {
+          // All core depts cleared — notify student to complete academic forms
+          toast.success(`${studentProfile.full_name} cleared! All core depts done — notifying for Academic step.`)
+          sendEmailNotification({
+            ...studentProfile,
+            recipientEmail: studentProfile.email,
+            eventType: 'portal_alert',
+            status: 'cleared',
+            remarks: '✅ You have been cleared by Library, Transport, Finance, and Hostel. Please complete the academic department forms on your dashboard to get final clearance from your academic HOD.'
+          }).catch(console.warn)
+          sendWhatsAppNotification({
+            ...studentProfile,
+            recipientPhone: studentProfile.phone,
+            eventType: 'portal_alert',
+            remarks: 'All core departments cleared! Please complete your academic forms on the student dashboard to finish your clearance.'
+          }).catch(console.warn)
+        } else {
+          toast.success(`${studentProfile.full_name} is now ${status}`)
+          sendEmailNotification({ 
+            ...studentProfile, 
+            department: departmentKey, 
+            status,
+            remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
+            recipientEmail: studentProfile.email,
+            senderEmail: staffEmail
+          }).catch(console.warn)
+          sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
+        }
+      } else {
+        toast.success(`${studentProfile.full_name} flagged with issue`)
+        sendEmailNotification({ 
+          ...studentProfile, 
+          department: departmentKey, 
+          status,
+          remarks: remarks[clearanceId] || null,
+          recipientEmail: studentProfile.email,
+          senderEmail: staffEmail
+        }).catch(console.warn)
+        sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
+      }
 
       setStudents(prev => prev.map(s => s.id === clearanceId ? { ...s, status } : s))
       if (currentTab === 'pending' && status === 'cleared') {

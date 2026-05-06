@@ -158,7 +158,7 @@ export default function UniversityFormPage() {
             <CardHeader className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-800">
               <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
                 <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-                  <Logo className="w-8 h-8" />
+                  <GraduationCap className="w-8 h-8" />
                 </div>
                 University Survey
               </CardTitle>
