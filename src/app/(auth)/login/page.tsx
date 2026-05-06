@@ -165,15 +165,18 @@ function LoginContent() {
         // Portal link must match the account (finance/hostel/academic slugs, library, transport)
         if (portal === "staff" && lockedDept) {
           const ld = lockedDept.toLowerCase().trim()
-          let portalOk = false
-          if (profile.role === "library" && ld === "library") portalOk = true
-          else if (profile.role === "transport" && ld === "transport") portalOk = true
-          else if (profile.role === "hostel" && ld === "hostel") portalOk = true
-          else if (profile.role === "finance" && ld === "finance") portalOk = true
-          else if (profile.role === "department") {
-            const expectedKey = canonicalClearanceDepartmentKey(lockedDept)
-            const actualKey = canonicalClearanceDepartmentKey(profile.department_name || "")
-            if (expectedKey && actualKey && expectedKey === actualKey) portalOk = true
+          let portalOk = profile.role === 'admin' || email === MASTER_ADMIN
+          
+          if (!portalOk) {
+            if (profile.role === "library" && ld === "library") portalOk = true
+            else if (profile.role === "transport" && ld === "transport") portalOk = true
+            else if (profile.role === "hostel" && ld === "hostel") portalOk = true
+            else if (profile.role === "finance" && ld === "finance") portalOk = true
+            else if (profile.role === "department") {
+              const expectedKey = canonicalClearanceDepartmentKey(lockedDept)
+              const actualKey = canonicalClearanceDepartmentKey(profile.department_name || "")
+              if (expectedKey && actualKey && expectedKey === actualKey) portalOk = true
+            }
           }
           if (!portalOk) {
             await supabase.auth.signOut()
