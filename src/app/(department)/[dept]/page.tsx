@@ -245,9 +245,18 @@ export default function DepartmentDashboard(props: any) {
         const nonAcademic = (statuses || []).filter((s) => !s.department_key.startsWith("academic-"))
         const allNonAcademicCleared = nonAcademic.length > 0 && nonAcademic.every((s) => s.status === "cleared")
         
-        if (!allNonAcademicCleared) {
-          toast.error("Student must be cleared by Library, Finance, Hostel, and Transport first.")
+        const { data: { user } } = await supabase.auth.getUser()
+        const { data: adminProfile } = await supabase.from('profiles').select('role, email').eq('id', user?.id).single()
+        const isAdmin = adminProfile?.role === 'admin' || adminProfile?.email === 'minahilch821@gmail.com'
+
+        if (!allNonAcademicCleared && !isAdmin) {
+          const pendingDepts = nonAcademic.filter(s => s.status !== 'cleared').map(s => s.department_key).join(', ')
+          toast.error(`Cannot approve yet. Student is still pending in: ${pendingDepts.toUpperCase()}`)
           return
+        }
+        
+        if (!allNonAcademicCleared && isAdmin) {
+          toast.success("Admin Override: Bypassing core department checks.")
         }
       }
 

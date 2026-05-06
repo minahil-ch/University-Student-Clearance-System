@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/academic",
         permanent: true,
       },
+      {
+        source: "/dept/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
     ]
   },
   eslint: {
