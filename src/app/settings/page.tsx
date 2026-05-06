@@ -76,7 +76,7 @@ export default function SettingsPage() {
     if (profile.role === 'admin') router.push('/admin')
     else if (profile.role === 'student') router.push('/dashboard')
     else if (profile.role === 'department') {
-      router.push(`/dept/${departmentPortalPathSlug(profile.department_name)}`)
+      router.push(`/${departmentPortalPathSlug(profile.department_name)}`)
     } else if (profile.role === 'library') router.push('/library')
     else if (profile.role === 'transport') router.push('/transport')
     else router.push('/dashboard')

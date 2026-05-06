@@ -114,7 +114,7 @@ export default function DepartmentDashboard(props: any) {
         else if (profile.role === "hostel") router.replace("/hostel")
         else if (profile.role === "finance") router.replace("/finance")
         else if (profile.role === "department" && profile.department_name)
-          router.replace(`/dept/${departmentPortalPathSlug(profile.department_name)}`)
+          router.replace(`/${departmentPortalPathSlug(profile.department_name)}`)
         else router.replace("/login/staff?role=staff")
         return
       }

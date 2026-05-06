@@ -46,7 +46,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
               departmentName?.toLowerCase() === 'transport' ? '/transport' :
               departmentName?.toLowerCase() === 'hostel' ? '/hostel' :
               departmentName?.toLowerCase() === 'finance' ? '/finance' :
-              `/dept/${departmentPortalPathSlug(departmentName)}`, 
+              `/${departmentPortalPathSlug(departmentName)}`, 
         icon: LayoutDashboard 
       },
       { label: "History", href: "/history", icon: FileText },

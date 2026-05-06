@@ -211,7 +211,7 @@ function LoginContent() {
           else if (portalSlug === 'library') router.push('/library')
           else if (portalSlug === 'hostel') router.push('/hostel')
           else if (portalSlug === 'finance') router.push('/finance')
-          else router.push(`/dept/${portalSlug}`)
+          else router.push(`/${portalSlug}`)
         }
         else {
           router.push('/dashboard')
