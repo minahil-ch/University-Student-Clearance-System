@@ -242,8 +242,9 @@ export default function DepartmentDashboard(props: any) {
           .select("department_key,status,form_submitted")
           .eq("student_id", studentProfile.id)
 
-        const nonAcademic = (statuses || []).filter((s) => !s.department_key.startsWith("academic-"))
-        const allNonAcademicCleared = nonAcademic.length > 0 && nonAcademic.every((s) => s.status === "cleared")
+        const coreDepartments = ['library', 'transport', 'finance', 'hostel']
+        const nonAcademic = (statuses || []).filter((s) => coreDepartments.includes(s.department_key))
+        const allNonAcademicCleared = nonAcademic.length === 4 && nonAcademic.every((s) => s.status === "cleared")
         
         const { data: { user } } = await supabase.auth.getUser()
         const { data: adminProfile } = await supabase.from('profiles').select('role, email').eq('id', user?.id).single()
@@ -277,9 +278,10 @@ export default function DepartmentDashboard(props: any) {
         .select('department_key, status')
         .eq('student_id', studentProfile.id)
 
-      const nonAcademicStatuses = (allStatuses || []).filter(s => !s.department_key.startsWith('academic-'))
+      const coreDepts = ['library', 'transport', 'finance', 'hostel']
+      const nonAcademicStatuses = (allStatuses || []).filter(s => coreDepts.includes(s.department_key))
       const academicStatuses = (allStatuses || []).filter(s => s.department_key.startsWith('academic-'))
-      const allNonAcademicNowCleared = nonAcademicStatuses.length > 0 && nonAcademicStatuses.every(s => s.status === 'cleared')
+      const allNonAcademicNowCleared = nonAcademicStatuses.length === 4 && nonAcademicStatuses.every(s => s.status === 'cleared')
       const academicNowCleared = academicStatuses.every(s => s.status === 'cleared') && academicStatuses.length > 0
       const fullyCleared = allNonAcademicNowCleared && academicNowCleared
 
