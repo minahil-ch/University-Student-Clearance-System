@@ -23,6 +23,7 @@ export default function ClearanceForm() {
   const router = useRouter()
   const [step, setStep] = useState<2 | 3 | 4>(2)
   const [pageReady, setPageReady] = useState(false)
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [profile, setProfile] = useState({
     full_name: "",
@@ -78,6 +79,18 @@ export default function ClearanceForm() {
 
       if (!uniForm) {
         router.replace("/uni-form")
+        return
+      }
+
+      const { data: existingClearance } = await supabase
+        .from('clearance_status')
+        .select('id')
+        .eq('student_id', user.id)
+        .limit(1)
+
+      if (existingClearance && existingClearance.length > 0) {
+        setAlreadySubmitted(true)
+        setPageReady(true)
         return
       }
 
@@ -230,6 +243,37 @@ export default function ClearanceForm() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
         <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Preparing clearance form…</p>
+      </div>
+    )
+  }
+
+  if (alreadySubmitted) {
+    return (
+      <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+        <Sidebar role="student" />
+        <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
+          <div className="max-w-md w-full text-center space-y-6">
+            <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
+              <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black uppercase tracking-tight text-slate-900">Already Submitted!</h2>
+              <p className="text-slate-500 font-medium mt-3 leading-relaxed">
+                Your clearance form has already been submitted successfully. You can track your clearance status on your dashboard.
+              </p>
+            </div>
+            <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 text-left space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">What's Next?</p>
+              <p className="text-sm text-emerald-800 font-medium">Your request is currently being reviewed by the departmental staff. You will receive email notifications as each department processes your clearance.</p>
+            </div>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="w-full h-14 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-primary transition-all"
+            >
+              Go to My Dashboard →
+            </button>
+          </div>
+        </main>
       </div>
     )
   }

@@ -50,6 +50,9 @@ export default function DepartmentDashboard(props: any) {
   const [isEditingLink, setIsEditingLink] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
   const [staffEmail, setStaffEmail] = useState<string>("")
+  const [customMessageModal, setCustomMessageModal] = useState<{isOpen: boolean, student: any}>({isOpen: false, student: null})
+  const [customMessageText, setCustomMessageText] = useState("")
+  const [customMessageSending, setCustomMessageSending] = useState(false)
   
   const isAcademic = isAcademicClearancePortal(departmentKey)
   const supabase = createClient()
@@ -386,6 +389,30 @@ export default function DepartmentDashboard(props: any) {
     }
   }
 
+  const handleSendCustomMessage = async () => {
+    if (!customMessageText.trim() || !customMessageModal.student) return
+    setCustomMessageSending(true)
+    try {
+      const studentProfile = customMessageModal.student
+      await sendEmailNotification({
+        ...studentProfile,
+        department: sidebarDeptName,
+        status: 'pending',
+        eventType: 'status_update',
+        remarks: customMessageText,
+        recipientEmail: studentProfile.email,
+        senderEmail: staffEmail
+      })
+      toast.success("Custom message sent successfully to " + studentProfile.email)
+      setCustomMessageModal({isOpen: false, student: null})
+      setCustomMessageText("")
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send message")
+    } finally {
+      setCustomMessageSending(false)
+    }
+  }
+
   const filteredItems = currentTab === 'surveys' ? surveyData : students.filter(s =>
     s.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.profiles?.reg_no?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -508,27 +535,7 @@ export default function DepartmentDashboard(props: any) {
           </div>
         </div>
 
-        {/* Survey Specific Sub-Tabs */}
-        {currentTab === 'surveys' && (
-          <div className="flex gap-4 mb-6 ml-4">
-            {(['pending', 'approved', 'rejected'] as const).map((sub) => (
-              <button
-                key={sub}
-                onClick={() => setSurveySubTab(sub)}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all ${
-                  surveySubTab === sub 
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
-                    : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'
-                }`}
-              >
-                {sub === 'pending' && <Clock className="w-3 h-3" />}
-                {sub === 'approved' && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
-                {sub === 'rejected' && <XCircle className="w-3 h-3 text-rose-400" />}
-                {sub}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Alumni Survey: no sub-tabs needed — just show all submitted entries */}
 
         <Card className="glass-card border-none overflow-hidden rounded-[2.5rem] shadow-2xl">
           <CardHeader className="bg-white/40 dark:bg-slate-900/40 p-8 border-b border-slate-100">
@@ -627,39 +634,15 @@ export default function DepartmentDashboard(props: any) {
                           <td className="px-8 py-6">
                             <div className="flex items-center gap-3">
                               {currentTab === 'surveys' ? (
-                                <>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setSelectedStudent({ ...item, isSurvey: true })}
-                                    className="rounded-xl font-black uppercase text-[10px] h-10 px-5 gap-2 border-slate-100 hover:bg-slate-50"
-                                  >
-                                    <Eye className="w-4 h-4" /> Review Data
-                                  </Button>
-                                  {(item.status === 'pending' || item.status === 'rejected') && (
-                                    <div className="flex gap-2">
-                                       <Button
-                                          size="sm"
-                                          onClick={() => handleUpdateSurveyStatus(item.id, 'approved', item.profiles)}
-                                          className="rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white w-9 h-9 p-0 flex items-center justify-center shadow-lg shadow-emerald-500/20"
-                                          title="Approve Survey"
-                                       >
-                                          <CheckCircle2 className="w-5 h-5" />
-                                       </Button>
-                                       {item.status === 'pending' && (
-                                         <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() => handleUpdateSurveyStatus(item.id, 'rejected', item.profiles)}
-                                            className="rounded-xl w-9 h-9 p-0 flex items-center justify-center"
-                                            title="Reject Survey"
-                                         >
-                                            <XCircle className="w-5 h-5" />
-                                         </Button>
-                                       )}
-                                    </div>
-                                  )}
-                                </>
+                                // Alumni Survey: view-only, no approve/reject
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setSelectedStudent({ ...item, isSurvey: true })}
+                                  className="rounded-xl font-black uppercase text-[10px] h-10 px-5 gap-2 border-slate-100 hover:bg-slate-50"
+                                >
+                                  <Eye className="w-4 h-4" /> View Details
+                                </Button>
                               ) : (
                                 <>
                                   <Button
@@ -668,6 +651,14 @@ export default function DepartmentDashboard(props: any) {
                                     className="rounded-xl font-black uppercase text-[10px] h-10 px-5 gap-2 bg-slate-100 text-slate-900 hover:bg-slate-200"
                                   >
                                     <ClipboardList className="w-4 h-4" /> Full Profile
+                                  </Button>
+                                  
+                                  <Button
+                                    size="sm"
+                                    onClick={() => setCustomMessageModal({ isOpen: true, student: item.profiles })}
+                                    className="rounded-xl font-black uppercase text-[10px] h-10 px-4 gap-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 shadow-sm"
+                                  >
+                                    <Mail className="w-4 h-4" /> Msg
                                   </Button>
                                   
                                   {(item.status === 'pending' || item.status === 'issue') && (
@@ -841,11 +832,11 @@ export default function DepartmentDashboard(props: any) {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-sm">
                         <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Clearance Registration</p>
-                        <p className="font-black text-slate-900 text-2xl tracking-tighter">{selectedStudent.profiles.reg_no}</p>
+                        <p className="font-black text-slate-900 text-2xl tracking-tighter">{selectedStudent.profiles?.reg_no || 'N/A'}</p>
                       </div>
                       <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 shadow-sm">
                         <p className="text-[9px] font-black uppercase text-emerald-600 tracking-widest mb-1">Final Academic GPA</p>
-                        <p className="font-black text-emerald-700 text-2xl tracking-tighter">{selectedStudent.profiles.cgpa || '—'}</p>
+                        <p className="font-black text-emerald-700 text-2xl tracking-tighter">{selectedStudent.profiles?.cgpa || '—'}</p>
                       </div>
                     </div>
                     <div className="p-8 bg-blue-50/50 rounded-[2rem] border border-blue-100 flex items-start gap-5">
@@ -877,9 +868,10 @@ export default function DepartmentDashboard(props: any) {
               </div>
 
               <div className="p-8 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-                <Button variant="ghost" onClick={() => setSelectedStudent(null)} className="rounded-xl font-black uppercase text-[10px] h-12 px-8">Close Review</Button>
+                <Button variant="ghost" onClick={() => setSelectedStudent(null)} className="rounded-xl font-black uppercase text-[10px] h-12 px-8">Close</Button>
                 
-                {selectedStudent.isSurvey && selectedStudent.status === 'pending' && (
+                {/* Survey modal: view-only, no action buttons */}
+                {selectedStudent.isSurvey && false && (
                   <div className="flex gap-3">
                     <Button 
                       variant="destructive"
@@ -917,6 +909,57 @@ export default function DepartmentDashboard(props: any) {
                     </Button>
                   </div>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Message Modal */}
+      <AnimatePresence>
+        {customMessageModal.isOpen && customMessageModal.student && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => { setCustomMessageModal({isOpen: false, student: null}); setCustomMessageText("") }}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20"
+            >
+              <div className="p-8 border-b border-slate-100 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-slate-900">Send Custom Message</h3>
+                  <p className="text-slate-400 text-xs font-bold mt-0.5">To: {customMessageModal.student?.full_name} &bull; {customMessageModal.student?.email}</p>
+                </div>
+                <Button variant="ghost" onClick={() => { setCustomMessageModal({isOpen: false, student: null}); setCustomMessageText("") }} className="ml-auto rounded-full w-10 h-10 p-0 text-slate-400">×</Button>
+              </div>
+              <div className="p-8 space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Compose your message</label>
+                <textarea
+                  className="w-full h-36 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-sm font-medium text-slate-900 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  placeholder="Type your custom message to the student here..."
+                  value={customMessageText}
+                  onChange={(e) => setCustomMessageText(e.target.value)}
+                />
+                <p className="text-[10px] text-slate-400 font-medium">This message will be sent via email to the student's registered address.</p>
+              </div>
+              <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                <Button variant="ghost" onClick={() => { setCustomMessageModal({isOpen: false, student: null}); setCustomMessageText("") }} className="rounded-xl font-black uppercase text-[10px] h-12 px-8">Cancel</Button>
+                <Button
+                  onClick={handleSendCustomMessage}
+                  disabled={customMessageSending || !customMessageText.trim()}
+                  className="rounded-xl font-black uppercase text-[10px] h-12 px-10 bg-indigo-600 hover:bg-indigo-700 gap-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  {customMessageSending ? 'Sending...' : 'Send Message'}
+                </Button>
               </div>
             </motion.div>
           </div>

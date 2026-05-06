@@ -15,6 +15,7 @@ import { sendEmailNotification } from "@/lib/notifications"
 export default function UniversityFormPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false)
   const [futureData, setFutureData] = useState({
     personal_email: "",
     alternate_phone: "",
@@ -67,13 +68,52 @@ export default function UniversityFormPage() {
           })
           setRejectionRemarks(fData.admin_remarks || "")
         } else {
-          window.location.href = "/form"
+          setAlreadySubmitted(true)
         }
         return
       }
     }
     boot()
   }, [])
+
+  if (alreadySubmitted) {
+    return (
+      <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+        <Sidebar role="student" />
+        <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
+          <div className="max-w-md w-full text-center space-y-6">
+            <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
+              <GraduationCap className="w-12 h-12 text-emerald-500" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-black uppercase tracking-tight text-slate-900">Already Submitted!</h2>
+              <p className="text-slate-500 font-medium mt-3 leading-relaxed">
+                Your University Survey form has already been submitted successfully. Your responses have been recorded.
+              </p>
+            </div>
+            <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100 text-left space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Next Step</p>
+              <p className="text-sm text-blue-800 font-medium">You can now proceed to submit your Clearance Form to initiate the departmental clearance process.</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => window.location.href = '/dashboard'}
+                className="flex-1 h-14 rounded-2xl bg-slate-100 text-slate-700 font-black uppercase tracking-widest text-sm hover:bg-slate-200 transition-all"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => window.location.href = '/form'}
+                className="flex-1 h-14 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-primary transition-all"
+              >
+                Clearance Form →
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   const handleSubmit = async () => {
     setLoading(true)
