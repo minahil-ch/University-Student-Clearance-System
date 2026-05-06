@@ -291,21 +291,27 @@ export default function DepartmentDashboard(props: any) {
       if (status === 'cleared') {
         if (fullyCleared) {
           // All departments including academic cleared — student is fully done
-          toast.success(`🎉 ${studentProfile.full_name} is FULLY CLEARED from all departments!`)
-          sendEmailNotification({
-            ...studentProfile,
-            recipientEmail: studentProfile.email,
-            eventType: 'portal_alert',
-            status: 'cleared',
-            remarks: '🎓 Congratulations! You have been fully cleared by all departments including Academic. Your clearance certificate is now available on your dashboard.'
-          }).catch(console.warn)
-          sendWhatsAppNotification({
-            ...studentProfile,
-            recipientPhone: studentProfile.phone,
-            eventType: 'portal_alert',
-            status: 'cleared',
-            remarks: 'Congratulations! You are fully cleared from all departments. Visit your dashboard to download your clearance certificate.'
-          }).catch(console.warn)
+          toast.success(`🎉 ${studentProfile.full_name} is FULLY CLEARED!`)
+          
+          if (studentProfile.email) {
+            sendEmailNotification({
+              ...studentProfile,
+              recipientEmail: studentProfile.email,
+              eventType: 'portal_alert',
+              status: 'cleared',
+              remarks: '🎓 Congratulations! You have been fully cleared by all departments including Academic. Your clearance certificate is now available on your dashboard.'
+            }).then(() => console.log("Success email sent")).catch(err => console.error("Email fail:", err))
+          }
+
+          if (studentProfile.phone) {
+            sendWhatsAppNotification({
+              ...studentProfile,
+              recipientPhone: studentProfile.phone,
+              eventType: 'portal_alert',
+              status: 'cleared',
+              remarks: 'Congratulations! You are fully cleared from all departments. Visit your dashboard to download your clearance certificate.'
+            }).catch(console.warn)
+          }
         } else if (allNonAcademicNowCleared && !isAcademic) {
           // All core depts cleared — notify student to complete academic forms
           toast.success(`${studentProfile.full_name} cleared! All core depts done — notifying for Academic step.`)
@@ -323,28 +329,36 @@ export default function DepartmentDashboard(props: any) {
             remarks: 'All core departments cleared! Please complete your academic forms on the student dashboard to finish your clearance.'
           }).catch(console.warn)
         } else {
-          toast.success(`${studentProfile.full_name} is now ${status}`)
+          toast.success(`${studentProfile.full_name} is now ${status.toUpperCase()}`)
+          if (studentProfile.email) {
+            sendEmailNotification({ 
+              ...studentProfile, 
+              department: departmentKey, 
+              status,
+              remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
+              recipientEmail: studentProfile.email,
+              senderEmail: staffEmail
+            }).then(() => console.log(`Status email (${status}) sent`)).catch(err => console.error("Email fail:", err))
+          }
+          if (studentProfile.phone) {
+            sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
+          }
+        }
+      } else {
+        toast.success(`${studentProfile.full_name} flagged with issue`)
+        if (studentProfile.email) {
           sendEmailNotification({ 
             ...studentProfile, 
             department: departmentKey, 
             status,
-            remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
+            remarks: remarks[clearanceId] || null,
             recipientEmail: studentProfile.email,
             senderEmail: staffEmail
-          }).catch(console.warn)
+          }).then(() => console.log("Issue email sent")).catch(err => console.error("Email fail:", err))
+        }
+        if (studentProfile.phone) {
           sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
         }
-      } else {
-        toast.success(`${studentProfile.full_name} flagged with issue`)
-        sendEmailNotification({ 
-          ...studentProfile, 
-          department: departmentKey, 
-          status,
-          remarks: remarks[clearanceId] || null,
-          recipientEmail: studentProfile.email,
-          senderEmail: staffEmail
-        }).catch(console.warn)
-        sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
       }
 
       setStudents(prev => prev.map(s => s.id === clearanceId ? { ...s, status } : s))
@@ -372,15 +386,17 @@ export default function DepartmentDashboard(props: any) {
       toast.success(`Survey for ${studentProfile.full_name} ${status}`)
       
       // Notify for survey status
-      sendEmailNotification({
-        ...studentProfile,
-        department: sidebarDeptName,
-        status: status === 'approved' ? 'cleared' : 'issue',
-        eventType: 'status_update',
-        remarks: remarks[surveyId] || null,
-        recipientEmail: studentProfile.email,
-        senderEmail: staffEmail
-      }).catch(console.warn)
+      if (studentProfile?.email) {
+        sendEmailNotification({
+          ...studentProfile,
+          department: sidebarDeptName,
+          status: status === 'approved' ? 'cleared' : 'issue',
+          eventType: 'status_update',
+          remarks: remarks[surveyId] || null,
+          recipientEmail: studentProfile.email,
+          senderEmail: staffEmail
+        }).then(() => console.log(`Survey email (${status}) sent`)).catch(err => console.error("Email fail:", err))
+      }
 
       setSurveyData(prev => prev.filter(s => s.id !== surveyId))
       setSelectedStudent(null)
