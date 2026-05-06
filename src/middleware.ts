@@ -109,13 +109,15 @@ export async function middleware(request: NextRequest) {
 
       // 2. Check Role-Path consistency
       let isAllowed = false
+      const normalizedDept = profile.department_name?.toLowerCase().trim()
+
       // Admin can access everything
       if (pRole === 'admin' || isMasterAdmin) isAllowed = true
       else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications'))) isAllowed = true
-      else if (pRole === 'transport' && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
-      else if (pRole === 'library' && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
-      else if (pRole === 'hostel' && (pathname.startsWith('/hostel') || pathname.startsWith('/history'))) isAllowed = true
-      else if (pRole === 'finance' && (pathname.startsWith('/finance') || pathname.startsWith('/history'))) isAllowed = true
+      else if ((pRole === 'transport' || normalizedDept === 'transport') && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
+      else if ((pRole === 'library' || normalizedDept === 'library') && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
+      else if ((pRole === 'hostel' || normalizedDept === 'hostel') && (pathname.startsWith('/hostel') || pathname.startsWith('/history'))) isAllowed = true
+      else if ((pRole === 'finance' || normalizedDept === 'finance') && (pathname.startsWith('/finance') || pathname.startsWith('/history'))) isAllowed = true
       else if (pRole === 'department' && pathname.startsWith('/history')) isAllowed = true
       else if (pRole === 'department' && deptSlug && (pathname === `/dept/${deptSlug}` || pathname.startsWith(`/dept/${deptSlug}`))) isAllowed = true
 
