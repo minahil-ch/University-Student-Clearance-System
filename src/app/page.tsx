@@ -56,7 +56,7 @@ export default function LandingPage() {
       icon: BookOpen, 
       color: "emerald", 
       desc: "Final authority by student selected department", 
-      href: "/academic?switch=1" 
+      href: "/academic" 
     },
   ]
 

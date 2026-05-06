@@ -50,7 +50,13 @@ export async function middleware(request: NextRequest) {
     pathname === '/forgot-password' ||
     pathname.startsWith('/login/') ||
     pathname.startsWith('/register/')
-  const isPublicRoute = isAuthPage || pathname === '/' || pathname === '/faculty' || pathname === '/academic'
+  const isPublicRoute = 
+    isAuthPage || 
+    pathname === '/' || 
+    pathname === '/faculty' || 
+    pathname === '/academic' ||
+    pathname.startsWith('/faculty/') ||
+    pathname.startsWith('/academic/')
   const forceSwitch = request.nextUrl.searchParams.get("switch") === "1"
 
   // Redirect unauthenticated users away from protected pages

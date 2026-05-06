@@ -1,0 +1,125 @@
+"use client"
+
+import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { 
+  BookOpen, 
+  ArrowLeft,
+  GraduationCap,
+  Microscope,
+  Calculator,
+  Languages,
+  Leaf,
+  ArrowRight
+} from "lucide-react"
+
+import { Logo } from "@/components/ui/Logo"
+
+export default function AcademicPortalsPage() {
+  const router = useRouter()
+
+  const academicDepts = [
+    { 
+      name: "Computer Science", 
+      icon: GraduationCap, 
+      color: "blue", 
+      desc: "Manage CS student clearance and surveys", 
+      href: "/login/staff?role=staff&dept=Computer Science&switch=1" 
+    },
+    { 
+      name: "Software Engineering", 
+      icon: Microscope, 
+      color: "emerald", 
+      desc: "Approve SE student graduation requirements", 
+      href: "/login/staff?role=staff&dept=Software Engineering&switch=1" 
+    },
+    { 
+      name: "Mathematics", 
+      icon: Calculator, 
+      color: "violet", 
+      desc: "Final clearance for Mathematics department", 
+      href: "/login/staff?role=staff&dept=Mathematics&switch=1" 
+    },
+    {
+      name: "Humanities",
+      icon: Languages,
+      color: "amber",
+      desc: "Manage clearance for Humanities students",
+      href: "/login/staff?role=staff&dept=Humanities&switch=1"
+    },
+    {
+      name: "Environmental Sciences",
+      icon: Leaf,
+      color: "cyan",
+      desc: "Clearance for Environmental Sciences students",
+      href: "/login/staff?role=staff&dept=Environmental Sciences&switch=1"
+    },
+  ]
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-black">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12 md:mb-16 relative"
+      >
+        <button 
+          onClick={() => router.push('/')}
+          className="absolute -left-4 md:-left-20 top-1/2 -translate-y-1/2 p-3 rounded-2xl bg-white dark:bg-slate-900 shadow-lg hover:scale-110 transition-all border border-slate-100 dark:border-slate-800"
+        >
+          <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+        </button>
+
+        <div className="flex flex-col items-center justify-center gap-4 mb-6">
+          <Logo className="w-16 h-16 md:w-20 md:h-20" />
+          <h1 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
+            ACADEMIC <span className="text-primary italic">DEPARTMENTS</span>
+          </h1>
+        </div>
+        <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto font-medium px-4 uppercase tracking-[0.2em]">
+          Select your department to access the departmental authority portal
+        </p>
+      </motion.div>
+
+      <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {academicDepts.map((portal, i) => (
+          <motion.div
+            key={portal.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            whileHover={{ scale: 1.02, translateY: -5 }}
+            onClick={() => router.push(portal.href)}
+            className="group cursor-pointer flex flex-col p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
+          >
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
+            
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 mb-6 shadow-sm shrink-0 group-hover:scale-110 transition-transform`}>
+              <portal.icon className="w-7 h-7 font-bold" />
+            </div>
+            
+            <div className="flex-1">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors uppercase tracking-tight">
+                {portal.name}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed font-medium">
+                {portal.desc}
+              </p>
+            </div>
+            
+            <div className="mt-6 pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">Enter Portal</span>
+              <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-all group-hover:translate-x-1" />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-16 text-center">
+        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-medium tracking-widest uppercase">
+          &copy; 2026 CUI Vehari Academic Authority Network
+        </p>
+      </div>
+    </div>
+  )
+}
