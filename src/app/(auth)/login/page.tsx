@@ -8,14 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Mail, Lock, ArrowRight, ShieldCheck, ArrowLeft } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { canonicalClearanceDepartmentKey, departmentPortalPathSlug } from "@/lib/departmentKeys"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
 import { Logo } from "@/components/ui/Logo"
+import { Suspense } from "react"
 
 const MASTER_ADMIN = "minahilch821@gmail.com"
 
-export default function LoginPage() {
+function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -23,30 +24,33 @@ export default function LoginPage() {
   const [roleType, setRoleType] = useState<string | null>(null)
   const [lockedDept, setLockedDept] = useState<string | null>(null)
   const [forceSwitchMode, setForceSwitchMode] = useState(false)
+  
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  
   const lockStudent = roleType === "student"
   const lockStaff = roleType === "staff"
   const lockAdmin = roleType === "admin"
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const params = new URLSearchParams(window.location.search)
-    setRoleType(params.get("role")?.toLowerCase() || null)
-    const deptParam = params.get("dept")
+    const roleParam = searchParams.get("role")
+    setRoleType(roleParam?.toLowerCase() || null)
+    
+    const deptParam = searchParams.get("dept")
     if (deptParam) setLockedDept(decodeURIComponent(deptParam))
 
-    const pendingError = params.get("error")
+    const pendingError = searchParams.get("error")
     if (pendingError) {
       toast.error("Admin has not approved your request yet.")
     }
 
-    const forceSwitch = params.get("switch") === "1"
+    const forceSwitch = searchParams.get("switch") === "1"
     setForceSwitchMode(forceSwitch)
     if (forceSwitch) {
       supabase.auth.signOut().catch(() => null)
     }
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
     if (lockAdmin) setPortal("admin")
@@ -376,5 +380,17 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }
