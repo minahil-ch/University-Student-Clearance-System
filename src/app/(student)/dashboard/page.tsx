@@ -9,11 +9,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import { formatDate } from "@/lib/utils"
 import { getPortalContact, normalizeDepartmentKey } from "@/lib/portalContacts"
 import { 
-  GraduationCap, Phone, Mail, User, CheckCircle2, Clock, 
+  Phone, Mail, User, CheckCircle2, Clock, 
   AlertTriangle, Building2, Truck, BookOpen, ArrowRight, 
   FileText, Edit2, Check, ClipboardCheck, Zap, Info, 
-  ExternalLink, Plus, Trash2, Edit3, ShieldCheck
+  ExternalLink, Plus, Trash2, Edit3, ShieldCheck, GraduationCap
 } from "lucide-react"
+import { Logo } from "@/components/ui/Logo"
 import { Button } from "@/components/ui/Button"
 import { toast } from "sonner"
 import { Dialog } from "@/components/ui/Dialog"
@@ -121,7 +122,7 @@ export default function StudentDashboard() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
-        <GraduationCap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-primary" />
+        <Logo className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8" />
       </div>
       <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Authenticating Portal Access...</p>
     </div>
@@ -189,7 +190,7 @@ export default function StudentDashboard() {
           <div className={`p-6 rounded-[2rem] border-2 transition-all duration-500 ${isFinalCleared ? 'bg-indigo-50 border-indigo-100' : 'bg-white border-slate-100 shadow-sm'}`}>
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 rounded-2xl ${isFinalCleared ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
-                <GraduationCap className="w-6 h-6" />
+                <Logo className="w-8 h-8" />
               </div>
               {isFinalCleared ? <Check className="text-indigo-500 w-6 h-6 font-bold" /> : <span className="text-[10px] font-black text-slate-300">STEP 03</span>}
             </div>
@@ -532,8 +533,8 @@ export default function StudentDashboard() {
             <div className="absolute inset-4 border-[10px] border-double border-slate-50 pointer-events-none rounded-[2rem]" />
             <div className="relative z-10 text-center space-y-10">
                <div className="flex justify-center">
-                  <div className="w-24 h-24 rounded-full bg-slate-900 flex items-center justify-center text-white border-8 border-slate-50 shadow-2xl">
-                     <GraduationCap className="w-12 h-12" />
+                  <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center text-white border-8 border-slate-50 shadow-2xl p-4">
+                     <Logo className="w-full h-full" />
                   </div>
                </div>
                

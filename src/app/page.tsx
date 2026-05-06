@@ -18,7 +18,7 @@ export default function LandingPage() {
   const portals = [
     { 
       name: "Student Portal", 
-      icon: GraduationCap, 
+      icon: Logo, 
       color: "blue", 
       desc: "Apply for clearance and track your status", 
       href: "/login/student?switch=1" 

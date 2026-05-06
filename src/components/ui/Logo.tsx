@@ -14,9 +14,16 @@ export function Logo({ className = "w-12 h-12" }: { className?: string }) {
           onError={() => setError(true)}
         />
       ) : (
-        <div className="w-full h-full rounded-2xl bg-primary flex items-center justify-center text-white shadow-xl">
-          <GraduationCap className="w-1/2 h-1/2" />
-        </div>
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/en/c/c2/COMSATS_University_Islamabad_logo.png" 
+          alt="CUI Logo Fallback"
+          className="w-full h-full object-contain"
+          onError={(e) => {
+            // Final fallback to the GraduationCap if even the remote URL fails
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+          }}
+        />
       )}
     </div>
   )
