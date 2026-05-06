@@ -44,11 +44,8 @@ export default function StudentDashboard() {
   
   const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
   
-  const existingKeys = Array.from(new Set(clearanceData.map(c => c.department_key)))
-  const nonAcademicKeys = existingKeys.filter(k => !k.startsWith('academic-'))
   const baseOrder = ['library', 'transport', 'finance', 'hostel']
-  const allNonAcademic = Array.from(new Set([...baseOrder, ...nonAcademicKeys]))
-  const desiredOrder = [...allNonAcademic, academicDeptKey]
+  const desiredOrder = [...baseOrder, academicDeptKey]
 
   const clearanceMap = new Map(clearanceData.map((row) => [row.department_key, row]))
   const orderedClearanceData = desiredOrder.map((key, idx) => {
