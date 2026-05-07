@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button"
 import { Dialog } from "@/components/ui/Dialog"
 import { Input } from "@/components/ui/Input"
 import { toast } from "sonner"
+import { NotificationBell } from "@/components/NotificationBell"
 
 export default function StudentDetailsPage() {
   const [profile, setProfile] = useState<any>(null)
@@ -69,13 +70,16 @@ export default function StudentDetailsPage() {
             </p>
           </motion.div>
 
-          <Button 
-            variant="outline" 
-            onClick={() => setShowEditModal(true)}
-            className="h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em]"
-          >
-            <Edit3 className="w-4 h-4 text-primary" /> Edit Profile
-          </Button>
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <Button 
+              variant="outline" 
+              onClick={() => setShowEditModal(true)}
+              className="h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em]"
+            >
+              <Edit3 className="w-4 h-4 text-primary" /> Edit Profile
+            </Button>
+          </div>
         </header>
 
         <div className="max-w-4xl mx-auto space-y-8">

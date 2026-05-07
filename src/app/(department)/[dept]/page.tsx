@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { formatDate } from "@/lib/utils"
-import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
+import { sendEmailNotification, sendWhatsAppNotification, logNotification } from "@/lib/notifications"
 import {
   canonicalClearanceDepartmentKey,
   departmentPortalPathSlug,
@@ -27,6 +27,7 @@ import {
 } from "@/lib/departmentKeys"
 import { CLEARANCE_MESSAGES, getWhatsAppLink } from "@/lib/messages"
 import { Logo } from "@/components/ui/Logo"
+import { NotificationBell } from "@/components/NotificationBell"
 
 export default function DepartmentDashboard(props: any) {
   const { dept } = useParams()
@@ -361,6 +362,16 @@ export default function DepartmentDashboard(props: any) {
           sendWhatsAppNotification({ ...studentProfile, department: departmentKey, status }).catch(console.warn)
         }
       }
+      
+      // In-app Notification
+      await logNotification({
+        user_id: studentProfile.id,
+        title: status === 'cleared' ? 'Clearance Approved' : 'Clearance Issue',
+        message: status === 'cleared' 
+          ? `You have been cleared by the ${sidebarDeptName || departmentKey} department.` 
+          : `The ${sidebarDeptName || departmentKey} department has reported an issue: ${remarks[clearanceId] || 'Please contact the department.'}`,
+        type: status === 'cleared' ? 'success' : 'issue'
+      })
 
       setStudents(prev => prev.map(s => s.id === clearanceId ? { ...s, status } : s))
       if (currentTab === 'pending' && status === 'cleared') {
@@ -398,6 +409,15 @@ export default function DepartmentDashboard(props: any) {
           senderEmail: staffEmail
         }).then(() => console.log(`Survey email (${status}) sent`)).catch(err => console.error("Email fail:", err))
       }
+
+      await logNotification({
+        user_id: studentProfile.id,
+        title: status === 'approved' ? 'Survey Approved' : 'Survey Rejected',
+        message: status === 'approved' 
+          ? `Your alumni survey has been verified by the ${sidebarDeptName || departmentKey} department.`
+          : `Your alumni survey was rejected: ${remarks[surveyId] || 'Please review and resubmit.'}`,
+        type: status === 'approved' ? 'success' : 'issue'
+      })
 
       setSurveyData(prev => prev.filter(s => s.id !== surveyId))
       setSelectedStudent(null)
@@ -474,7 +494,7 @@ export default function DepartmentDashboard(props: any) {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+            <NotificationBell />
             {isAcademic && (
               <Button 
                 variant="outline" 

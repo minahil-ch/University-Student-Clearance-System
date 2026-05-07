@@ -225,5 +225,21 @@ CREATE POLICY "dept_forms_write_admin" ON public.department_forms FOR ALL TO aut
 ALTER PUBLICATION supabase_realtime ADD TABLE public.clearance_status;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.future_data;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
 
-SELECT '✅ MASTER DATABASE SYNC COMPLETE' as status;
+-- 8. IN-APP NOTIFICATIONS TABLE
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  type TEXT DEFAULT 'info',
+  is_seen BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "notifications_all" ON public.notifications;
+CREATE POLICY "notifications_all" ON public.notifications FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+SELECT '✅ MASTER DATABASE SYNC COMPLETE (V11 - Notifications Added)' as status;

@@ -20,6 +20,7 @@ import { toast } from "sonner"
 import { Dialog } from "@/components/ui/Dialog"
 import { Input } from "@/components/ui/Input"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
+import { NotificationBell } from "@/components/NotificationBell"
 
 export default function StudentDashboard() {
   const [profile, setProfile] = useState<any>(null)
@@ -141,8 +142,8 @@ export default function StudentDashboard() {
               </p>
             </div>
           </motion.div>
-          
           <div className="flex items-center gap-4 px-4">
+             <NotificationBell />
              <Button 
                variant="outline" 
                onClick={() => window.location.href = '/details'}

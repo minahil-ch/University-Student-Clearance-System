@@ -23,6 +23,7 @@ import {
   UserPlus,
   GraduationCap
 } from "lucide-react"
+import { NotificationBell } from "@/components/NotificationBell"
 import { 
   BarChart, 
   Bar, 
@@ -295,6 +296,7 @@ export default function AdminDashboard() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <NotificationBell />
             <Button 
               onClick={handleExportCSV} 
               className="h-16 px-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-black uppercase text-[10px] tracking-widest gap-3 transition-all active:scale-95"

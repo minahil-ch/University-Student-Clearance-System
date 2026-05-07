@@ -63,6 +63,19 @@ export async function sendWhatsAppNotification(data: NotificationData) {
   }
 }
 
-export async function logNotification() {
-  // This would be called to update the notifications table in Supabase
+export async function logNotification(data: { 
+  user_id: string, 
+  title: string, 
+  message: string, 
+  type?: 'info' | 'success' | 'issue' 
+}) {
+  const { createClient } = await import('@/lib/supabase/client')
+  const supabase = createClient()
+  
+  await supabase.from('notifications').insert({
+    user_id: data.user_id,
+    title: data.title,
+    message: data.message,
+    type: data.type || 'info'
+  })
 }
