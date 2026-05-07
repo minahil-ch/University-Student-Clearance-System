@@ -96,36 +96,57 @@ export default function LandingPage() {
         </p>
       </motion.div>
 
-      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 relative z-10">
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 relative z-10">
         {portals.map((portal, i) => (
           <motion.div
             key={portal.name}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.05, duration: 0.5 }}
-            whileHover={{ y: -10 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1, duration: 0.6 }}
+            whileHover={{ y: -12, scale: 1.02 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer p-8 md:p-10 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-2xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-500 relative overflow-hidden"
+            className="group cursor-pointer relative p-10 rounded-[3.5rem] glass-card overflow-hidden transition-all duration-500"
           >
-            <div className={`absolute top-0 right-0 w-40 h-40 bg-${portal.color}-500/5 rounded-full -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700`} />
+            {/* Logo Watermark Backdrop */}
+            <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.08] group-hover:scale-110 transition-all duration-700 pointer-events-none">
+               <Logo className="w-48 h-48" />
+            </div>
+
+            {/* Glowing Accent */}
+            <div className={`absolute top-0 left-0 w-1 h-full bg-${portal.color}-500 opacity-0 group-hover:opacity-100 transition-opacity`} />
             
-            <div className="flex flex-col items-start gap-8">
-              <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center bg-${portal.color}-500 text-white shadow-xl shadow-${portal.color}-500/20 group-hover:rotate-6 transition-transform`}>
-                <portal.icon className="w-8 h-8" />
+            <div className="flex flex-col items-start gap-10">
+              <div className="flex justify-between items-start w-full">
+                <div className={`w-20 h-20 rounded-[1.75rem] flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 shadow-inner group-hover:bg-${portal.color}-500 group-hover:text-white transition-all duration-500`}>
+                  <portal.icon className="w-10 h-10" />
+                </div>
+                <Logo className="w-10 h-10 opacity-20 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               
-              <div className="space-y-3">
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors tracking-tight uppercase">
-                  {portal.name.split(' ')[0]} <span className="text-primary italic">{portal.name.split(' ')[1]}</span>
-                </h3>
-                <p className="text-sm text-slate-400 dark:text-slate-500 font-bold leading-relaxed">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                   <p className={`text-[10px] font-black uppercase tracking-[0.3em] text-${portal.color}-500/70`}>Institutional Portal</p>
+                   <h3 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">
+                     {portal.name.split(' ')[0]} <span className="text-primary italic">{portal.name.split(' ')[1]}</span>
+                   </h3>
+                </div>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-[220px]">
                   {portal.desc}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                Secure Access <ArrowRight className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                <span className="relative">
+                  Enter Portal
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary group-hover:w-full transition-all duration-300" />
+                </span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300" />
               </div>
+            </div>
+
+            {/* Hover Shine Effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+               <div className="absolute inset-0 shimmer" />
             </div>
           </motion.div>
         ))}
