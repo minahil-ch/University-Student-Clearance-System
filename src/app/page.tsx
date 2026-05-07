@@ -61,7 +61,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center p-8 md:p-20 relative overflow-hidden">
       {/* Premium Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
@@ -96,7 +96,7 @@ export default function LandingPage() {
         </p>
       </motion.div>
 
-      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 relative z-10">
+      <div className="max-w-[1400px] w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative z-10">
         {portals.map((portal, i) => (
           <motion.div
             key={portal.name}
@@ -105,7 +105,7 @@ export default function LandingPage() {
             transition={{ delay: i * 0.1, duration: 0.6 }}
             whileHover={{ y: -12, scale: 1.02 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer relative p-10 rounded-[3.5rem] glass-card overflow-hidden transition-all duration-500"
+            className="group cursor-pointer relative p-12 rounded-[4rem] glass-card overflow-hidden transition-all duration-500 min-h-[480px] flex flex-col justify-between"
           >
             {/* Logo Watermark Backdrop */}
             <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.08] group-hover:scale-110 transition-all duration-700 pointer-events-none">
@@ -130,7 +130,7 @@ export default function LandingPage() {
                      {portal.name.split(' ')[0]} <span className="text-primary italic">{portal.name.split(' ')[1]}</span>
                    </h3>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-[220px]">
+                <p className="text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                   {portal.desc}
                 </p>
               </div>
