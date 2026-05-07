@@ -99,10 +99,8 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
           <div className="flex items-center gap-3 mb-10 px-2">
             <Logo className="w-12 h-12" />
             <div>
-            <div>
-              <h1 className="text-foreground font-bold leading-tight text-base">CUI Clearance</h1>
-              <p className="text-xs font-bold tracking-wider text-primary leading-none">Clearance System</p>
-            </div>
+              <h1 className="text-foreground font-bold leading-tight text-base tracking-normal">CUI Clearance</h1>
+              <p className="text-xs text-muted-foreground leading-none capitalize mt-1">{role}</p>
             </div>
           </div>
 

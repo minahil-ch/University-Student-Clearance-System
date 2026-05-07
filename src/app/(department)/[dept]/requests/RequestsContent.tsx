@@ -243,14 +243,14 @@ export default function RequestsContent() {
                           </div>
                         </td>
                          <td className="px-8 py-6">
-                          <div className="space-y-2">
-                             <div className="flex items-center gap-2 text-xs font-bold text-indigo-500">
-                               <Clock className="w-3.5 h-3.5" /> Pending Review
-                             </div>
-                             {isAcademic && (
-                               <div className={`flex items-center gap-1.5 text-xs font-bold font-medium text-muted-foreground ${item.form_submitted ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                 {item.form_submitted ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
-                                 {item.form_submitted ? 'Form: Submitted' : 'Form: PENDING'}
+                          <div className="flex flex-col gap-2">
+                             {item.form_submitted ? (
+                               <div className="inline-flex items-center w-max gap-1.5 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
+                                 <CheckCircle2 className="w-3.5 h-3.5" /> Form Filled
+                               </div>
+                             ) : (
+                               <div className="inline-flex items-center w-max gap-1.5 px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-xs font-bold">
+                                 <AlertCircle className="w-3.5 h-3.5" /> Form Pending
                                </div>
                              )}
                           </div>
