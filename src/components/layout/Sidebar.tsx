@@ -22,6 +22,7 @@ import {
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
 import { Logo } from "@/components/ui/Logo"
+import { motion } from "framer-motion"
 
 interface SidebarProps {
   role: 'admin' | 'student' | 'department' | 'transport' | 'library' | 'hostel' | 'finance'
