@@ -12,13 +12,16 @@ import { FileText, Plus, Trash2, Link2, ExternalLink, GraduationCap } from "luci
 import { canonicalClearanceDepartmentKey } from "@/lib/departmentKeys"
 
 export default function FormManagementContent() {
-  const { dept } = useParams()
+  const params = useParams()
+  const rawDept = Array.isArray(params?.dept) ? params.dept[0] : params?.dept
+  const deptString = typeof rawDept === 'string' ? rawDept : ''
+
   const [departmentForms, setDepartmentForms] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [newForm, setNewForm] = useState({ name: "", link: "" })
   const supabase = createClient()
 
-  const departmentKey = dept ? canonicalClearanceDepartmentKey(dept as string) : ''
+  const departmentKey = deptString ? canonicalClearanceDepartmentKey(deptString) : ''
 
   useEffect(() => {
     if (departmentKey) fetchForms()
@@ -81,7 +84,7 @@ export default function FormManagementContent() {
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
-      <Sidebar role="department" departmentName={dept as string} />
+      <Sidebar role="department" departmentName={deptString} />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-12">
