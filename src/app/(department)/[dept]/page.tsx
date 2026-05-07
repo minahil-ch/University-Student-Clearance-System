@@ -1,5 +1,4 @@
 "use client"
-export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -54,11 +53,13 @@ export default function DepartmentDashboard(props: any) {
   const [customMessageModal, setCustomMessageModal] = useState<{isOpen: boolean, student: any}>({isOpen: false, student: null})
   const [customMessageText, setCustomMessageText] = useState("")
   const [customMessageSending, setCustomMessageSending] = useState(false)
+  const [isClient, setIsClient] = useState(false)
   
   const isAcademic = isAcademicClearancePortal(departmentKey)
   const supabase = createClient()
 
   useEffect(() => {
+    setIsClient(true)
     if (!departmentKey) return
 
     async function verifyAccess() {
@@ -456,6 +457,20 @@ export default function DepartmentDashboard(props: any) {
   )
 
   const deptLabel = departmentKey.replace(/-/g, ' ').toUpperCase()
+
+  if (!isClient || !accessReady || loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
+      <div className="relative">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
+          <Logo className="w-8 h-8" />
+        </div>
+      </div>
+      <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">
+        {loading ? "Syncing Departmental Data..." : "Authorizing Authority Access..."}
+      </p>
+    </div>
+  )
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">

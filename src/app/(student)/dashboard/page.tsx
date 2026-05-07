@@ -34,7 +34,13 @@ export default function StudentDashboard() {
   const [submittingFormStatus, setSubmittingFormStatus] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
   const [hodContact, setHodContact] = useState<any>(null)
+  const [isClient, setIsClient] = useState(false)
   const supabase = createClient()
+
+  useEffect(() => {
+    setIsClient(true)
+    fetchData()
+  }, [])
   
   const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
   
@@ -97,11 +103,8 @@ export default function StudentDashboard() {
     setLoading(false)
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
 
-  if (loading) return (
+  if (!isClient || loading) return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>

@@ -61,8 +61,13 @@ export default function AdminDashboard() {
   const [fullyApprovedStudents, setFullyApprovedStudents] = useState<string[]>([])
   const [showOnlyApproved, setShowOnlyApproved] = useState(false)
   const [isAddingStaff, setIsAddingStaff] = useState(false)
+  const [isClient, setIsClient] = useState(false)
   const [newStaff, setNewStaff] = useState({ fullName: '', email: '', password: '', role: 'department', departmentName: 'Computer Science' })
 
+  useEffect(() => {
+    setIsClient(true)
+    fetchData()
+  }, [])
   const academicDepartments = [
     "Computer Science",
     "Software Engineering",
@@ -253,9 +258,15 @@ export default function AdminDashboard() {
     { name: 'Issues', value: stats.issues, color: '#f43f5e' },
   ]
 
-  if (loading && !stats.totalStudents && !auditLogs.length) return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  if (!isClient || (loading && !stats.totalStudents && !auditLogs.length)) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
+      <div className="relative">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
+          <Logo className="w-8 h-8" />
+        </div>
+      </div>
+      <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Initializing Command Center...</p>
     </div>
   )
 
