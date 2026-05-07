@@ -81,36 +81,37 @@ export default function AcademicPortalsPage() {
         </p>
       </motion.div>
 
-      <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
         {academicDepts.map((portal, i) => (
           <motion.div
             key={portal.name}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            whileHover={{ scale: 1.02, translateY: -5 }}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            whileHover={{ y: -5, scale: 1.02 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer flex flex-col p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
+            className="group cursor-pointer relative p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center gap-6 min-h-[140px]"
           >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
-            
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 mb-6 shadow-sm shrink-0 group-hover:scale-110 transition-transform`}>
-              <portal.icon className="w-7 h-7 font-bold" />
+            {/* Colored Icon Container */}
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-600 shrink-0 group-hover:bg-${portal.color}-500 group-hover:text-white transition-all duration-500`}>
+              <portal.icon className="w-8 h-8" />
             </div>
-            
-            <div className="flex-1">
-              <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors uppercase tracking-tight">
+
+            <div className="flex-1 space-y-2">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">
                 {portal.name}
               </h3>
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed font-medium">
-                {portal.desc}
+              <p className="text-[12px] text-slate-400 dark:text-slate-500 font-bold leading-relaxed">
+                Departmental Dashboard
               </p>
             </div>
-            
-            <div className="mt-6 pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors">Enter Portal</span>
-              <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-all group-hover:translate-x-1" />
+
+            <div className="text-slate-200 group-hover:text-primary group-hover:translate-x-2 transition-all shrink-0">
+               <ArrowRight className="w-5 h-5" />
             </div>
+
+            {/* Subtle Accent Glow */}
+            <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-${portal.color}-500 group-hover:w-1/2 transition-all duration-500 rounded-full`} />
           </motion.div>
         ))}
       </div>
