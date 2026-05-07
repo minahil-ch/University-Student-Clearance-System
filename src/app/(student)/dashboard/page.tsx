@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
@@ -42,30 +42,35 @@ export default function StudentDashboard() {
     fetchData()
   }, [])
   
-  const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
-  
-  const baseOrder = ['library', 'transport', 'finance', 'hostel']
-  const desiredOrder = [...baseOrder, academicDeptKey]
+  const { orderedClearanceData, allCoreCleared, isFinalCleared } = useMemo(() => {
+    if (!isClient) return { orderedClearanceData: [], allCoreCleared: false, isFinalCleared: false }
 
-  const clearanceMap = new Map(clearanceData.map((row) => [row.department_key, row]))
-  const orderedClearanceData = desiredOrder.map((key, idx) => {
-    const found = clearanceMap.get(key)
-    if (found) return found
-    return {
-      id: `virtual-${key}-${idx}`,
-      department_key: key,
-      status: "pending",
-      remarks: key.startsWith('academic-') ? "Awaiting core clearance." : "Pending initiation.",
-      updated_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-    }
-  })
-  
-  const allCoreCleared = orderedClearanceData
-    .filter(d => !d.department_key.startsWith('academic-'))
-    .every(d => d.status === 'cleared')
+    const academicDeptKey = `academic-${(profile?.department_name || "general").toLowerCase().replace(/\s+/g, "-")}`
+    const baseOrder = ['library', 'transport', 'finance', 'hostel']
+    const desiredOrder = [...baseOrder, academicDeptKey]
 
-  const isFinalCleared = orderedClearanceData.length > 0 && orderedClearanceData.every((item) => item.status === "cleared")
+    const clearanceMap = new Map(clearanceData.map((row) => [row.department_key, row]))
+    const data = desiredOrder.map((key, idx) => {
+      const found = clearanceMap.get(key)
+      if (found) return found
+      return {
+        id: `virtual-${key}-${idx}`,
+        department_key: key,
+        status: "pending",
+        remarks: key.startsWith('academic-') ? "Awaiting core clearance." : "Pending initiation.",
+        updated_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+      }
+    })
+
+    const coreCleared = data
+      .filter(d => !d.department_key.startsWith('academic-'))
+      .every(d => d.status === 'cleared')
+
+    const finalCleared = data.length > 0 && data.every((item) => item.status === "cleared")
+
+    return { orderedClearanceData: data, allCoreCleared: coreCleared, isFinalCleared: finalCleared }
+  }, [isClient, profile, clearanceData])
 
   const fetchData = async () => {
     const { data: { user } } = await supabase.auth.getUser()
