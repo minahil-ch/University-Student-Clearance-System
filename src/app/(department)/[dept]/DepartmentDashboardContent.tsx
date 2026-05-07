@@ -482,13 +482,13 @@ export default function DepartmentDashboardContent(props: any) {
             </div>
             <div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
-                <h2 className="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white leading-none">
-                  COMSATS <span className="text-primary italic">UNIVERSITY</span>
+                <h2 className="text-4xl font-black tracking-tighter uppercase text-primary leading-none italic">
+                  CUI <span className="text-primary not-italic">CLEARANCE SYSTEM</span>
                 </h2>
                 <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
                 <div className="hidden md:flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Portal</span>
-                  <span className="text-xs font-black uppercase tracking-tight text-primary">Vehari Campus</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Hub</span>
+                  <span className="text-xs font-black uppercase tracking-tight text-primary">Institutional Access</span>
                 </div>
               </div>
               <h3 className="mt-4 text-xl font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">

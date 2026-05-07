@@ -128,8 +128,8 @@ export default function StudentDashboardContent() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
         <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase px-4 leading-none">
-              COMSATS <span className="text-primary italic">UNIVERSITY</span> <span className="text-primary italic">ISLAMABAD</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-primary uppercase px-4 leading-none italic">
+              CUI <span className="not-italic">CLEARANCE SYSTEM</span>
             </h2>
             <div className="flex items-center gap-3 mt-4 px-4">
               <div className="flex -space-x-2">
@@ -137,7 +137,7 @@ export default function StudentDashboardContent() {
                 <div className="w-6 h-6 rounded-full bg-indigo-500 border-2 border-white dark:border-slate-950" />
               </div>
               <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight">
-                Vehari Campus &bull; Official Clearance Hub
+                Official Institutional Hub &bull; Student Access
               </p>
             </div>
           </motion.div>

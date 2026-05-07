@@ -78,7 +78,7 @@ export default function RequestsContent() {
         .from('clearance_status')
         .select(`
           id, status, remarks, form_submitted, updated_at,
-          profiles:student_id (
+          profiles:student_id!student_id (
             id, full_name, father_name, reg_no, email, phone, cgpa, department_name,
             future_data (*)
           )
@@ -163,7 +163,7 @@ export default function RequestsContent() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-center gap-8">
           <div>
-            <h1 className="text-4xl font-black uppercase tracking-tighter italic">Pending <span className="text-primary italic">Requests</span></h1>
+            <h1 className="text-4xl font-black uppercase tracking-tighter italic text-primary">CUI <span className="text-primary">Clearance System</span></h1>
             <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2 tracking-[0.3em]">Institutional Verification Queue</p>
           </div>
           <div className="relative w-full md:w-80 group">
@@ -242,15 +242,15 @@ export default function RequestsContent() {
                              <p className="text-[10px] font-black text-slate-900 uppercase truncate max-w-[150px]">Email: <span className="text-slate-500">{item.profiles?.email}</span></p>
                           </div>
                         </td>
-                        <td className="px-8 py-6">
+                         <td className="px-8 py-6">
                           <div className="space-y-2">
                              <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-500">
                                <Clock className="w-3.5 h-3.5" /> Pending Review
                              </div>
                              {isAcademic && (
-                               <div className={`flex items-center gap-1.5 text-[10px] font-bold ${item.form_submitted ? 'text-emerald-500' : 'text-slate-400'}`}>
+                               <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest ${item.form_submitted ? 'text-emerald-500' : 'text-rose-500'}`}>
                                  {item.form_submitted ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
-                                 {item.form_submitted ? 'Form: Submitted' : 'Form: Pending'}
+                                 {item.form_submitted ? 'Form: Submitted' : 'Form: PENDING'}
                                </div>
                              )}
                           </div>
@@ -259,8 +259,17 @@ export default function RequestsContent() {
                            <div className="flex items-center justify-end gap-2">
                               <Button
                                 size="sm"
+                                variant="outline"
+                                onClick={() => setSelectedStudent(item)}
+                                className="rounded-xl font-black uppercase text-[10px] h-10 px-4 border-slate-200 hover:bg-slate-50 gap-2"
+                              >
+                                <Eye className="w-4 h-4" /> Review
+                              </Button>
+                              <Button
+                                size="sm"
                                 onClick={() => handleUpdateStatus(item.id, 'cleared', item.profiles)}
-                                className="rounded-xl font-black uppercase text-[10px] h-10 px-6 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20"
+                                disabled={isAcademic && !item.form_submitted}
+                                className={`rounded-xl font-black uppercase text-[10px] h-10 px-6 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 disabled:opacity-30 disabled:grayscale`}
                               >
                                 Approve
                               </Button>
@@ -282,6 +291,105 @@ export default function RequestsContent() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Student Detail Modal */}
+        <AnimatePresence>
+          {selectedStudent && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden border border-white/20"
+              >
+                <div className="p-10">
+                  <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center gap-5">
+                      <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                        <User className="w-10 h-10" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none mb-2">
+                          {selectedStudent.profiles?.full_name}
+                        </h3>
+                        <Badge className="bg-primary/10 text-primary border-none rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest">
+                          {selectedStudent.profiles?.reg_no}
+                        </Badge>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setSelectedStudent(null)}
+                      className="w-12 h-12 rounded-full p-0 text-slate-400 hover:bg-slate-100"
+                    >
+                      <X className="w-6 h-6" />
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-8 mb-10">
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Father&apos;s Name</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{selectedStudent.profiles?.father_name || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Current CGPA</p>
+                        <p className="font-black text-emerald-600 text-xl tracking-tighter">{selectedStudent.profiles?.cgpa || "0.00"}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Email Address</p>
+                        <p className="font-bold text-slate-900 dark:text-white truncate">{selectedStudent.profiles?.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Phone Number</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{selectedStudent.profiles?.phone || "No contact"}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-8 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-white/5">
+                     <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                           <FileText className="w-5 h-5 text-primary" />
+                           <p className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Departmental Form Status</p>
+                        </div>
+                        <Badge className={`rounded-xl px-4 py-1.5 text-[9px] font-black uppercase border-none ${selectedStudent.form_submitted ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'}`}>
+                           {selectedStudent.form_submitted ? "FORM SUBMITTED" : "PENDING FORM"}
+                        </Badge>
+                     </div>
+                     <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
+                       {selectedStudent.form_submitted 
+                         ? "The student has successfully submitted all department-specific surveys and requirements for the current clearance cycle."
+                         : "Approval is restricted until the student completes the mandatory departmental requirement forms published in the Form Management tab."}
+                     </p>
+                  </div>
+                </div>
+
+                <div className="p-8 bg-slate-900 dark:bg-black flex gap-4">
+                  <Button 
+                    onClick={() => {
+                      handleUpdateStatus(selectedStudent.id, 'cleared', selectedStudent.profiles)
+                    }}
+                    disabled={isAcademic && !selectedStudent.form_submitted}
+                    className="flex-1 h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-emerald-500/20 disabled:opacity-30"
+                  >
+                    Approve Clearance
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      handleUpdateStatus(selectedStudent.id, 'issue', selectedStudent.profiles)
+                    }}
+                    className="flex-1 h-14 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-rose-500/20"
+                  >
+                    Flag Issue
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   )
