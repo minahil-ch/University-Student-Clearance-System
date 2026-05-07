@@ -27,6 +27,7 @@ export default function StudentDashboardContent() {
   const [showCertificate, setShowCertificate] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const [hodContact, setHodContact] = useState<any>(null)
+  const [deptForms, setDeptForms] = useState<any[]>([])
   const supabase = createClient()
 
   useEffect(() => {
@@ -86,6 +87,14 @@ export default function StudentDashboardContent() {
       setClearanceData(clearance || [])
       setUniFormDone(Boolean(futureData))
       setClearanceStarted((clearance || []).length > 0)
+
+      if (profile?.department_name) {
+        const { data: forms } = await supabase
+          .from('department_forms')
+          .select('*')
+          .eq('department_key', `academic-${profile.department_name.toLowerCase().replace(/\s+/g, '-')}`)
+        setDeptForms(forms || [])
+      }
     } finally {
       setLoading(false)
     }
@@ -324,7 +333,7 @@ export default function StudentDashboardContent() {
                   ))}
                 </div>
 
-                 {clearanceStarted ? (
+                  {clearanceStarted ? (
                     <div className="mt-10 p-10 bg-emerald-600 rounded-[2.5rem] text-white text-center space-y-4 relative overflow-hidden shadow-2xl">
                       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
                       <div className="relative z-10">
@@ -337,25 +346,59 @@ export default function StudentDashboardContent() {
                         </p>
                       </div>
                     </div>
-                 ) : (
-                   <div className="mt-10 p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-                      <div className="relative z-10">
-                         <h4 className="text-2xl font-black uppercase tracking-tighter italic">Start Clearance Process</h4>
-                         <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
-                           One-click initiation. This will guide you through the mandatory university survey and department clearance.
-                         </p>
-                         <div className="pt-6">
-                            <Button 
-                              onClick={() => { window.location.href = !uniFormDone ? "/uni-form" : "/form" }}
-                              className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-black uppercase tracking-widest text-xs gap-3 active:scale-95 transition-all"
-                            >
-                               Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
-                            </Button>
-                         </div>
-                      </div>
-                   </div>
-                 )}
+                  ) : (
+                    <div className="mt-10 p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
+                       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                       <div className="relative z-10">
+                          <h4 className="text-2xl font-black uppercase tracking-tighter italic">Start Clearance Process</h4>
+                          <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
+                            One-click initiation. This will guide you through the mandatory university survey and department clearance.
+                          </p>
+                          <div className="pt-6">
+                             <Button 
+                               onClick={() => { window.location.href = !uniFormDone ? "/uni-form" : "/form" }}
+                               className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-black uppercase tracking-widest text-xs gap-3 active:scale-95 transition-all"
+                             >
+                                Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
+                             </Button>
+                          </div>
+                       </div>
+                    </div>
+                  )}
+
+                  {/* Department Specific Forms Section */}
+                  {deptForms.length > 0 && (
+                    <div className="mt-10">
+                       <div className="flex items-center gap-3 mb-6 px-4">
+                          <FileText className="w-6 h-6 text-primary" />
+                          <h4 className="text-lg font-black uppercase tracking-tighter text-slate-900 dark:text-white">Academic Department Forms</h4>
+                       </div>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {deptForms.map((form) => (
+                            <Card key={form.id} className="glass-card border-none rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
+                               <CardContent className="p-8 flex items-center justify-between">
+                                  <div className="flex items-center gap-4">
+                                     <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                                        <ClipboardCheck className="w-6 h-6" />
+                                     </div>
+                                     <div>
+                                        <h5 className="font-black text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.name}</h5>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Required for HOD Approval</p>
+                                     </div>
+                                  </div>
+                                  <Button 
+                                    onClick={() => window.open(form.link, '_blank')}
+                                    variant="ghost" 
+                                    className="h-12 w-12 rounded-xl p-0 text-slate-300 group-hover:text-primary group-hover:bg-primary/5 transition-all"
+                                  >
+                                     <ExternalLink className="w-5 h-5" />
+                                  </Button>
+                               </CardContent>
+                            </Card>
+                          ))}
+                       </div>
+                    </div>
+                  )}
               </div>
             </div>
            </div>

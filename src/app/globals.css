@@ -86,12 +86,18 @@
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: var(--font-inter), system-ui, sans-serif;
+    font-size: 18px; /* Increased from default */
+    line-height: 1.6;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-outfit), system-ui, sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 }
+
+/* Typography Scale Polish */
+p { @apply text-base; }
+span { @apply text-sm; }
 
 .glass-card {
   @apply bg-white/70 dark:bg-slate-900/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)];

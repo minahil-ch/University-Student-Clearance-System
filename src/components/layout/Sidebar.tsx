@@ -8,16 +8,21 @@ import {
   LayoutDashboard, 
   FileText, 
   CheckCircle, 
+  CheckCircle2,
   AlertCircle, 
   Settings, 
   LogOut,
   User,
+  UserPlus,
   Shield,
   Truck,
   BookOpen,
   Mail,
   Menu,
-  X
+  X,
+  Clock,
+  Bell,
+  History
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
@@ -41,16 +46,11 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
       { label: "Notifications", href: "/notifications", icon: Mail },
     ],
     department: [
-      { 
-        label: "Dashboard", 
-        href: departmentName?.toLowerCase() === 'library' ? '/library' :
-              departmentName?.toLowerCase() === 'transport' ? '/transport' :
-              departmentName?.toLowerCase() === 'hostel' ? '/hostel' :
-              departmentName?.toLowerCase() === 'finance' ? '/finance' :
-              `/${departmentPortalPathSlug(departmentName)}`, 
-        icon: LayoutDashboard 
-      },
-      { label: "History", href: "/history", icon: FileText },
+      { label: "Dashboard", href: `/${departmentPortalPathSlug(departmentName || '')}`, icon: LayoutDashboard },
+      { label: "Pending Requests", href: `/${departmentPortalPathSlug(departmentName || '')}/requests`, icon: Clock },
+      { label: "Cleared Students", href: `/${departmentPortalPathSlug(departmentName || '')}/cleared`, icon: CheckCircle2 },
+      { label: "Form Management", href: `/${departmentPortalPathSlug(departmentName || '')}/forms`, icon: FileText },
+      { label: "Notifications", href: `/${departmentPortalPathSlug(departmentName || '')}/notifications`, icon: Bell },
     ],
     transport: [
       { label: "Dashboard", href: "/transport", icon: Truck },
@@ -71,9 +71,9 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
     admin: [
       { label: "Overview", href: "/admin", icon: Shield },
       { label: "Students", href: "/admin/students", icon: User },
-      { label: "Staff Requests", href: "/admin/requests", icon: AlertCircle },
-      { label: "Reports", href: "/admin/reports", icon: FileText },
-      { label: "Audit Logs", href: "/admin/audit", icon: Shield },
+      { label: "Add Student", href: "/admin/add-student", icon: UserPlus },
+      { label: "Requests", href: "/admin/requests", icon: FileText },
+      { label: "Audit Log", href: "/admin/audit", icon: History },
     ],
   }
 

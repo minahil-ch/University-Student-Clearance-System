@@ -508,25 +508,17 @@ export default function DepartmentDashboardContent(props: any) {
               />
             </div>
             <NotificationBell />
-            {isAcademic && (
-              <Button 
-                variant="outline" 
-                onClick={() => setIsEditingLink(true)}
-                className="h-16 px-8 rounded-3xl bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl gap-3 font-black uppercase text-[10px] tracking-widest transition-all active:scale-95"
-              >
-                <Settings2 className="w-5 h-5 text-primary" /> Form Control
-              </Button>
-            )}
+
           </div>
         </header>
 
         {/* Stats Overview Bar - Premium Style */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 relative z-10">
            {[
-             { label: "Active Queue", value: stats.pending, icon: ClipboardList, color: "indigo", delay: 0.1 },
+             { label: "Pending Requests", value: stats.pending, icon: ClipboardList, color: "indigo", delay: 0.1 },
              { label: "Total Cleared", value: stats.cleared, icon: CheckCircle2, color: "emerald", delay: 0.2 },
              { label: "Issue Reports", value: stats.issues, icon: AlertCircle, color: "rose", delay: 0.3 },
-             { label: "Survey Inbox", value: stats.surveys, icon: FileText, color: "amber", delay: 0.4 }
+             { label: "Pending Forms", value: stats.surveys, icon: FileText, color: "amber", delay: 0.4 }
            ].map((stat, i) => (
              <motion.div 
                key={i}
@@ -565,7 +557,7 @@ export default function DepartmentDashboardContent(props: any) {
                 {tab === 'pending' && <ClipboardList className="w-4 h-4" />}
                 {tab === 'surveys' && <FileText className="w-4 h-4" />}
                 {tab === 'history' && <CheckCircle2 className="w-4 h-4" />}
-                {tab === 'surveys' ? 'Alumni Network' : tab === 'pending' ? 'Active Queue' : 'History Log'}
+                {tab === 'surveys' ? 'Pending Forms' : tab === 'pending' ? 'Pending Requests' : 'History Log'}
               </button>
             ))}
           </div>
@@ -596,8 +588,8 @@ export default function DepartmentDashboardContent(props: any) {
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-slate-300" />
                 <CardTitle className="text-sm font-black uppercase tracking-[0.3em] text-slate-400">
-                  {currentTab === 'pending' ? 'Active Clearance Queue' : 
-                   currentTab === 'surveys' ? `Survey Inbox` : 'Cleared History'}
+                  {currentTab === 'pending' ? 'Pending Requests Queue' : 
+                   currentTab === 'surveys' ? `Pending Form Submissions` : 'Cleared History'}
                 </CardTitle>
               </div>
               <div className="text-[10px] font-black bg-primary/10 text-primary px-4 py-1.5 rounded-full">
