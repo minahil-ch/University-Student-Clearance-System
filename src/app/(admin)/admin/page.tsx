@@ -1,5 +1,5 @@
 "use client"
-export const dynamic = 'force-dynamic'
+
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -20,7 +20,8 @@ import {
   Search,
   Check,
   X,
-  UserPlus
+  UserPlus,
+  GraduationCap
 } from "lucide-react"
 import { 
   BarChart, 
@@ -262,73 +263,97 @@ export default function AdminDashboard() {
       <Sidebar role="admin" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center md:text-left">
-            <Logo className="w-16 h-16 md:w-20 md:h-20" />
-            <div>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic text-slate-900 dark:text-white">
-                COMSATS <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">UNIVERSITY</span>
-              </h2>
-              <p className="text-muted-foreground mt-1 text-xs md:text-sm font-medium">Official Campus-Wide Clearance Command Center</p>
+        <header className="flex flex-col md:flex-row justify-between items-center gap-10 mb-14 relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div className="p-1 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5">
+              <Logo className="w-20 h-20 md:w-24 md:h-24" />
             </div>
-          </motion.div>
-          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-            <div className="relative w-full md:w-64">
-               <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-               <Input 
-                placeholder="Search..." 
-                className="pl-10 w-full glass-card border-none shadow-sm h-10 rounded-xl" 
+            <div>
+              <div className="flex items-center gap-3 justify-center md:justify-start">
+                <h2 className="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white leading-none">
+                  COMSATS <span className="text-primary italic">UNIVERSITY</span>
+                </h2>
+                <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
+                <div className="hidden md:flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Master Control</span>
+                  <span className="text-xs font-black uppercase tracking-tight text-primary italic">Institutional Oversight</span>
+                </div>
+              </div>
+              <h3 className="mt-4 text-xl font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
+                <ShieldCheck className="w-6 h-6 text-primary" /> Command Center Hub
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+             <div className="relative w-full md:w-80 group">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-all duration-300" />
+              <Input
+                placeholder="Global System Search..."
+                className="pl-14 h-16 rounded-3xl bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-2xl focus:border-primary/30 transition-all text-sm font-bold"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button onClick={handleExportCSV} className="h-10 rounded-xl gap-2 shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-95 px-6 w-full md:w-auto">
-              <Download className="w-4 h-4" /> Export
+            <Button 
+              onClick={handleExportCSV} 
+              className="h-16 px-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-black uppercase text-[10px] tracking-widest gap-3 transition-all active:scale-95"
+            >
+              <Download className="w-5 h-5" /> Export Data
             </Button>
           </div>
         </header>
 
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 mb-8 bg-slate-200/50 dark:bg-slate-800/50 p-1.5 rounded-[1rem] w-fit">
-          {['dashboard', 'students', 'staff_requests', 'alumni'].map((tab) => (
-            <button 
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                activeTab === tab ? 'bg-white dark:bg-slate-900 shadow-md text-primary' : 'text-slate-500 hover:text-slate-700'
-              }`}
-            >
-              {tab.replace('_', ' ')}
-            </button>
-          ))}
+        {/* Premium Control Hub Navigation */}
+        <div className="flex flex-wrap items-center justify-between gap-8 mb-10 bg-white/40 dark:bg-slate-900/40 p-6 rounded-[3rem] border border-slate-100 dark:border-white/5 backdrop-blur-xl shadow-xl relative z-10">
+          <div className="flex flex-wrap gap-3 p-1.5 bg-slate-200/30 dark:bg-slate-800/30 rounded-[2rem]">
+            {(['dashboard', 'students', 'staff_requests', 'alumni'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
+                  activeTab === tab 
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {tab === 'dashboard' && <BarChart className="w-4 h-4" />}
+                {tab === 'students' && <Users className="w-4 h-4" />}
+                {tab === 'staff_requests' && <ShieldCheck className="w-4 h-4" />}
+                {tab === 'alumni' && <GraduationCap className="w-4 h-4" />}
+                {tab.replace('_', ' ')}
+              </button>
+            ))}
+          </div>
         </div>
 
         {activeTab === 'dashboard' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
               {[
-                { label: "Total Students", value: stats.totalStudents, icon: Users, color: "blue", trend: "Total" },
-                { label: "Pending Staff", value: requests.length, icon: Clock, color: "emerald", trend: "Approval" },
-                { label: "Overall Cleared", value: stats.cleared, icon: CheckCircle, color: "blue", trend: "On Track" },
-                { label: "Pending Tasks", value: stats.pending, icon: Clock, color: "amber", trend: "High Priority" },
-                { label: "Critical Issues", value: stats.issues, icon: AlertCircle, color: "rose", trend: "Review Needed" },
+                { label: "Total Students", value: stats.totalStudents, icon: Users, color: "indigo", delay: 0.1 },
+                { label: "Staff Requests", value: requests.length, icon: ShieldCheck, color: "emerald", delay: 0.2 },
+                { label: "Overall Cleared", value: stats.cleared, icon: CheckCircle, color: "blue", delay: 0.3 },
+                { label: "Pending Verification", value: stats.pending, icon: Clock, color: "amber", delay: 0.4 },
+                { label: "Flagged Issues", value: stats.issues, icon: AlertCircle, color: "rose", delay: 0.5 },
               ].map((item, i) => (
-                <motion.div key={item.label} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-                  <Card className="glass-card hover:ring-2 ring-primary/20 transition-all duration-500 group relative overflow-hidden">
-                    <div className={`absolute top-0 right-0 w-24 h-24 bg-${item.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700`} />
-                    <CardContent className="p-5 relative">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`p-3 rounded-xl bg-${item.color}-500/10`}>
-                          <item.icon className={`w-5 h-5 text-${item.color}-500`} />
-                        </div>
-                        <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 tracking-widest uppercase">{item.trend}</span>
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ delay: item.delay }}
+                  className="group relative p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:scale-[1.05] transition-all duration-500 overflow-hidden"
+                >
+                   <div className={`absolute top-0 right-0 w-24 h-24 bg-${item.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700`} />
+                   <div className="flex flex-col gap-6">
+                      <div className={`w-14 h-14 rounded-2xl bg-${item.color}-500 text-white flex items-center justify-center shadow-lg shadow-${item.color}-500/20 group-hover:rotate-12 transition-transform`}>
+                         <item.icon className="w-7 h-7" />
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground font-bold tracking-tight uppercase opacity-70">{item.label}</p>
-                        <h3 className="text-3xl font-extrabold mt-1 tracking-tighter">{item.value}</h3>
+                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1 leading-none">{item.label}</p>
+                         <h4 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic leading-none">{item.value}</h4>
                       </div>
-                    </CardContent>
-                  </Card>
+                   </div>
                 </motion.div>
               ))}
             </div>

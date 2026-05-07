@@ -14,7 +14,8 @@ import {
   User, 
   Building2, 
   CheckCircle2,
-  ShieldCheck
+  ShieldCheck,
+  ArrowRight
 } from "lucide-react"
 import { sendEmailNotification, sendWhatsAppNotification } from "@/lib/notifications"
 import { getPortalContact } from "@/lib/portalContacts"
@@ -323,111 +324,122 @@ export default function ClearanceForm() {
           </div>
         </header>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto pb-20">
           <AnimatePresence mode="wait">
             {step === 2 && (
               <motion.div
                 key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
               >
-                <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
-                  <CardHeader className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-800">
-                    <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
-                      <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
-                        <User className="w-8 h-8" />
-                      </div>
-                      Clearance Initiation
-                    </CardTitle>
-                    <p className="text-muted-foreground font-medium">Verify your primary identification for departmental routing.</p>
+                <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[3rem] overflow-hidden group">
+                  <CardHeader className="p-10 md:p-14 border-b border-slate-100 dark:border-white/5 relative overflow-hidden text-center md:text-left">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                       <div className="space-y-4">
+                          <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+                             <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 italic">Identity Verification</span>
+                          </div>
+                          <CardTitle className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                             CLEARANCE <span className="text-emerald-500 italic">INITIATION</span>
+                          </CardTitle>
+                          <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
+                            Establish your official profile to trigger the campus-wide verification queue.
+                          </p>
+                       </div>
+                    </div>
                   </CardHeader>
-                  <CardContent className="p-6 md:p-10 space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                        <Input 
-                          value={profile.full_name}
-                          onChange={(e) => setProfile({...profile, full_name: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
+                  <CardContent className="p-10 md:p-14 space-y-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-8">
+                         <div className="space-y-2.5">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Full Name (Per Records)</label>
+                            <Input 
+                              value={profile.full_name}
+                              onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
+                         <div className="space-y-2.5">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Registration Number</label>
+                            <Input 
+                              value={profile.reg_no}
+                              onChange={(e) => setProfile({...profile, reg_no: e.target.value})}
+                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Father Name</label>
-                        <Input 
-                          value={profile.father_name}
-                          onChange={(e) => setProfile({...profile, father_name: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Registration No</label>
-                        <Input 
-                          value={profile.reg_no}
-                          onChange={(e) => setProfile({...profile, reg_no: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Current CGPA</label>
-                        <Input 
-                          value={profile.cgpa}
-                          onChange={(e) => setProfile({...profile, cgpa: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Official Email</label>
-                        <Input 
-                          value={profile.email}
-                          onChange={(e) => setProfile({...profile, email: e.target.value})}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number</label>
-                        <Input 
-                          value={profile.phone}
-                          onChange={(e) => setProfile((prev: any) => ({...prev, phone: e.target.value}))}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Graduating Year</label>
-                        <Input 
-                          value={profile.graduated_year}
-                          onChange={(e) => setProfile((prev: any) => ({...prev, graduated_year: e.target.value}))}
-                          className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                          placeholder="e.g. 2026"
-                        />
+
+                      <div className="space-y-8">
+                         <div className="space-y-2.5">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Father&apos;s Name</label>
+                            <Input 
+                              value={profile.father_name}
+                              onChange={(e) => setProfile({...profile, father_name: e.target.value})}
+                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
+                         <div className="space-y-2.5">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Current CGPA</label>
+                            <Input 
+                              value={profile.cgpa}
+                              onChange={(e) => setProfile({...profile, cgpa: e.target.value})}
+                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-4 pt-4">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Department</label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-4 w-6 h-6 text-primary" />
-                        <select 
-                          className="w-full h-14 pl-14 pr-6 rounded-2xl bg-primary/5 border-2 border-primary/20 text-sm font-black uppercase tracking-widest appearance-none focus:ring-2"
-                          value={profile.department_name}
-                          onChange={(e) => setProfile({...profile, department_name: e.target.value})}
-                        >
-                          <option>Computer Science</option>
-                          <option>Software Engineering</option>
-                          <option>Mathematics</option>
-                          <option>Humanities</option>
-                          <option>Environmental Sciences</option>
-                        </select>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground italic mt-2 px-2">
-                        * Your request will be automatically routed to Library, Transport, Finance, and Hostel first, then to your selected Academic department.
-                      </p>
+                    <div className="pt-10 border-t border-slate-100 dark:border-white/5 space-y-8">
+                       <div className="flex items-center gap-4">
+                          <div className="w-1 h-8 bg-primary rounded-full" />
+                          <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Academic <span className="text-primary italic">Routing</span></h4>
+                       </div>
+                       
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                          <div className="space-y-2.5">
+                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Select Your Department</label>
+                             <div className="relative">
+                               <Building2 className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-primary pointer-events-none" />
+                               <select 
+                                 className="w-full h-16 pl-16 pr-8 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 text-sm font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                                 value={profile.department_name}
+                                 onChange={(e) => setProfile({...profile, department_name: e.target.value})}
+                               >
+                                 <option>Computer Science</option>
+                                 <option>Software Engineering</option>
+                                 <option>Mathematics</option>
+                                 <option>Humanities</option>
+                                 <option>Environmental Sciences</option>
+                               </select>
+                             </div>
+                          </div>
+                          <div className="space-y-2.5">
+                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Graduating Batch / Year</label>
+                             <Input 
+                               value={profile.graduated_year}
+                               onChange={(e) => setProfile((prev: any) => ({...prev, graduated_year: e.target.value}))}
+                               className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                               placeholder="e.g. 2026"
+                             />
+                          </div>
+                       </div>
                     </div>
 
-                    <div className="flex justify-end items-center pt-10">
-                      <Button onClick={handleSubmit} disabled={loading} className="h-14 px-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 font-black uppercase tracking-widest gap-3 transition-transform active:scale-95">
-                        {loading ? "Transmitting..." : (
-                          <>Finalize Submission <Send className="w-5 h-5" /></>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-10 pt-10 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex items-center gap-3 p-5 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/10">
+                         <div className="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
+                            <Send className="w-5 h-5" />
+                         </div>
+                         <p className="text-[10px] font-bold text-blue-800 dark:text-blue-400 leading-tight">
+                           Your request will be broadcasted to all departments for verification.
+                         </p>
+                      </div>
+                      <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto h-16 px-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/20 text-white font-black uppercase tracking-widest text-[11px] gap-4 transition-all active:scale-95">
+                        {loading ? "Establishing Identity..." : (
+                          <>Launch Clearance Queue <ArrowRight className="w-5 h-5" /></>
                         )}
                       </Button>
                     </div>

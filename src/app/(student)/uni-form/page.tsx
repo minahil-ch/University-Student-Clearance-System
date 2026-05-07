@@ -192,98 +192,130 @@ export default function UniversityFormPage() {
             )}
           </motion.div>
         </header>
-
-        <div className="max-w-4xl mx-auto">
-          <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-800">
-              <CardTitle className="flex items-center gap-4 text-3xl font-black uppercase tracking-tighter">
-                <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-                  <GraduationCap className="w-8 h-8" />
-                </div>
-                University Survey
-              </CardTitle>
-              <p className="text-muted-foreground font-medium">
-                Submit once. Admin uses this for university records.
-              </p>
+        <div className="max-w-4xl mx-auto pb-20">
+          <Card className="glass-card border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] overflow-hidden group">
+            <CardHeader className="p-10 md:p-14 border-b border-slate-100 dark:border-white/5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                 <div className="space-y-4 text-center md:text-left">
+                    <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+                       <GraduationCap className="w-4 h-4 text-primary" />
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Official University Survey</span>
+                    </div>
+                    <CardTitle className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                       FUTURE <span className="text-primary italic">MAPPING</span>
+                    </CardTitle>
+                    <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
+                      Please provide accurate data for university alumni records and placement monitoring.
+                    </p>
+                 </div>
+                 <div className="flex flex-col items-center gap-2">
+                    <div className="w-20 h-20 rounded-full border-4 border-slate-50 dark:border-white/5 flex items-center justify-center shadow-xl p-3 bg-white dark:bg-slate-950">
+                       <Logo className="w-full h-full" />
+                    </div>
+                 </div>
+              </div>
             </CardHeader>
-            <CardContent className="p-6 md:p-10 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Personal Email Address</label>
-                  <Input
-                    placeholder="johndoe@gmail.com"
-                    value={futureData.personal_email}
-                    onChange={(e) => setFutureData({ ...futureData, personal_email: e.target.value })}
-                    className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                  />
+            <CardContent className="p-10 md:p-14 space-y-12">
+              {/* Section 1: Contact Foundation */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-primary rounded-full" />
+                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Contact <span className="text-primary">Continuity</span></h4>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Alternate Phone (Optional)</label>
-                  <Input
-                    placeholder="+92 3XX XXXXXXX"
-                    value={futureData.alternate_phone}
-                    onChange={(e) => setFutureData({ ...futureData, alternate_phone: e.target.value })}
-                    className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Did you secure a job before graduation?</label>
-                  <select
-                    className="w-full h-14 px-4 rounded-2xl bg-slate-50 border-none shadow-sm focus:ring-2"
-                    value={futureData.job_secured}
-                    onChange={(e) => setFutureData({ ...futureData, job_secured: e.target.value })}
-                  >
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Company Name</label>
-                  <Input
-                    placeholder="Company"
-                    value={futureData.company_name}
-                    onChange={(e) => setFutureData({ ...futureData, company_name: e.target.value })}
-                    className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
-                    disabled={futureData.job_secured === "No"}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Personal Email Address</label>
+                    <Input
+                      placeholder="e.g. name@outlook.com"
+                      value={futureData.personal_email}
+                      onChange={(e) => setFutureData({ ...futureData, personal_email: e.target.value })}
+                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Alternate WhatsApp (Optional)</label>
+                    <Input
+                      placeholder="+92 3XX XXXXXXX"
+                      value={futureData.alternate_phone}
+                      onChange={(e) => setFutureData({ ...futureData, alternate_phone: e.target.value })}
+                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-4 pt-8 border-t border-slate-100 dark:border-slate-800">
-                <h4 className="font-black uppercase tracking-widest text-sm flex items-center gap-2 text-primary">
-                  <Globe className="w-5 h-5" /> Higher Education (Optional)
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Institution Name</label>
+              {/* Section 2: Professional Status */}
+              <div className="space-y-8 pt-10 border-t border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-indigo-500 rounded-full" />
+                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Employment <span className="text-indigo-500">Details</span></h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Job Secured before Graduation?</label>
+                    <select
+                      className="w-full h-16 px-6 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:ring-2 focus:ring-primary outline-none font-bold appearance-none cursor-pointer"
+                      value={futureData.job_secured}
+                      onChange={(e) => setFutureData({ ...futureData, job_secured: e.target.value })}
+                    >
+                      <option value="Yes">Yes, Job Secured</option>
+                      <option value="No">No, Still Searching / Higher Ed</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Organization / Company Name</label>
                     <Input
-                      placeholder="University Name"
+                      placeholder="e.g. Systems Ltd, Google, etc."
+                      value={futureData.company_name}
+                      onChange={(e) => setFutureData({ ...futureData, company_name: e.target.value })}
+                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm disabled:opacity-30 transition-all font-bold"
+                      disabled={futureData.job_secured === "No"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Academic Path */}
+              <div className="space-y-8 pt-10 border-t border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-4">
+                   <div className="w-1 h-8 bg-emerald-500 rounded-full" />
+                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Higher <span className="text-emerald-500">Aspiration</span></h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Prospective Institution (Optional)</label>
+                    <Input
+                      placeholder="Target University for MS/PhD"
                       value={futureData.higher_education_uni}
                       onChange={(e) => setFutureData({ ...futureData, higher_education_uni: e.target.value })}
-                      className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
+                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Degree</label>
+                  <div className="space-y-2.5">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Intended Degree Program</label>
                     <Input
-                      placeholder="Degree"
+                      placeholder="e.g. MS Computer Science"
                       value={futureData.degree}
                       onChange={(e) => setFutureData({ ...futureData, degree: e.target.value })}
-                      className="h-14 rounded-2xl bg-slate-50 border-none shadow-sm"
+                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-end pt-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-10 border-t border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-3 text-slate-400">
+                   <AlertCircle className="w-5 h-5 animate-pulse" />
+                   <p className="text-[10px] font-black uppercase tracking-widest italic">Ensure all data is accurate before submission.</p>
+                </div>
                 <Button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="h-14 px-12 rounded-2xl bg-primary shadow-xl shadow-primary/20 font-black uppercase tracking-widest gap-3 transition-transform active:scale-95"
+                  className="w-full md:w-auto h-16 px-14 rounded-2xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white shadow-2xl shadow-slate-900/20 font-black uppercase tracking-widest text-[11px] gap-4 transition-all active:scale-95"
                 >
-                  {loading ? "Submitting..." : <>Submit & Continue <ArrowRight className="w-5 h-5" /></>}
+                  {loading ? "Capturing Data..." : <>Verify & Submit Form <ArrowRight className="w-5 h-5" /></>}
                 </Button>
               </div>
             </CardContent>

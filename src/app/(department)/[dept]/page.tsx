@@ -149,7 +149,8 @@ export default function DepartmentDashboard(props: any) {
         .select(`
           id, status, remarks, form_submitted, updated_at,
           profiles:student_id (
-            id, full_name, father_name, reg_no, email, phone, cgpa, department_name
+            id, full_name, father_name, reg_no, email, phone, cgpa, department_name,
+            future_data (*)
           )
         `)
         .eq('department_key', dbKey)
@@ -441,23 +442,34 @@ export default function DepartmentDashboard(props: any) {
       <Sidebar role={sidebarRole} departmentName={sidebarDeptName} />
 
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
-        <header className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center md:text-left">
-            <Logo className="w-16 h-16 md:w-20 md:h-20" />
+        <header className="flex flex-col md:flex-row justify-between items-center gap-10 mb-14 relative z-10">
+          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div className="p-1 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5">
+              <Logo className="w-20 h-20 md:w-24 md:h-24" />
+            </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight flex items-center gap-3 uppercase italic text-slate-900 dark:text-white">
-                COMSATS <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-500 to-indigo-600">UNIVERSITY</span>
-              </h2>
-              <p className="text-muted-foreground mt-1 text-xs md:text-sm font-medium">{deptLabel} Clearance Authority Portal</p>
+              <div className="flex items-center gap-3 justify-center md:justify-start">
+                <h2 className="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white leading-none">
+                  COMSATS <span className="text-primary italic">UNIVERSITY</span>
+                </h2>
+                <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
+                <div className="hidden md:flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Portal</span>
+                  <span className="text-xs font-black uppercase tracking-tight text-primary">Vehari Campus</span>
+                </div>
+              </div>
+              <h3 className="mt-4 text-xl font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
+                <ShieldCheck className="w-6 h-6 text-primary" /> {deptLabel} Authority Hub
+              </h3>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-             <div className="relative w-full md:w-72 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+             <div className="relative w-full md:w-80 group">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-all duration-300" />
               <Input
-                placeholder="Search name or reg..."
-                className="pl-12 h-14 rounded-2xl bg-white border-slate-100 shadow-sm focus:shadow-xl transition-all"
+                placeholder="Search by ID or Name..."
+                className="pl-14 h-16 rounded-3xl bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-2xl focus:border-primary/30 transition-all text-sm font-bold"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -467,81 +479,75 @@ export default function DepartmentDashboard(props: any) {
               <Button 
                 variant="outline" 
                 onClick={() => setIsEditingLink(true)}
-                className="h-14 px-6 rounded-2xl bg-white border-slate-100 shadow-sm hover:shadow-md gap-2 font-bold"
+                className="h-16 px-8 rounded-3xl bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl gap-3 font-black uppercase text-[10px] tracking-widest transition-all active:scale-95"
               >
-                <Settings2 className="w-5 h-5" /> Form Settings
+                <Settings2 className="w-5 h-5 text-primary" /> Form Control
               </Button>
             )}
           </div>
         </header>
 
-        {/* Stats Overview Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-4 group hover:shadow-xl transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                 <ClipboardList className="w-6 h-6" />
-              </div>
-              <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Clearance Pending</p>
-                 <h4 className="text-2xl font-black text-slate-900">{stats.pending}</h4>
-              </div>
-           </motion.div>
-           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-4 group hover:shadow-xl transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                 <CheckCircle2 className="w-6 h-6" />
-              </div>
-              <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Approved</p>
-                 <h4 className="text-2xl font-black text-slate-900">{stats.cleared}</h4>
-              </div>
-           </motion.div>
-           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-4 group hover:shadow-xl transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                 <AlertCircle className="w-6 h-6" />
-              </div>
-              <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Issues Flagged</p>
-                 <h4 className="text-2xl font-black text-slate-900">{stats.issues}</h4>
-              </div>
-           </motion.div>
-           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-4 group hover:shadow-xl transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                 <FileText className="w-6 h-6" />
-              </div>
-              <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pending Surveys</p>
-                 <h4 className="text-2xl font-black text-slate-900">{stats.surveys}</h4>
-              </div>
-           </motion.div>
+        {/* Stats Overview Bar - Premium Style */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 relative z-10">
+           {[
+             { label: "Active Queue", value: stats.pending, icon: ClipboardList, color: "indigo", delay: 0.1 },
+             { label: "Total Cleared", value: stats.cleared, icon: CheckCircle2, color: "emerald", delay: 0.2 },
+             { label: "Issue Reports", value: stats.issues, icon: AlertCircle, color: "rose", delay: 0.3 },
+             { label: "Survey Inbox", value: stats.surveys, icon: FileText, color: "amber", delay: 0.4 }
+           ].map((stat, i) => (
+             <motion.div 
+               key={i}
+               initial={{ opacity: 0, y: 20 }} 
+               animate={{ opacity: 1, y: 0 }} 
+               transition={{ delay: stat.delay }} 
+               className="group relative p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 overflow-hidden"
+             >
+                <div className={`absolute top-0 right-0 w-24 h-24 bg-${stat.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700`} />
+                <div className="flex items-center gap-5">
+                   <div className={`w-14 h-14 rounded-2xl bg-${stat.color}-500 text-white flex items-center justify-center shadow-lg shadow-${stat.color}-500/20 group-hover:rotate-12 transition-transform`}>
+                      <stat.icon className="w-7 h-7" />
+                   </div>
+                   <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1 leading-none">{stat.label}</p>
+                      <h4 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic leading-none">{stat.value}</h4>
+                   </div>
+                </div>
+             </motion.div>
+           ))}
         </div>
 
-        {/* Global Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-6 mb-8 bg-white/50 p-4 rounded-[2rem] border border-white/20 backdrop-blur-sm">
-          <div className="flex gap-2 p-1 bg-slate-200/50 rounded-2xl">
+        {/* Global Control Hub */}
+        <div className="flex flex-wrap items-center justify-between gap-8 mb-10 bg-white/40 dark:bg-slate-900/40 p-6 rounded-[3rem] border border-slate-100 dark:border-white/5 backdrop-blur-xl shadow-xl relative z-10">
+          <div className="flex flex-wrap gap-3 p-1.5 bg-slate-200/30 dark:bg-slate-800/30 rounded-[2rem]">
             {(['pending', 'surveys', 'history'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
-                className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                  currentTab === tab ? 'bg-primary text-white shadow-lg' : 'text-slate-500 hover:text-slate-700'
+                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
+                  currentTab === tab 
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
+                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                {tab === 'surveys' ? 'Alumni Survey Hub' : tab === 'pending' ? 'Pending Requests' : 'Completed Details'}
+                {tab === 'pending' && <ClipboardList className="w-4 h-4" />}
+                {tab === 'surveys' && <FileText className="w-4 h-4" />}
+                {tab === 'history' && <CheckCircle2 className="w-4 h-4" />}
+                {tab === 'surveys' ? 'Alumni Network' : tab === 'pending' ? 'Active Queue' : 'History Log'}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-               <Filter className="w-3.5 h-3.5" /> Timeframe:
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+               <Filter className="w-4 h-4" /> Filter Range:
             </div>
-            <div className="flex bg-slate-100 p-1 rounded-xl">
+            <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5">
               {(['all', 'today', 'month'] as const).map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setTimeFilter(filter)}
-                  className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                    timeFilter === filter ? 'bg-white text-primary shadow-sm' : 'text-slate-400'
+                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                    timeFilter === filter ? 'bg-white dark:bg-slate-900 text-primary shadow-xl' : 'text-slate-400 hover:text-slate-600'
                   }`}
                 >
                   {filter}
@@ -779,69 +785,71 @@ export default function DepartmentDashboard(props: any) {
                 <div className="h-px bg-slate-100" />
 
                 {selectedStudent.isSurvey ? (
-                  <div className="space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                             <Briefcase className="w-3 h-3" /> Employment status
+                  <div className="space-y-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                      <div className="space-y-8">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+                             <Briefcase className="w-4 h-4" /> Professional Status
                           </label>
-                          <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                            <p className="font-black text-slate-900 text-lg">{selectedStudent.job_status || 'Unemployed'}</p>
-                            <p className="text-xs font-bold text-slate-500 mt-1">{selectedStudent.employer_name || 'No Employer Data'}</p>
-                            {selectedStudent.designation && <p className="text-[10px] font-medium text-slate-400 mt-1">Designation: {selectedStudent.designation}</p>}
+                          <div className="p-8 bg-slate-50 dark:bg-slate-950/50 rounded-[2rem] border border-slate-100 dark:border-white/5 transition-all">
+                            <p className="font-black text-slate-900 dark:text-white text-xl italic leading-none">{selectedStudent.experience === 'Yes' ? 'Job Secured' : 'Searching / Higher Ed'}</p>
+                            {selectedStudent.company_name && (
+                              <div className="mt-6 pt-6 border-t border-slate-100 dark:border-white/10 space-y-3">
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase">Organization</span>
+                                    <span className="text-sm font-black text-slate-900 dark:text-white">{selectedStudent.company_name}</span>
+                                 </div>
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase">Role</span>
+                                    <span className="text-sm font-black text-slate-900 dark:text-white">{selectedStudent.job_title || 'N/A'}</span>
+                                 </div>
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase">Salary Range</span>
+                                    <span className="text-sm font-black text-emerald-500 italic">{selectedStudent.salary_range || 'Confidential'}</span>
+                                 </div>
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                             <BookOpen className="w-3 h-3" /> Academics / Higher Studies
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+                             <BookOpen className="w-4 h-4" /> Academic Research
                           </label>
-                          <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                            <p className="font-black text-slate-900 text-lg">{selectedStudent.higher_study_status || 'None'}</p>
-                            <p className="text-xs font-bold text-slate-500 mt-1">{selectedStudent.institution || 'N/A'}</p>
-                            {selectedStudent.program && <p className="text-[10px] font-medium text-slate-400 mt-1">Program: {selectedStudent.program}</p>}
+                          <div className="p-8 bg-slate-50 dark:bg-slate-950/50 rounded-[2rem] border border-slate-100 dark:border-white/5">
+                            <p className="font-black text-slate-900 dark:text-white text-xl italic leading-none">{selectedStudent.degree || 'No Higher Ed Data'}</p>
+                            {selectedStudent.higher_education_uni && <p className="text-xs font-bold text-slate-500 mt-3 uppercase tracking-tight">{selectedStudent.higher_education_uni}</p>}
                           </div>
                         </div>
                       </div>
-                      <div className="space-y-6">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                             <Phone className="w-3 h-3" /> Verification Contact
+
+                      <div className="space-y-8">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 flex items-center gap-3">
+                             <Phone className="w-4 h-4" /> Global Connectivity
                           </label>
-                          <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
-                            <div className="flex items-center gap-3">
-                              <Mail className="w-4 h-4 text-slate-300" />
-                              <p className="text-xs font-black text-slate-700">{selectedStudent.current_email}</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <Phone className="w-4 h-4 text-slate-300" />
-                              <p className="text-xs font-black text-slate-700">{selectedStudent.contact_number}</p>
-                            </div>
+                          <div className="p-8 bg-indigo-50/30 dark:bg-indigo-500/5 rounded-[2rem] border border-indigo-100 dark:border-indigo-500/10 space-y-6">
+                             <div>
+                                <p className="text-[9px] font-black uppercase text-indigo-400 mb-1">Registered Institutional Email</p>
+                                <p className="text-sm font-black text-slate-900 dark:text-white truncate">{selectedStudent.personal_email || selectedStudent.profiles?.email}</p>
+                             </div>
+                             <div>
+                                <p className="text-[9px] font-black uppercase text-indigo-400 mb-1">WhatsApp Verification</p>
+                                <p className="text-sm font-black text-slate-900 dark:text-white">{selectedStudent.alternate_phone || selectedStudent.profiles?.phone || 'Not Provided'}</p>
+                             </div>
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                             <AlertCircle className="w-3 h-3" /> Student Feedback
+                        
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-3">
+                             <ClipboardList className="w-4 h-4" /> Feedback Archive
                           </label>
-                          <div className="p-5 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 italic text-xs text-slate-600 leading-relaxed font-medium">
-                            &quot;{selectedStudent.feedback || 'The student left no additional comments.'}&quot;
+                          <div className="p-8 bg-slate-50 dark:bg-slate-950/50 rounded-[2rem] border border-slate-100 dark:border-white/5">
+                             <p className="text-xs font-bold text-slate-500 leading-relaxed italic">&quot;{selectedStudent.feedback || 'The student left no additional institutional feedback.'}&quot;</p>
                           </div>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Decision Input for Survey */}
-                    {selectedStudent.status === 'pending' && (
-                       <div className="space-y-3 pt-6 border-t border-slate-100">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-rose-500">Rejection Remarks (Required if rejecting)</label>
-                          <Input 
-                            placeholder="State reason for rejection..."
-                            className="h-14 rounded-2xl bg-slate-50 border-slate-100 font-medium"
-                            value={remarks[selectedStudent.id] || ""}
-                            onChange={(e) => setRemarks({...remarks, [selectedStudent.id]: e.target.value})}
-                          />
-                       </div>
-                    )}
                   </div>
                 ) : (
                   <div className="space-y-8">
@@ -867,6 +875,57 @@ export default function DepartmentDashboard(props: any) {
                           </p>
                        </div>
                     </div>
+
+                    {/* Integrated University Form Data */}
+                    {selectedStudent.profiles?.future_data && (
+                      <div className="p-8 rounded-[2rem] border-2 border-slate-100 bg-white space-y-6">
+                        {(() => {
+                          const fData = Array.isArray(selectedStudent.profiles.future_data) 
+                            ? selectedStudent.profiles.future_data[0] 
+                            : selectedStudent.profiles.future_data;
+                          
+                          if (!fData) return null;
+
+                          return (
+                            <>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-sm font-black uppercase tracking-widest text-slate-900 flex items-center gap-2">
+                                  <GraduationCap className="w-5 h-5 text-primary" /> University Form Data
+                                </h4>
+                                <span className="text-[10px] font-black uppercase bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full border border-emerald-100">Submitted</span>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                      <p className="text-[9px] font-black uppercase text-slate-400">Employment status</p>
+                                      <p className="text-sm font-bold text-slate-900">{fData.experience === 'Yes' ? 'Job Secured' : 'Unemployed'}</p>
+                                      {fData.company_name && (
+                                        <p className="text-xs font-medium text-slate-500">{fData.company_name} &bull; {fData.job_title}</p>
+                                      )}
+                                    </div>
+                                    <div className="space-y-1">
+                                      <p className="text-[9px] font-black uppercase text-slate-400">Higher Education</p>
+                                      <p className="text-sm font-bold text-slate-900">{fData.higher_education_uni || 'None'}</p>
+                                      {fData.degree && (
+                                        <p className="text-xs font-medium text-slate-500">{fData.degree} &bull; {fData.country}</p>
+                                      )}
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                      <p className="text-[9px] font-black uppercase text-slate-400">Survey Feedback</p>
+                                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 italic text-[10px] text-slate-600">
+                                        &quot;{fData.feedback || 'No comments'}&quot;
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    )}
                     
                     {selectedStudent.status === 'pending' && (
                        <div className="space-y-3 pt-4">

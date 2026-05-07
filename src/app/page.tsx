@@ -61,65 +61,99 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-black">
+    <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl" />
+
       <motion.div 
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12 md:mb-16"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center mb-16 md:mb-24 relative z-10"
       >
-        <div className="flex flex-col items-center justify-center gap-4 mb-6">
-          <Logo className="w-20 h-20 md:w-24 md:h-24" />
-          <h1 className="text-2xl md:text-4xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
-            COMSATS <span className="text-primary italic">UNIVERSITY ISLAMABAD</span>
-          </h1>
+        <div className="flex flex-col items-center justify-center gap-8 mb-10">
+          <motion.div 
+            whileHover={{ rotate: 5, scale: 1.05 }}
+            className="relative"
+          >
+            <Logo className="w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl" />
+          </motion.div>
+          <div>
+            <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-slate-900 dark:text-white leading-none uppercase">
+              COMSATS <span className="text-primary italic">UNIVERSITY</span>
+            </h1>
+            <div className="flex items-center justify-center gap-4 mt-2">
+               <div className="h-px w-12 bg-slate-200 dark:bg-white/10" />
+               <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.6em] text-slate-400">Official Clearance Hub</p>
+               <div className="h-px w-12 bg-slate-200 dark:bg-white/10" />
+            </div>
+          </div>
         </div>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium px-4">
-          The official institutional clearance portal for COMSATS University Vehari Campus.
+        <p className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto font-bold tracking-tight px-4 leading-relaxed italic">
+          Empowering the graduating class with a seamless, digitalized verification ecosystem.
         </p>
       </motion.div>
 
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 relative z-10">
         {portals.map((portal, i) => (
           <motion.div
             key={portal.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            whileHover={{ scale: 1.02, translateY: -5 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.05, duration: 0.5 }}
+            whileHover={{ y: -10 }}
             onClick={() => router.push(portal.href)}
-            className="group cursor-pointer flex items-center p-6 md:p-8 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden"
+            className="group cursor-pointer p-8 md:p-10 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-2xl hover:shadow-primary/10 hover:border-primary/20 transition-all duration-500 relative overflow-hidden"
           >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-${portal.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`} />
+            <div className={`absolute top-0 right-0 w-40 h-40 bg-${portal.color}-500/5 rounded-full -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-700`} />
             
-            <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center bg-${portal.color}-500/10 text-${portal.color}-500 mr-6 shadow-sm shrink-0`}>
-              <portal.icon className="w-7 h-7 md:w-8 md:h-8 font-bold" />
+            <div className="flex flex-col items-start gap-8">
+              <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center bg-${portal.color}-500 text-white shadow-xl shadow-${portal.color}-500/20 group-hover:rotate-6 transition-transform`}>
+                <portal.icon className="w-8 h-8" />
+              </div>
+              
+              <div className="space-y-3">
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors tracking-tight uppercase">
+                  {portal.name.split(' ')[0]} <span className="text-primary italic">{portal.name.split(' ')[1]}</span>
+                </h3>
+                <p className="text-sm text-slate-400 dark:text-slate-500 font-bold leading-relaxed">
+                  {portal.desc}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                Secure Access <ArrowRight className="w-4 h-4" />
+              </div>
             </div>
-            
-            <div className="flex-1">
-              <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
-                {portal.name}
-              </h3>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1 leading-relaxed">
-                {portal.desc}
-              </p>
-            </div>
-            
-            <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-primary transition-all group-hover:translate-x-1" />
           </motion.div>
         ))}
       </div>
 
-      <div className="mt-16 flex flex-col items-center gap-4">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="mt-24 md:mt-32 flex flex-col items-center gap-10 relative z-10"
+      >
         <button 
           onClick={() => router.push('/login/admin?switch=1')}
-          className="px-8 py-3 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl"
+          className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
         >
-          System Administration
+          System Management <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
-        <p className="text-slate-400 dark:text-slate-500 text-[10px] md:text-xs font-medium tracking-widest uppercase">
-          &copy; 2026 CUI Vehari Clearance System
-        </p>
-      </div>
+        
+        <div className="flex flex-col items-center gap-2">
+           <p className="text-slate-300 dark:text-slate-700 text-[9px] font-black tracking-[0.5em] uppercase">
+             Vehari Campus Infrastructure
+           </p>
+           <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold">
+             &copy; 2026 CUI Official Portal. All Rights Reserved.
+           </p>
+        </div>
+      </motion.div>
     </div>
+
   )
 }

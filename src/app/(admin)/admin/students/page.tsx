@@ -1,5 +1,5 @@
 "use client"
-export const dynamic = 'force-dynamic'
+
 
 import React, { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -20,6 +20,7 @@ export default function AdminStudents() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'pending' | 'cleared' | 'future'>('pending')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
 
   const supabase = createClient()
 
@@ -40,6 +41,7 @@ export default function AdminStudents() {
   }
 
   useEffect(() => {
+    setIsClient(true)
     fetchData()
   }, [])
 
@@ -67,6 +69,8 @@ export default function AdminStudents() {
   }
 
   const activeDataList = getFilteredData()
+
+  if (!isClient) return null
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
