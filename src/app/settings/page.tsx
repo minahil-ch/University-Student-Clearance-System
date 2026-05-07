@@ -7,13 +7,23 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "sonner"
-import { Lock, Moon, Sun, ArrowLeft, Settings2, CheckCircle2, ShieldCheck } from "lucide-react"
+import { 
+  Lock, Moon, Sun, ArrowLeft, Settings2, 
+  CheckCircle2, ShieldCheck, User, Phone, 
+  BookOpen, Hash, Briefcase, Mail
+} from "lucide-react"
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false)
   const [profile, setProfile] = useState<any>(null)
+  const [formData, setFormData] = useState({
+    full_name: "",
+    father_name: "",
+    phone: "",
+    cgpa: ""
+  })
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
@@ -22,23 +32,29 @@ export default function SettingsPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check initial theme from persisted preference or current html class
     const savedTheme = window.localStorage.getItem('theme') as 'light' | 'dark' | null
     const isDark = savedTheme ? savedTheme === 'dark' : document.documentElement.classList.contains('dark')
     setTheme(isDark ? 'dark' : 'light')
 
-    // Fetch Profile
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-        setProfile(data || { role: 'unknown' })
+        if (data) {
+          setProfile(data)
+          setFormData({
+            full_name: data.full_name || "",
+            father_name: data.father_name || "",
+            phone: data.phone || "",
+            cgpa: data.cgpa?.toString() || ""
+          })
+        }
       } else {
         router.push('/login')
       }
     }
     loadUser()
-  }, [router, supabase.auth, supabase])
+  }, [router, supabase])
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
@@ -47,6 +63,28 @@ export default function SettingsPage() {
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(newTheme)
+  }
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        full_name: formData.full_name,
+        father_name: formData.father_name,
+        phone: formData.phone,
+        cgpa: formData.cgpa ? parseFloat(formData.cgpa) : null
+      })
+      .eq('id', profile.id)
+
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success("Identity profile synchronized successfully!")
+      setProfile({ ...profile, ...formData, cgpa: formData.cgpa ? parseFloat(formData.cgpa) : null })
+    }
+    setLoading(false)
   }
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -89,113 +127,220 @@ export default function SettingsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12">
-      <div className="max-w-4xl mx-auto">
-        <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-black uppercase tracking-widest gap-2 text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="w-5 h-5" /> Back to Authorization Hub
-        </Button>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
+      <div className="max-w-6xl mx-auto">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+          <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-black uppercase tracking-[0.2em] gap-2 text-slate-400 hover:text-primary transition-all">
+            <ArrowLeft className="w-5 h-5" /> Back to Authorization Hub
+          </Button>
+        </motion.div>
 
-        <header className="mb-12 flex items-center gap-4">
-          <div className="p-4 bg-primary/10 rounded-2xl text-primary">
-            <Settings2 className="w-10 h-10" />
+        <header className="mb-12 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <div className="p-5 bg-primary rounded-[2rem] text-white shadow-2xl shadow-primary/20 rotate-3">
+              <Settings2 className="w-10 h-10" />
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                Protocol <span className="text-primary italic">Settings</span>
+              </h1>
+              <div className="flex items-center gap-3 mt-3">
+                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">Live Identity</span>
+                <p className="text-slate-400 font-bold tracking-widest uppercase text-[10px]">{profile?.email}</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <h1 className="text-4xl font-black uppercase tracking-tighter">System <span className="text-primary italic">Settings</span></h1>
-            <p className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] mt-2">Active Protocol: {profile?.role}</p>
+
+          <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-2 rounded-[2rem] shadow-xl border border-slate-100 dark:border-white/5">
+             <button 
+               onClick={toggleTheme}
+               className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${theme === 'light' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'text-slate-400'}`}
+             >
+               <Sun className="w-6 h-6" />
+             </button>
+             <button 
+               onClick={toggleTheme}
+               className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${theme === 'dark' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-400'}`}
+             >
+               <Moon className="w-6 h-6" />
+             </button>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Security Panel */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
-                <CardTitle className="text-2xl font-black uppercase tracking-widest flex items-center gap-3">
-                  <ShieldCheck className="w-6 h-6 text-emerald-500" /> Account Security
-                </CardTitle>
-                <CardDescription className="text-slate-400 font-medium">Update your cryptographic access token</CardDescription>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Profile Identity Panel */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }}
+            className="xl:col-span-2"
+          >
+            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[3rem]">
+              <CardHeader className="bg-white/40 dark:bg-slate-900/40 p-10 border-b border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-4">
+                  <User className="w-8 h-8 text-primary" />
+                  <div>
+                    <CardTitle className="text-2xl font-black uppercase tracking-tight">Identity Profile</CardTitle>
+                    <CardDescription className="font-bold text-slate-400 uppercase text-[10px] tracking-widest mt-1">Manage your institutional data</CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="p-8">
-                <form onSubmit={handleUpdatePassword} className="space-y-6">
-                  {profile.role === 'admin' && (
-                    <div className="p-4 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mb-6">
-                      <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4" /> Admin Override Active
-                      </p>
-                      <p className="text-sm font-medium mt-1">You can freely reset your root access password from this terminal.</p>
+              <CardContent className="p-10">
+                <form onSubmit={handleUpdateProfile} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Legal Name</label>
+                      <div className="relative group">
+                        <User className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                        <Input 
+                          value={formData.full_name}
+                          onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          placeholder="Your Name"
+                        />
+                      </div>
                     </div>
-                  )}
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Terminal Password</label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className="pl-12 h-14 rounded-2xl border-none bg-slate-100 dark:bg-slate-900 font-medium" 
-                        required 
-                        minLength={6}
-                      />
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Father&apos;s Name</label>
+                      <div className="relative group">
+                        <User className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                        <Input 
+                          value={formData.father_name}
+                          onChange={(e) => setFormData({...formData, father_name: e.target.value})}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          placeholder="Father's Name"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Contact Phone</label>
+                      <div className="relative group">
+                        <Phone className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                        <Input 
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          placeholder="+92 XXX XXXXXXX"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Current CGPA</label>
+                      <div className="relative group">
+                        <Hash className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                        <Input 
+                          type="number"
+                          step="0.01"
+                          value={formData.cgpa}
+                          onChange={(e) => setFormData({...formData, cgpa: e.target.value})}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          placeholder="0.00"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Confirm Terminal Password</label>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="pl-12 h-14 rounded-2xl border-none bg-slate-100 dark:bg-slate-900 font-medium" 
-                        required 
-                        minLength={6}
-                      />
-                    </div>
+                  <div className="pt-6">
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="h-16 px-12 rounded-[1.5rem] bg-primary text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all"
+                    >
+                      {loading ? "Syncing Identity..." : "Synchronize Profile Details"}
+                    </Button>
                   </div>
-
-                  <Button
-                    type="submit"
-                    disabled={loading || !newPassword}
-                    className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
-                  >
-                    {loading ? "Reconfiguring..." : "Update Security Token"}
-                  </Button>
                 </form>
               </CardContent>
             </Card>
           </motion.div>
 
-          {/* Preferences Panel */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="p-8 border-b border-slate-100 dark:border-slate-800">
-                <CardTitle className="text-2xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
-                  <Sun className="w-6 h-6" /> System Preferences
-                </CardTitle>
-                <CardDescription className="font-medium text-muted-foreground">Adjust local client interfaces</CardDescription>
-              </CardHeader>
-              <CardContent className="p-8">
-                <div className="flex items-center justify-between p-6 bg-slate-100 dark:bg-slate-900 rounded-2xl">
-                  <div>
-                    <h4 className="font-black uppercase tracking-widest text-sm">Visual Theme</h4>
-                    <p className="text-xs text-muted-foreground font-medium mt-1">Switch between light/dark environments</p>
+          {/* Security & Info Panel */}
+          <div className="space-y-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[3rem]">
+                <CardHeader className="p-10 bg-slate-900 text-white">
+                  <div className="flex items-center gap-4">
+                    <ShieldCheck className="w-8 h-8 text-emerald-400" />
+                    <div>
+                      <CardTitle className="text-xl font-black uppercase tracking-tight">Security Center</CardTitle>
+                      <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Access Protocol Controls</CardDescription>
+                    </div>
                   </div>
-                  <Button 
-                    onClick={toggleTheme} 
-                    variant="outline" 
-                    className="h-14 w-14 rounded-2xl border-2 hover:bg-primary hover:text-white hover:border-primary transition-all"
-                  >
-                    {theme === 'light' ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                </CardHeader>
+                <CardContent className="p-10">
+                  <form onSubmit={handleUpdatePassword} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">New Terminal Password</label>
+                      <div className="relative">
+                        <Lock className="absolute left-5 top-5 w-5 h-5 text-slate-300" />
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-100 dark:bg-slate-950 border-none font-bold" 
+                          required 
+                          minLength={6}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Configuration</label>
+                      <div className="relative">
+                        <Lock className="absolute left-5 top-5 w-5 h-5 text-slate-300" />
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-100 dark:bg-slate-950 border-none font-bold" 
+                          required 
+                          minLength={6}
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={loading || !newPassword}
+                      className="w-full h-16 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black uppercase tracking-widest text-xs rounded-[1.5rem] shadow-xl transition-all active:scale-[0.98]"
+                    >
+                      {loading ? "Verifying..." : "Update Security Token"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+               <Card className="p-10 bg-gradient-to-br from-primary to-indigo-600 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
+                  <div className="flex items-center gap-4 mb-6">
+                     <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-white" />
+                     </div>
+                     <h4 className="text-xl font-black uppercase tracking-tighter italic">Institutional Log</h4>
+                  </div>
+                  <div className="space-y-4">
+                     <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Auth Level</span>
+                        <span className="text-xs font-black uppercase">{profile.role}</span>
+                     </div>
+                     <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Department</span>
+                        <span className="text-xs font-black uppercase">{profile.department_name || "General"}</span>
+                     </div>
+                     <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Status</span>
+                        <div className="flex items-center gap-1.5">
+                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                           <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Authorized</span>
+                        </div>
+                     </div>
+                  </div>
+               </Card>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>

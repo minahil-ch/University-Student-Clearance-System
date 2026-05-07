@@ -119,7 +119,7 @@ export default function StudentDashboardContent() {
         <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase px-4 leading-none">
-              COMSATS <span className="text-primary italic">UNIVERSITY</span>
+              COMSATS <span className="text-primary italic">UNIVERSITY</span> <span className="text-slate-400">ISLAMABAD</span>
             </h2>
             <div className="flex items-center gap-3 mt-4 px-4">
               <div className="flex -space-x-2">
@@ -151,16 +151,16 @@ export default function StudentDashboardContent() {
               label: "University Survey", 
               step: "STEP 01", 
               icon: FileText, 
-              color: "blue",
-              desc: uniFormDone ? "Data Verified" : "Action Required"
+              color: "emerald",
+              desc: uniFormDone ? "Verified & Locked" : "Action Required"
             },
             { 
               done: clearanceStarted, 
               label: "Department Review", 
               step: "STEP 02", 
               icon: ClipboardCheck, 
-              color: "indigo",
-              desc: clearanceStarted ? "In Progress" : "Awaiting Form"
+              color: "emerald",
+              desc: clearanceStarted ? "Requirements Met" : "Awaiting Form"
             },
             { 
               done: isFinalCleared, 
@@ -168,7 +168,7 @@ export default function StudentDashboardContent() {
               step: "STEP 03", 
               icon: GraduationCap, 
               color: "emerald",
-              desc: isFinalCleared ? "Portal Cleared" : "Pending Approval"
+              desc: isFinalCleared ? "Institutional Cleared" : "Pending Signature"
             }
           ].map((step, i) => (
             <motion.div 
@@ -186,16 +186,16 @@ export default function StudentDashboardContent() {
               
               <div className="flex items-center justify-between mb-6">
                 <div className={`p-4 rounded-2xl shadow-lg transition-transform group-hover:scale-110 ${
-                  step.done ? `bg-primary text-white` : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                  step.done ? `bg-emerald-500 text-white` : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                 }`}>
                   <step.icon className="w-6 h-6" />
                 </div>
-                <span className={`text-[11px] font-black tracking-widest ${step.done ? 'text-primary' : 'text-slate-300'}`}>
+                <span className={`text-[11px] font-black tracking-widest ${step.done ? 'text-emerald-500' : 'text-slate-300'}`}>
                   {step.done ? <CheckCircle2 className="w-6 h-6" /> : step.step}
                 </span>
               </div>
               
-              <h4 className={`text-xl font-black uppercase tracking-tighter leading-none ${step.done ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
+              <h4 className={`text-xl font-black uppercase tracking-tighter leading-none ${step.done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                 {step.label}
               </h4>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-3 flex items-center gap-2">
@@ -206,72 +206,9 @@ export default function StudentDashboardContent() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          <div className="space-y-8">
-            {hodContact && (
-              <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden group">
-                <div className="p-8 bg-indigo-50/50">
-                   <div className="flex items-center gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                         <ShieldCheck className="w-8 h-8" />
-                      </div>
-                      <div>
-                         <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Head of Department</p>
-                         <h4 className="text-xl font-black text-indigo-900 tracking-tighter">{hodContact.full_name}</h4>
-                      </div>
-                   </div>
-                   
-                    <div className="space-y-4">
-                      <button 
-                        onClick={() => hodContact.phone && window.open(`tel:${hodContact.phone}`, '_self')}
-                        className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
-                      >
-                         <Phone className="w-4 h-4 text-indigo-500" />
-                         <span className="text-xs font-black text-slate-700">{hodContact.phone || "No phone listed"}</span>
-                      </button>
-                      <button 
-                        onClick={() => window.location.href = `mailto:${hodContact.email}`}
-                        className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
-                      >
-                         <Mail className="w-4 h-4 text-indigo-500" />
-                         <span className="text-xs font-black text-slate-700 truncate">{hodContact.email}</span>
-                      </button>
-                    </div>
-
-                   <div className="grid grid-cols-2 gap-3 mt-6">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => hodContact.phone && window.open(`https://wa.me/${hodContact.phone.replace(/\+/g, '')}`, '_blank')}
-                        className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
-                      >
-                        WhatsApp
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => window.location.href = `mailto:${hodContact.email}`}
-                        className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
-                      >
-                        Email HOD
-                      </Button>
-                   </div>
-                </div>
-              </Card>
-            )}
-
-            <Card className="p-8 bg-slate-900 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
-               <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/20 rounded-full -mr-16 -mb-16 blur-xl group-hover:scale-150 transition-transform duration-700" />
-               <h4 className="text-xl font-black uppercase tracking-tighter relative z-10">Need Help?</h4>
-               <p className="text-white/50 text-sm mt-2 relative z-10 font-medium italic">Having issues with a specific department clearance?</p>
-               <Button 
-                onClick={() => window.open('tel:+923054128282')}
-                className="mt-6 w-full h-14 rounded-2xl bg-primary text-white font-black uppercase tracking-widest text-[10px] relative z-10"
-               >
-                 Contact Admin Office
-               </Button>
-            </Card>
-          </div>
-
-          <div className="xl:col-span-2 space-y-8">
+        <div className="flex flex-col gap-8">
+           {/* Live Status Tracker - Full Width */}
+           <div className="w-full">
             <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-white/5 shadow-2xl overflow-hidden group">
               <div className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                  <div className="flex items-center gap-6 text-center md:text-left">
@@ -286,7 +223,7 @@ export default function StudentDashboardContent() {
                  <div className="flex flex-col items-center md:items-end">
                     <div className="flex items-center gap-4 mb-2">
                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Completion</span>
-                       <span className="text-2xl font-black text-primary italic">
+                       <span className="text-2xl font-black text-emerald-500 italic">
                          {Math.round((orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100)}%
                        </span>
                     </div>
@@ -294,14 +231,14 @@ export default function StudentDashboardContent() {
                        <motion.div 
                          initial={{ width: 0 }}
                          animate={{ width: `${(orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100}%` }}
-                         className="h-full bg-gradient-to-r from-primary to-blue-400 rounded-full"
+                         className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
                        />
                     </div>
                  </div>
               </div>
 
               <div className="p-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                   {orderedClearanceData.map((item, index) => (
                     <motion.div 
                       key={item.id}
@@ -371,36 +308,95 @@ export default function StudentDashboardContent() {
                  )}
               </div>
             </div>
+           </div>
 
-            <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden">
-               <CardHeader className="p-8 border-b border-slate-100">
-                  <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
-                    <Phone className="w-6 h-6 text-primary" /> Department Helplines
-                  </CardTitle>
-               </CardHeader>
-               <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {['transport', 'library', 'finance', 'hostel'].map((key) => {
-                    const portal = getPortalContact(key)
-                    return (
-                      <div key={key} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between group hover:bg-white transition-all">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
-                            {getDepartmentIcon(key)}
+           {/* Helplines and HOD - Side by Side */}
+           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+              {/* Helplines */}
+              <div className="xl:col-span-2">
+                <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
+                  <CardHeader className="p-8 border-b border-slate-100">
+                      <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                        <Phone className="w-6 h-6 text-primary" /> Department Helplines
+                      </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {['transport', 'library', 'finance', 'hostel'].map((key) => {
+                        const portal = getPortalContact(key)
+                        return (
+                          <div key={key} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between group hover:bg-white transition-all">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                                {getDepartmentIcon(key)}
+                              </div>
+                              <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{portal.label}</p>
+                                <p className="text-xs font-bold">{portal.phone}</p>
+                              </div>
+                            </div>
+                            <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => window.open(`https://wa.me/${portal.phone.replace(/\+/g, '')}`, '_blank')}>
+                              <Phone className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        )
+                      })}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* HOD Card */}
+              <div className="xl:col-span-1">
+                {hodContact && (
+                  <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden group h-full">
+                    <div className="p-8 bg-indigo-50/50 h-full flex flex-col">
+                       <div className="flex items-center gap-4 mb-6">
+                          <div className="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                             <ShieldCheck className="w-8 h-8" />
                           </div>
                           <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{portal.label}</p>
-                            <p className="text-xs font-bold">{portal.phone}</p>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Head of Department</p>
+                             <h4 className="text-xl font-black text-indigo-900 tracking-tighter">{hodContact.full_name}</h4>
                           </div>
+                       </div>
+                       
+                        <div className="space-y-4 flex-1">
+                          <button 
+                            onClick={() => hodContact.phone && window.open(`tel:${hodContact.phone}`, '_self')}
+                            className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
+                          >
+                             <Phone className="w-4 h-4 text-indigo-500" />
+                             <span className="text-xs font-black text-slate-700">{hodContact.phone || "No phone listed"}</span>
+                          </button>
+                          <button 
+                            onClick={() => window.location.href = `mailto:${hodContact.email}`}
+                            className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
+                          >
+                             <Mail className="w-4 h-4 text-indigo-500" />
+                             <span className="text-xs font-black text-slate-700 truncate">{hodContact.email}</span>
+                          </button>
                         </div>
-                        <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => window.open(`https://wa.me/${portal.phone.replace(/\+/g, '')}`, '_blank')}>
-                          <Phone className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    )
-                  })}
-               </CardContent>
-            </Card>
-          </div>
+
+                       <div className="grid grid-cols-2 gap-3 mt-6">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => hodContact.phone && window.open(`https://wa.me/${hodContact.phone.replace(/\+/g, '')}`, '_blank')}
+                            className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
+                          >
+                            WhatsApp
+                          </Button>
+                          <Button 
+                            variant="outline"
+                            onClick={() => window.location.href = `mailto:${hodContact.email}`}
+                            className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
+                          >
+                            Email HOD
+                          </Button>
+                       </div>
+                    </div>
+                  </Card>
+                )}
+              </div>
+           </div>
         </div>
       </main>
 
