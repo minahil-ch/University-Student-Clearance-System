@@ -164,7 +164,7 @@ export default function RegisterPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <CardHeader className="p-8 pb-4 pt-14">
-            <CardTitle className="text-3xl font-black tracking-tight">
+            <CardTitle className="text-3xl font-bold tracking-tight">
               {role === "student" ? "Student Signup" : "Faculty/Staff Signup"}
             </CardTitle>
             <CardDescription>
@@ -176,7 +176,7 @@ export default function RegisterPage() {
                   {!lockStaff && (
                     <button 
                       onClick={() => handleRoleSwitch("student")}
-                      className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${role === 'student' ? 'bg-white dark:bg-slate-700 shadow-lg text-primary' : 'text-slate-400'}`}
+                      className={`px-6 py-2 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all ${role === 'student' ? 'bg-white dark:bg-slate-700 shadow-lg text-primary' : 'text-slate-400'}`}
                     >
                       Student
                     </button>
@@ -184,7 +184,7 @@ export default function RegisterPage() {
               {!lockStudent && (
                     <button 
                       onClick={() => handleRoleSwitch("department")}
-                      className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${role === 'department' ? 'bg-white dark:bg-slate-700 shadow-lg text-emerald-500' : 'text-slate-400'}`}
+                      className={`px-6 py-2 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all ${role === 'department' ? 'bg-white dark:bg-slate-700 shadow-lg text-emerald-500' : 'text-slate-400'}`}
                     >
                       Staff/Official
                     </button>

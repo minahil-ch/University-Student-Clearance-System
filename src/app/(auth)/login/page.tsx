@@ -236,10 +236,10 @@ function LoginContent() {
       >
         <div className="text-center mb-10">
            <Logo className="w-24 h-24 mx-auto mb-6" />
-           <h1 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
+           <h1 className="text-3xl md:text-4xl font-bold italic tracking-tight px-4 text-slate-900 dark:text-white">
              COMSATS <span className="text-primary italic">UNIVERSITY</span>
            </h1>
-           <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">Official Institutional Portal V5.0</p>
+           <p className="text-slate-500 font-bold tracking-wider text-xs mt-2">Official Institutional Portal V5.0</p>
         </div>
 
         <Card className="border-none shadow-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-3xl rounded-[3rem] overflow-hidden relative">
@@ -251,7 +251,7 @@ function LoginContent() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <CardHeader className="p-10 pb-4 pt-16">
-             <CardTitle className="text-xl font-black uppercase tracking-widest text-slate-800 dark:text-white flex items-center gap-2">
+             <CardTitle className="text-xl font-bold font-medium text-muted-foreground text-slate-800 dark:text-white flex items-center gap-2">
                 {lockAdmin || portal === 'admin' ? 'Admin Gateway' : portal === 'staff' ? 'Staff Portal' : 'Student Access'} <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
              </CardTitle>
              <CardDescription className="text-slate-400 font-medium">
@@ -262,7 +262,7 @@ function LoginContent() {
                 {!lockStaff && !lockAdmin && (
                   <button 
                     onClick={() => setPortal("student")}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${portal === 'student' ? 'bg-white dark:bg-slate-700 shadow-lg text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all ${portal === 'student' ? 'bg-white dark:bg-slate-700 shadow-lg text-primary' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     Student
                   </button>
@@ -270,7 +270,7 @@ function LoginContent() {
                 {!lockStudent && !lockAdmin && (
                   <button 
                     onClick={() => setPortal("staff")}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${portal === 'staff' ? 'bg-white dark:bg-slate-700 shadow-lg text-emerald-500' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all ${portal === 'staff' ? 'bg-white dark:bg-slate-700 shadow-lg text-emerald-500' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     Staff
                   </button>
@@ -278,7 +278,7 @@ function LoginContent() {
                 {lockAdmin && (
                   <button 
                     onClick={() => setPortal("admin")}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${portal === 'admin' ? 'bg-white dark:bg-slate-700 shadow-lg text-rose-500' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all ${portal === 'admin' ? 'bg-white dark:bg-slate-700 shadow-lg text-rose-500' : 'text-slate-400 hover:text-slate-600'}`}
                   >
                     Admin
                   </button>
@@ -289,7 +289,7 @@ function LoginContent() {
           <CardContent className="p-6 md:p-10 pt-4">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Official Identifier</label>
+                <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Official Identifier</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                     <Mail className="w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
@@ -307,8 +307,8 @@ function LoginContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center px-1">
-                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secure Access Key</label>
-                   <Link href="/forgot-password" className="text-[8px] font-black uppercase tracking-widest text-primary hover:underline">Forgot Password?</Link>
+                   <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400">Secure Access Key</label>
+                   <Link href="/forgot-password" className="text-[8px] font-bold font-medium text-muted-foreground text-primary hover:underline">Forgot Password?</Link>
                 </div>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -329,7 +329,7 @@ function LoginContent() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-3"
+                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-bold tracking-wider rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-3"
                 >
                   {loading ? "Verifying..." : (
                     <>
@@ -341,15 +341,15 @@ function LoginContent() {
 
               <div className="text-center pt-6 border-t border-slate-100 dark:border-slate-800">
                 {portal === 'admin' ? (
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
-                    System admin accounts are <span className="text-rose-500 font-black ml-1">PERMANENT</span>
+                  <p className="text-slate-400 text-xs font-semibold font-medium text-muted-foreground">
+                    System admin accounts are <span className="text-rose-500 font-bold ml-1">PERMANENT</span>
                   </p>
                 ) : (
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
+                  <p className="text-slate-400 text-xs font-semibold font-medium text-muted-foreground">
                     {portal === "student" ? (
-                      <>No account? <Link href="/register/student?switch=1" className="text-primary font-black ml-1 hover:underline">Enroll Now</Link></>
+                      <>No account? <Link href="/register/student?switch=1" className="text-primary font-bold ml-1 hover:underline">Enroll Now</Link></>
                     ) : portal === "staff" ? (
-                      <>No account? <Link href={lockedDept ? `/register/staff?dept=${encodeURIComponent(lockedDept)}&switch=1` : "/register/staff?switch=1"} className="text-primary font-black ml-1 hover:underline">Request Access</Link></>
+                      <>No account? <Link href={lockedDept ? `/register/staff?dept=${encodeURIComponent(lockedDept)}&switch=1` : "/register/staff?switch=1"} className="text-primary font-bold ml-1 hover:underline">Request Access</Link></>
                     ) : (
                       <>Admin registration is disabled</>
                     )}
@@ -361,7 +361,7 @@ function LoginContent() {
         </Card>
 
         {forceSwitchMode && (
-          <p className="text-center text-[10px] mt-4 uppercase tracking-widest text-muted-foreground">
+          <p className="text-center text-xs mt-4 font-medium text-muted-foreground text-muted-foreground">
             Switch account mode enabled
           </p>
         )}
@@ -370,15 +370,15 @@ function LoginContent() {
         <div className="mt-8 flex justify-center gap-6">
            <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Database Live</span>
+              <span className="text-[8px] font-bold font-medium text-muted-foreground text-slate-400">Database Live</span>
            </div>
            <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">SSL Secury</span>
+              <span className="text-[8px] font-bold font-medium text-muted-foreground text-slate-400">SSL Secury</span>
            </div>
            <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Node Sync</span>
+              <span className="text-[8px] font-bold font-medium text-muted-foreground text-slate-400">Node Sync</span>
            </div>
         </div>
       </motion.div>

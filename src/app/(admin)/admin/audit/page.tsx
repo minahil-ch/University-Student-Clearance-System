@@ -56,7 +56,7 @@ export default function AuditLogsPortal() {
       <main className="flex-1 w-full lg:max-w-[calc(100%-16rem)] lg:ml-64 p-8 xl:p-12">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter flex items-center gap-4">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight flex items-center gap-4">
               Security <span className="text-primary italic">Audit Logs</span>
               <Fingerprint className="w-10 h-10 text-primary" />
             </h2>
@@ -85,18 +85,18 @@ export default function AuditLogsPortal() {
                        </div>
                        <div>
                           <p className="font-bold text-lg">{log.actor?.full_name || 'System Auto'}</p>
-                          <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mt-1">{log.actor?.role || 'SYSTEM'}</p>
+                          <p className="text-xs font-bold font-medium text-muted-foreground text-muted-foreground mt-1">{log.actor?.role || 'SYSTEM'}</p>
                        </div>
                     </div>
                     
                     <div className="flex-1 max-w-xl mx-auto md:ml-12 border-l-2 border-slate-100 dark:border-slate-800 pl-6 py-2">
-                       <h4 className="text-sm font-black uppercase tracking-widest mb-1">{log.action.replace(/_/g, ' ')}</h4>
+                       <h4 className="text-sm font-bold font-medium text-muted-foreground mb-1">{log.action.replace(/_/g, ' ')}</h4>
                        <p className="text-sm font-medium text-slate-500">
                          {JSON.stringify(log.details)}
                        </p>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-xl">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 font-medium text-muted-foreground whitespace-nowrap bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-xl">
                        <Clock className="w-4 h-4" />
                        {formatDate(log.created_at)}
                     </div>

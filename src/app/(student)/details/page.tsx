@@ -62,10 +62,10 @@ export default function StudentDetailsPage() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase px-4 leading-none">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white uppercase px-4 leading-none">
               MY <span className="text-primary italic">DETAILS</span>
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight px-4 mt-4 uppercase tracking-[0.2em]">
+            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight px-4 mt-4 tracking-wider">
               Manage your institutional identity & profile information
             </p>
           </motion.div>
@@ -75,7 +75,7 @@ export default function StudentDetailsPage() {
             <Button 
               variant="outline" 
               onClick={() => setShowEditModal(true)}
-              className="h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em]"
+              className="h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-bold text-[11px] tracking-wider"
             >
               <Edit3 className="w-4 h-4 text-primary" /> Edit Profile
             </Button>
@@ -92,10 +92,10 @@ export default function StudentDetailsPage() {
                    <User className="w-12 h-12" />
                  </div>
                  <div>
-                   <h3 className="text-white font-black text-4xl tracking-tighter uppercase">{profile?.full_name}</h3>
+                   <h3 className="text-white font-bold text-4xl tracking-tight uppercase">{profile?.full_name}</h3>
                    <div className="flex items-center gap-4 mt-2">
-                     <span className="px-4 py-1 rounded-full bg-primary text-white text-[10px] font-black uppercase tracking-widest">{profile?.reg_no || 'Registration Pending'}</span>
-                     <span className="text-white/40 text-[10px] font-black uppercase tracking-widest italic">{profile?.department_name} Student</span>
+                     <span className="px-4 py-1 rounded-full bg-primary text-white text-xs font-bold font-medium text-muted-foreground">{profile?.reg_no || 'Registration Pending'}</span>
+                     <span className="text-white/40 text-xs font-bold font-medium text-muted-foreground italic">{profile?.department_name} Student</span>
                    </div>
                  </div>
                </div>
@@ -130,34 +130,34 @@ export default function StudentDetailsPage() {
         <div className="space-y-6 py-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Full Name</label>
               <Input value={editProfile.full_name} onChange={(e) => setEditProfile({...editProfile, full_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Father Name</label>
+              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Father Name</label>
               <Input value={editProfile.father_name} onChange={(e) => setEditProfile({...editProfile, father_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">WhatsApp Phone</label>
+              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">WhatsApp Phone</label>
               <Input value={editProfile.phone} onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Current CGPA</label>
+              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Current CGPA</label>
               <Input value={editProfile.cgpa} onChange={(e) => setEditProfile({...editProfile, cgpa: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
           </div>
         </div>
         <div className="flex justify-end gap-3 border-t pt-6">
-          <Button variant="ghost" onClick={() => setShowEditModal(false)} className="rounded-xl font-bold uppercase text-[10px]">Close</Button>
+          <Button variant="ghost" onClick={() => setShowEditModal(false)} className="rounded-xl font-bold uppercase text-xs">Close</Button>
           <Button 
             onClick={async () => {
               const { error } = await supabase.from('profiles').update(editProfile).eq('id', profile.id)
               if (error) toast.error(error.message)
               else { toast.success("Profile updated"); setShowEditModal(false); fetchData() }
             }}
-            className="rounded-xl font-black uppercase text-[10px] bg-primary text-white px-8"
+            className="rounded-xl font-bold uppercase text-xs bg-primary text-white px-8"
           >
             Save Changes
           </Button>
@@ -174,8 +174,8 @@ function DetailItem({ icon: Icon, label, value, color = "text-slate-900" }: any)
         <Icon className="w-6 h-6" />
       </div>
       <div>
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</p>
-        <p className={`text-base font-black ${color} tracking-tight`}>{value}</p>
+        <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mb-1">{label}</p>
+        <p className={`text-base font-bold ${color} tracking-tight`}>{value}</p>
       </div>
     </div>
   )
@@ -188,8 +188,8 @@ function StatusCard({ icon: Icon, label, value, color }: any) {
           <Icon className="w-7 h-7" />
        </div>
        <div>
-         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</p>
-         <p className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{value}</p>
+         <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mb-1">{label}</p>
+         <p className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{value}</p>
        </div>
     </div>
   )

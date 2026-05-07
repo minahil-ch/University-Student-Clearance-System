@@ -81,12 +81,12 @@ export default function LandingPage() {
             <Logo className="w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl" />
           </motion.div>
           <div>
-            <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-slate-900 dark:text-white leading-none uppercase">
+            <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-none uppercase">
               COMSATS <span className="text-primary italic">UNIVERSITY</span>
             </h1>
             <div className="flex items-center justify-center gap-4 mt-2">
                <div className="h-px w-12 bg-slate-200 dark:bg-white/10" />
-               <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.6em] text-slate-400">Official Clearance Hub</p>
+               <p className="text-xs md:text-xs font-bold uppercase tracking-[0.6em] text-slate-400">Official Clearance Hub</p>
                <div className="h-px w-12 bg-slate-200 dark:bg-white/10" />
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-1 space-y-2">
-              <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                 {portal.name}
               </h3>
               <p className="text-[13px] text-slate-400 dark:text-slate-500 font-bold leading-relaxed">
@@ -139,16 +139,16 @@ export default function LandingPage() {
       >
         <button 
           onClick={() => router.push('/login/admin?switch=1')}
-          className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
+          className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
         >
           System Management <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
         
         <div className="flex flex-col items-center gap-2">
-           <p className="text-slate-300 dark:text-slate-700 text-[9px] font-black tracking-[0.5em] uppercase">
+           <p className="text-slate-300 dark:text-slate-700 text-xs font-bold tracking-[0.5em] uppercase">
              Vehari Campus Infrastructure
            </p>
-           <p className="text-slate-400 dark:text-slate-500 text-[10px] font-bold">
+           <p className="text-slate-400 dark:text-slate-500 text-xs font-bold">
              &copy; 2026 CUI Official Portal. All Rights Reserved.
            </p>
         </div>

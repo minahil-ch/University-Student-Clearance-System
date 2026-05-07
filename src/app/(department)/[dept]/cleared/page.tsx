@@ -89,12 +89,12 @@ export default function ClearedStudentsPage() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start gap-6">
           <div>
-            <h1 className="text-4xl font-black uppercase tracking-tighter">Cleared <span className="text-emerald-500 italic">Students</span></h1>
-            <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Final Institutional Verification List</p>
+            <h1 className="text-4xl font-bold tracking-tight">Cleared <span className="text-emerald-500 italic">Students</span></h1>
+            <p className="text-slate-400 font-bold font-medium text-muted-foreground text-xs mt-2">Final Institutional Verification List</p>
           </div>
           <Button 
             onClick={exportToCSV}
-            className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] gap-2 shadow-xl hover:bg-slate-800 transition-all"
+            className="h-14 px-8 rounded-2xl bg-slate-900 text-white font-bold font-medium text-muted-foreground text-xs gap-2 shadow-xl hover:bg-slate-800 transition-all"
           >
             <Download className="w-4 h-4" /> Export Verification List
           </Button>
@@ -116,10 +116,10 @@ export default function ClearedStudentsPage() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Student Profile</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Registration</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Session</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Verification Date</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Profile</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Registration</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Session</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400 text-right">Verification Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 dark:divide-white/5">
@@ -132,14 +132,14 @@ export default function ClearedStudentsPage() {
                               <User className="w-5 h-5" />
                             </div>
                             <div>
-                              <p className="font-black text-slate-900 dark:text-white uppercase text-sm leading-none">{s.profiles.full_name}</p>
-                              <p className="text-[10px] text-slate-400 font-bold mt-1.5">{s.profiles.email}</p>
+                              <p className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-none">{s.profiles.full_name}</p>
+                              <p className="text-xs text-slate-400 font-bold mt-1.5">{s.profiles.email}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-8 py-6 font-black text-sm text-slate-600 dark:text-slate-400">{s.profiles.reg_no}</td>
+                        <td className="px-8 py-6 font-bold text-sm text-slate-600 dark:text-slate-400">{s.profiles.reg_no}</td>
                         <td className="px-8 py-6 text-sm font-bold text-slate-400 uppercase">{s.profiles.session}</td>
-                        <td className="px-8 py-6 text-right font-black text-[10px] text-emerald-500 uppercase tracking-widest">
+                        <td className="px-8 py-6 text-right font-bold text-xs text-emerald-500 font-medium text-muted-foreground">
                           <span className="px-3 py-1 bg-emerald-500/10 rounded-full">{new Date(s.updated_at).toLocaleDateString()}</span>
                         </td>
                       </tr>
@@ -151,7 +151,7 @@ export default function ClearedStudentsPage() {
                            <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
                              <CheckCircle2 className="w-8 h-8 text-slate-200" />
                            </div>
-                           <p className="text-xs font-black uppercase tracking-widest text-slate-300">No cleared students recorded</p>
+                           <p className="text-xs font-bold font-medium text-muted-foreground text-slate-300">No cleared students recorded</p>
                         </div>
                       </td>
                     </tr>

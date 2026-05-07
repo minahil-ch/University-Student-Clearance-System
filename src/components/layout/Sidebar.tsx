@@ -100,8 +100,8 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
             <Logo className="w-12 h-12" />
             <div>
             <div>
-              <h1 className="text-primary font-black leading-tight text-sm tracking-tight italic">CUI</h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary leading-none">Clearance System</p>
+              <h1 className="text-foreground font-bold leading-tight text-base">CUI Clearance</h1>
+              <p className="text-xs font-bold tracking-wider text-primary leading-none">Clearance System</p>
             </div>
             </div>
           </div>
@@ -123,7 +123,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
                   onClick={() => setIsOpen(false)}
                 >
                   <Icon className={cn("w-5 h-5", isActive ? "" : "group-hover:scale-110 transition-transform")} />
-                  <span className="text-[11px] font-black uppercase tracking-[0.1em]">{item.label}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.1em]">{item.label}</span>
                   {isActive && (
                     <motion.div 
                       layoutId="sidebar-active"
@@ -137,14 +137,14 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
 
           <div className="mt-auto pt-6 border-t border-slate-100 dark:border-white/5">
             <div className="px-4 py-4 mb-4 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-xs shadow-lg shadow-primary/20 shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-primary/20 shrink-0">
                 {role[0].toUpperCase()}
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs font-black truncate capitalize text-slate-900 dark:text-white uppercase tracking-tight">{role === 'admin' ? 'System Admin' : departmentName || role}</p>
+                <p className="text-xs font-bold truncate capitalize text-slate-900 dark:text-white tracking-tight">{role === 'admin' ? 'System Admin' : departmentName || role}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                  <p className="text-[9px] font-bold text-slate-400 truncate uppercase tracking-widest">Active Session</p>
+                  <p className="text-xs font-bold text-slate-400 truncate font-medium text-muted-foreground">Active Session</p>
                 </div>
               </div>
             </div>
@@ -152,7 +152,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
             <Link href="/settings">
               <Button 
                 variant="ghost" 
-                className="w-full justify-start gap-3 mb-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                className="w-full justify-start gap-3 mb-2 rounded-2xl text-xs font-bold font-medium text-muted-foreground text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
               >
                 <Settings className="w-4 h-4" />
                 <span>Settings</span>
@@ -161,7 +161,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
 
             <Button 
               variant="ghost" 
-              className="w-full justify-start gap-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
+              className="w-full justify-start gap-3 rounded-2xl text-xs font-bold font-medium text-muted-foreground text-rose-500 hover:bg-rose-500/10 hover:text-rose-600"
               onClick={async () => {
                 const { createClient } = await import("@/lib/supabase/client")
                 const supabase = createClient()

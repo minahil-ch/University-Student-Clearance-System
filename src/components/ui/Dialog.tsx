@@ -42,7 +42,7 @@ export const Dialog = ({ isOpen, onClose, title, children }: DialogProps) => {
               className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-[2rem] shadow-2xl overflow-hidden pointer-events-auto"
             >
               <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-xl font-black uppercase tracking-tight">{title}</h3>
+                <h3 className="text-xl font-bold tracking-tight">{title}</h3>
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"

@@ -253,7 +253,7 @@ export default function AdminDashboardContent() {
           <Logo className="w-8 h-8" />
         </div>
       </div>
-      <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Initializing Command Center...</p>
+      <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 animate-pulse">Initializing Command Center...</p>
     </div>
   )
 
@@ -269,16 +269,16 @@ export default function AdminDashboardContent() {
             </div>
             <div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
-                <h2 className="text-4xl font-black tracking-tighter uppercase text-slate-900 dark:text-white leading-none">
+                <h2 className="text-4xl font-bold tracking-tight uppercase text-slate-900 dark:text-white leading-none">
                   COMSATS <span className="text-primary italic">UNIVERSITY</span>
                 </h2>
                 <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
                 <div className="hidden md:flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Master Control</span>
-                  <span className="text-xs font-black uppercase tracking-tight text-primary italic">Institutional Oversight</span>
+                  <span className="text-xs font-bold uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Master Control</span>
+                  <span className="text-xs font-bold tracking-tight text-primary italic">Institutional Oversight</span>
                 </div>
               </div>
-              <h3 className="mt-4 text-xl font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
+              <h3 className="mt-4 text-xl font-bold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
                 <ShieldCheck className="w-6 h-6 text-primary" /> Command Center Hub
               </h3>
             </div>
@@ -297,7 +297,7 @@ export default function AdminDashboardContent() {
             <NotificationBell />
             <Button 
               onClick={handleExportCSV} 
-              className="h-16 px-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-black uppercase text-[10px] tracking-widest gap-3 transition-all active:scale-95"
+              className="h-16 px-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-bold uppercase text-xs tracking-widest gap-3 transition-all active:scale-95"
             >
               <Download className="w-5 h-5" /> Export Data
             </Button>
@@ -310,7 +310,7 @@ export default function AdminDashboardContent() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
+                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
                   activeTab === tab 
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -349,8 +349,8 @@ export default function AdminDashboardContent() {
                          <item.icon className="w-7 h-7" />
                       </div>
                       <div>
-                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1 leading-none">{item.label}</p>
-                         <h4 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic leading-none">{item.value}</h4>
+                         <p className="text-xs font-bold tracking-wider text-slate-400 mb-1 leading-none">{item.label}</p>
+                         <h4 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight italic leading-none">{item.value}</h4>
                       </div>
                    </div>
                 </motion.div>
@@ -371,7 +371,7 @@ export default function AdminDashboardContent() {
                       <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="flex flex-wrap justify-center gap-6 text-[10px] font-black uppercase tracking-widest">
+                  <div className="flex flex-wrap justify-center gap-6 text-xs font-bold font-medium text-muted-foreground">
                     {pieData.map(item => (
                       <div key={item.name} className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
@@ -408,7 +408,7 @@ export default function AdminDashboardContent() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-b">
+                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
                         <th className="px-8 py-4">Action</th><th className="px-8 py-4">Timestamp</th>
                       </tr>
                     </thead>
@@ -417,7 +417,7 @@ export default function AdminDashboardContent() {
                         <tr key={log.id} className="hover:bg-primary/[0.02] transition-colors">
                           <td className="px-8 py-5">
                              <div className="font-bold uppercase text-[11px] tracking-tight">{log.action.replace(/_/g, ' ')}</div>
-                             <p className="text-[10px] text-slate-400 mt-1">{log.details || 'No additional details'}</p>
+                             <p className="text-xs text-slate-400 mt-1">{log.details || 'No additional details'}</p>
                           </td>
                           <td className="px-8 py-5 text-sm text-muted-foreground">{formatDate(log.created_at)}</td>
                         </tr>
@@ -435,7 +435,7 @@ export default function AdminDashboardContent() {
             <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
               <CardHeader className="bg-slate-900 p-8 text-white flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-3xl font-black uppercase tracking-tighter flex items-center gap-4">
+                  <CardTitle className="text-3xl font-bold tracking-tight flex items-center gap-4">
                     <Users className="w-8 h-8" /> Students Master List
                   </CardTitle>
                 </div>
@@ -451,7 +451,7 @@ export default function AdminDashboardContent() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-b">
+                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
                         <th className="px-8 py-5">Student</th>
                         <th className="px-8 py-5">Reg No</th>
                         <th className="px-8 py-5">Status</th>
@@ -466,16 +466,16 @@ export default function AdminDashboardContent() {
                             <tr key={student.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
                               <td className="px-8 py-5">
                                 <div className="font-bold">{student.full_name}</div>
-                                <div className="text-[10px] text-muted-foreground">{student.email}</div>
+                                <div className="text-xs text-muted-foreground">{student.email}</div>
                               </td>
                               <td className="px-8 py-5">
                                 <div className="font-bold text-primary font-mono">{student.reg_no}</div>
                               </td>
                               <td className="px-8 py-5">
                                 {isFullyApproved ? (
-                                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-500 flex items-center gap-1 w-fit"><CheckCircle className="w-3 h-3"/> Fully Approved</span>
+                                  <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-500 flex items-center gap-1 w-fit"><CheckCircle className="w-3 h-3"/> Fully Approved</span>
                                 ) : (
-                                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 flex items-center gap-1 w-fit"><Clock className="w-3 h-3"/> In Progress</span>
+                                  <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 flex items-center gap-1 w-fit"><Clock className="w-3 h-3"/> In Progress</span>
                                 )}
                               </td>
                             </tr>
@@ -492,7 +492,7 @@ export default function AdminDashboardContent() {
         {activeTab === 'staff_requests' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black uppercase tracking-tighter">Staff Authorization Hub</h3>
+              <h3 className="text-2xl font-bold tracking-tight">Staff Authorization Hub</h3>
               <Button onClick={() => setIsAddingStaff(!isAddingStaff)} className="rounded-xl gap-2 shadow-xl shadow-primary/20"><UserPlus className="w-4 h-4" /> Register New Staff</Button>
             </div>
 
@@ -519,7 +519,7 @@ export default function AdminDashboardContent() {
                       </select>
                     )}
                     <div className="md:col-span-2 flex justify-end">
-                      <Button type="submit" disabled={loading} className="px-8 rounded-xl h-14 bg-primary text-white font-black uppercase tracking-widest text-xs">{loading ? 'Processing...' : 'Create Account'}</Button>
+                      <Button type="submit" disabled={loading} className="px-8 rounded-xl h-14 bg-primary text-white font-bold font-medium text-muted-foreground text-xs">{loading ? 'Processing...' : 'Create Account'}</Button>
                     </div>
                   </form>
                 </CardContent>
@@ -528,7 +528,7 @@ export default function AdminDashboardContent() {
 
             <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
               <CardHeader className="bg-amber-500 p-8 text-white">
-                <CardTitle className="text-2xl font-black uppercase tracking-tighter flex items-center gap-4">
+                <CardTitle className="text-2xl font-bold tracking-tight flex items-center gap-4">
                   <Clock className="w-6 h-6" /> Pending Approvals
                 </CardTitle>
               </CardHeader>
@@ -536,7 +536,7 @@ export default function AdminDashboardContent() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-b">
+                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
                         <th className="px-8 py-5">Applicant</th>
                         <th className="px-8 py-5">Target Role</th>
                         <th className="px-8 py-5 text-right">Decision</th>
@@ -547,9 +547,9 @@ export default function AdminDashboardContent() {
                         <tr key={req.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
                           <td className="px-8 py-5">
                             <div className="font-bold">{req.full_name}</div>
-                            <div className="text-[10px] text-muted-foreground">{req.email}</div>
+                            <div className="text-xs text-muted-foreground">{req.email}</div>
                           </td>
-                          <td className="px-8 py-5 font-bold uppercase text-[10px] tracking-widest">
+                          <td className="px-8 py-5 font-bold uppercase text-xs tracking-widest">
                             <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">
                               {req.role === 'department' ? req.department_name : req.role}
                             </span>
@@ -572,7 +572,7 @@ export default function AdminDashboardContent() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
               <CardHeader className="bg-emerald-600 p-8 text-white">
-                <CardTitle className="text-3xl font-black uppercase tracking-tighter flex items-center gap-4">
+                <CardTitle className="text-3xl font-bold tracking-tight flex items-center gap-4">
                   <GraduationCap className="w-8 h-8" /> Alumni Insight Data
                 </CardTitle>
               </CardHeader>
@@ -580,7 +580,7 @@ export default function AdminDashboardContent() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-[10px] font-black uppercase tracking-widest text-muted-foreground border-b">
+                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
                         <th className="px-8 py-5">Graduate</th>
                         <th className="px-8 py-5">Employment</th>
                         <th className="px-8 py-5">Higher Education</th>
@@ -591,15 +591,15 @@ export default function AdminDashboardContent() {
                         <tr key={item.id}>
                           <td className="px-8 py-5">
                             <div className="font-bold text-sm">{item.student?.full_name}</div>
-                            <div className="text-[10px] text-primary uppercase font-black">{item.student?.reg_no}</div>
+                            <div className="text-xs text-primary uppercase font-bold">{item.student?.reg_no}</div>
                           </td>
                           <td className="px-8 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${item.experience === 'Yes' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-200 text-slate-500'}`}>
+                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold font-medium text-muted-foreground ${item.experience === 'Yes' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-200 text-slate-500'}`}>
                               {item.experience === 'Yes' ? 'Employed' : 'Unemployed'}
                             </span>
                           </td>
                           <td className="px-8 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${item.degree ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-200 text-slate-500'}`}>
+                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold font-medium text-muted-foreground ${item.degree ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-200 text-slate-500'}`}>
                               {item.degree ? item.degree : 'No Further Education'}
                             </span>
                           </td>

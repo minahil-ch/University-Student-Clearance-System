@@ -104,8 +104,8 @@ export default function AddStudentPage() {
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
         <header className="mb-12">
-          <h1 className="text-4xl font-black uppercase tracking-tighter">Manual <span className="text-primary italic">Registration</span></h1>
-          <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Force Clear Student Access Protocol</p>
+          <h1 className="text-4xl font-bold tracking-tight">Manual <span className="text-primary italic">Registration</span></h1>
+          <p className="text-slate-400 font-bold font-medium text-muted-foreground text-xs mt-2">Force Clear Student Access Protocol</p>
         </header>
 
         <div className="max-w-4xl">
@@ -116,8 +116,8 @@ export default function AddStudentPage() {
                   <UserPlus className="w-8 h-8" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-black uppercase tracking-tight">Direct Enrollment</CardTitle>
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">This will automatically file University and Clearance forms as CLEARED</p>
+                  <CardTitle className="text-2xl font-bold tracking-tight">Direct Enrollment</CardTitle>
+                  <p className="text-slate-400 text-xs font-bold font-medium text-muted-foreground mt-1">This will automatically file University and Clearance forms as CLEARED</p>
                 </div>
               </div>
             </CardHeader>
@@ -125,7 +125,7 @@ export default function AddStudentPage() {
               <form onSubmit={handleManualAdd} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Official Email</label>
+                    <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Official Email</label>
                     <div className="relative">
                        <Mail className="absolute left-5 top-5 w-5 h-5 text-slate-300" />
                        <Input 
@@ -139,7 +139,7 @@ export default function AddStudentPage() {
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Legal Name</label>
+                    <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Full Legal Name</label>
                     <Input 
                       value={formData.full_name} 
                       onChange={e => setFormData({...formData, full_name: e.target.value})}
@@ -149,7 +149,7 @@ export default function AddStudentPage() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Registration No</label>
+                    <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Registration No</label>
                     <Input 
                       value={formData.reg_no} 
                       onChange={e => setFormData({...formData, reg_no: e.target.value})}
@@ -159,7 +159,7 @@ export default function AddStudentPage() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Department</label>
+                    <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Department</label>
                     <Input 
                       value={formData.department_name} 
                       onChange={e => setFormData({...formData, department_name: e.target.value})}
@@ -169,7 +169,7 @@ export default function AddStudentPage() {
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Academic Session</label>
+                    <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Academic Session</label>
                     <Input 
                       value={formData.session} 
                       onChange={e => setFormData({...formData, session: e.target.value})}
@@ -184,7 +184,7 @@ export default function AddStudentPage() {
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="h-16 px-12 rounded-2xl bg-primary text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full md:w-auto"
+                    className="h-16 px-12 rounded-2xl bg-primary text-white font-bold font-medium text-muted-foreground text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full md:w-auto"
                   >
                     {loading ? "Registering & Clearing..." : "Execute Force Enrollment"}
                   </Button>

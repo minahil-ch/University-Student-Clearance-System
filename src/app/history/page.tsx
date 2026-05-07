@@ -64,7 +64,7 @@ export default function StaffHistoryPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-4xl font-black tracking-tight flex items-center gap-4">
+            <h2 className="text-4xl font-bold tracking-tight flex items-center gap-4">
               Staff <span className="text-primary italic">History</span>
               <HistoryIcon className="w-8 h-8 text-primary" />
             </h2>
@@ -97,13 +97,13 @@ export default function StaffHistoryPage() {
                         </div>
                         
                         <div>
-                          <h4 className="text-lg font-black tracking-widest">{item.student?.full_name}</h4>
+                          <h4 className="text-lg font-bold tracking-widest">{item.student?.full_name}</h4>
                           <p className="text-sm font-bold text-muted-foreground">{item.student?.reg_no}</p>
                         </div>
                       </div>
 
                       <div className="text-right">
-                        <div className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2 ${
+                        <div className={`text-xs font-bold font-medium text-muted-foreground px-3 py-1 rounded-full inline-block mb-2 ${
                             item.action.includes('cleared') ? 'bg-emerald-500' : 'bg-rose-500'
                           } text-white`}>
                           {item.action.replace(/_/g, ' ')}

@@ -108,7 +108,7 @@ export default function StudentDashboardContent() {
           <Logo className="w-8 h-8" />
         </div>
       </div>
-      <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">Authenticating Portal Access...</p>
+      <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 animate-pulse">Authenticating Portal Access...</p>
     </div>
   )
 
@@ -128,7 +128,7 @@ export default function StudentDashboardContent() {
       <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
         <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-primary uppercase px-4 leading-none italic">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary uppercase px-4 leading-none italic">
               CUI <span className="not-italic">CLEARANCE SYSTEM</span>
             </h2>
             <div className="flex items-center gap-3 mt-4 px-4">
@@ -147,7 +147,7 @@ export default function StudentDashboardContent() {
                 <Button 
                   variant="outline" 
                   onClick={() => setShowProfile(!showProfile)}
-                  className={`h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em] ${showProfile ? 'border-primary text-primary' : ''}`}
+                  className={`h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-bold text-[11px] tracking-wider ${showProfile ? 'border-primary text-primary' : ''}`}
                 >
                   <User className="w-4 h-4 text-primary" /> My Profile
                 </Button>
@@ -165,31 +165,31 @@ export default function StudentDashboardContent() {
                       >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12" />
                         <div className="flex flex-col items-center text-center space-y-4">
-                           <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-2xl text-slate-400 border border-slate-200 dark:border-slate-700">
+                           <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-2xl text-slate-400 border border-slate-200 dark:border-slate-700">
                               {profile?.full_name?.[0]}
                            </div>
                            <div>
-                              <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase leading-none">{profile?.full_name}</h4>
-                              <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-1.5">{profile?.reg_no}</p>
+                              <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase leading-none">{profile?.full_name}</h4>
+                              <p className="text-xs font-bold text-primary font-medium text-muted-foreground mt-1.5">{profile?.reg_no}</p>
                            </div>
                            <div className="w-full h-px bg-slate-50 dark:bg-slate-800 my-2" />
                            <div className="w-full space-y-3 text-left">
-                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              <div className="flex justify-between items-center text-xs font-bold font-medium text-muted-foreground text-slate-400">
                                  <span>CGPA</span>
                                  <span className="text-emerald-500 font-bold">{profile?.cgpa || '0.00'}</span>
                               </div>
-                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              <div className="flex justify-between items-center text-xs font-bold font-medium text-muted-foreground text-slate-400">
                                  <span>Dept</span>
                                  <span className="text-slate-900 dark:text-white font-bold">{profile?.department_name}</span>
                               </div>
-                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              <div className="flex justify-between items-center text-xs font-bold font-medium text-muted-foreground text-slate-400">
                                  <span>Session</span>
                                  <span className="text-slate-900 dark:text-white font-bold">{profile?.session || 'N/A'}</span>
                               </div>
                            </div>
                            <Button 
                              onClick={() => window.location.href = '/settings'}
-                             className="w-full h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black uppercase tracking-widest text-[10px] shadow-xl active:scale-95 transition-all"
+                             className="w-full h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold font-medium text-muted-foreground text-xs shadow-xl active:scale-95 transition-all"
                            >
                               Edit Profile
                            </Button>
@@ -249,15 +249,15 @@ export default function StudentDashboardContent() {
                 }`}>
                   <step.icon className="w-6 h-6" />
                 </div>
-                <span className={`text-[11px] font-black tracking-widest ${step.done ? 'text-emerald-500' : 'text-slate-300'}`}>
+                <span className={`text-[11px] font-bold tracking-widest ${step.done ? 'text-emerald-500' : 'text-slate-300'}`}>
                   {step.done ? <CheckCircle2 className="w-6 h-6" /> : step.step}
                 </span>
               </div>
               
-              <h4 className={`text-xl font-black uppercase tracking-tighter leading-none ${step.done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+              <h4 className={`text-xl font-bold tracking-tight leading-none ${step.done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
                 {step.label}
               </h4>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-3 flex items-center gap-2">
+              <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mt-3 flex items-center gap-2">
                 <span className={`w-1.5 h-1.5 rounded-full ${step.done ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
                 {step.desc}
               </p>
@@ -275,14 +275,14 @@ export default function StudentDashboardContent() {
                        <LayoutDashboard className="w-8 h-8" />
                     </div>
                     <div>
-                       <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none uppercase">Live Status <span className="text-primary italic">Tracker</span></h3>
-                       <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-[0.2em]">Official Campus Verification Queue</p>
+                       <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-none uppercase">Live Status <span className="text-primary italic">Tracker</span></h3>
+                       <p className="text-xs font-bold text-slate-400 mt-2 tracking-wider">Official Campus Verification Queue</p>
                     </div>
                  </div>
                  <div className="flex flex-col items-center md:items-end">
                     <div className="flex items-center gap-4 mb-2">
-                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Completion</span>
-                       <span className="text-2xl font-black text-emerald-500 italic">
+                       <span className="text-xs font-bold text-slate-400 font-medium text-muted-foreground">Global Completion</span>
+                       <span className="text-2xl font-bold text-emerald-500 italic">
                          {Math.round((orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100)}%
                        </span>
                     </div>
@@ -319,15 +319,15 @@ export default function StudentDashboardContent() {
                           {getDepartmentIcon(item.department_key)}
                         </div>
                         <div>
-                          <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 leading-none">{item.department_key}</p>
-                          <h5 className="font-black text-slate-900 dark:text-white text-sm uppercase tracking-tight">
+                          <p className="text-xs font-bold uppercase text-slate-400 tracking-[0.2em] mb-1 leading-none">{item.department_key}</p>
+                          <h5 className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">
                             {item.department_key.startsWith("academic-") ? "Final Academic" : item.department_key.replace(/_/g, " ")}
                           </h5>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1">
-                         <StatusBadge status={item.status} className="h-8 rounded-xl px-4 text-[9px] font-black uppercase tracking-widest border-none shadow-sm" />
-                         {item.remarks && <p className="text-[9px] font-bold text-rose-500 mt-1 italic max-w-[100px] truncate">&quot;{item.remarks}&quot;</p>}
+                         <StatusBadge status={item.status} className="h-8 rounded-xl px-4 text-xs font-bold font-medium text-muted-foreground border-none shadow-sm" />
+                         {item.remarks && <p className="text-xs font-bold text-rose-500 mt-1 italic max-w-[100px] truncate">&quot;{item.remarks}&quot;</p>}
                       </div>
                     </motion.div>
                   ))}
@@ -340,7 +340,7 @@ export default function StudentDashboardContent() {
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                            <CheckCircle2 className="w-8 h-8 text-white" />
                         </div>
-                        <h4 className="text-2xl font-black uppercase tracking-tighter italic">Clearance Form Filed</h4>
+                        <h4 className="text-2xl font-bold tracking-tight">Clearance Form Filed</h4>
                         <p className="text-emerald-100 font-medium text-sm max-w-sm mx-auto leading-relaxed">
                           Your clearance request is currently being processed by the departments. You will be notified of any updates.
                         </p>
@@ -350,14 +350,14 @@ export default function StudentDashboardContent() {
                     <div className="mt-10 p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
                        <div className="relative z-10">
-                          <h4 className="text-2xl font-black uppercase tracking-tighter italic">Start Clearance Process</h4>
+                          <h4 className="text-2xl font-bold tracking-tight">Start Clearance Process</h4>
                           <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
                             One-click initiation. This will guide you through the mandatory university survey and department clearance.
                           </p>
                           <div className="pt-6">
                              <Button 
                                onClick={() => { window.location.href = !uniFormDone ? "/uni-form" : "/form" }}
-                               className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-black uppercase tracking-widest text-xs gap-3 active:scale-95 transition-all"
+                               className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-bold font-medium text-muted-foreground text-xs gap-3 active:scale-95 transition-all"
                              >
                                 Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
                              </Button>
@@ -371,7 +371,7 @@ export default function StudentDashboardContent() {
                     <div className="mt-10">
                        <div className="flex items-center gap-3 mb-6 px-4">
                           <FileText className="w-6 h-6 text-primary" />
-                          <h4 className="text-lg font-black uppercase tracking-tighter text-slate-900 dark:text-white">Academic Department Forms</h4>
+                          <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Academic Department Forms</h4>
                        </div>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {deptForms.map((form) => (
@@ -382,8 +382,8 @@ export default function StudentDashboardContent() {
                                         <ClipboardCheck className="w-6 h-6" />
                                      </div>
                                      <div>
-                                        <h5 className="font-black text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.name}</h5>
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Required for HOD Approval</p>
+                                        <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.name}</h5>
+                                        <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Required for HOD Approval</p>
                                      </div>
                                   </div>
                                   <Button 
@@ -409,7 +409,7 @@ export default function StudentDashboardContent() {
               <div className="xl:col-span-2">
                 <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
                   <CardHeader className="p-8 border-b border-slate-100">
-                      <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                      <CardTitle className="text-xl font-bold tracking-tight flex items-center gap-3">
                         <Phone className="w-6 h-6 text-primary" /> Department Helplines
                       </CardTitle>
                   </CardHeader>
@@ -423,7 +423,7 @@ export default function StudentDashboardContent() {
                                 {getDepartmentIcon(key)}
                               </div>
                               <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{portal.label}</p>
+                                <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400">{portal.label}</p>
                                 <p className="text-xs font-bold">{portal.phone}</p>
                               </div>
                             </div>
@@ -447,8 +447,8 @@ export default function StudentDashboardContent() {
                              <ShieldCheck className="w-8 h-8" />
                           </div>
                           <div>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Head of Department</p>
-                             <h4 className="text-xl font-black text-indigo-900 tracking-tighter">{hodContact.full_name}</h4>
+                             <p className="text-xs font-bold font-medium text-muted-foreground text-indigo-400">Head of Department</p>
+                             <h4 className="text-xl font-bold text-indigo-900 tracking-tight">{hodContact.full_name}</h4>
                           </div>
                        </div>
                        
@@ -458,14 +458,14 @@ export default function StudentDashboardContent() {
                             className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
                           >
                              <Phone className="w-4 h-4 text-indigo-500" />
-                             <span className="text-xs font-black text-slate-700">{hodContact.phone || "No phone listed"}</span>
+                             <span className="text-xs font-bold text-slate-700">{hodContact.phone || "No phone listed"}</span>
                           </button>
                           <button 
                             onClick={() => window.location.href = `mailto:${hodContact.email}`}
                             className="w-full flex items-center gap-3 p-4 bg-white rounded-2xl shadow-sm border border-indigo-100/50 transition-all hover:border-indigo-400 hover:shadow-md group/item text-left"
                           >
                              <Mail className="w-4 h-4 text-indigo-500" />
-                             <span className="text-xs font-black text-slate-700 truncate">{hodContact.email}</span>
+                             <span className="text-xs font-bold text-slate-700 truncate">{hodContact.email}</span>
                           </button>
                         </div>
 
@@ -473,14 +473,14 @@ export default function StudentDashboardContent() {
                           <Button 
                             variant="outline" 
                             onClick={() => hodContact.phone && window.open(`https://wa.me/${hodContact.phone.replace(/\+/g, '')}`, '_blank')}
-                            className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
+                            className="rounded-xl font-bold uppercase text-xs tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
                           >
                             WhatsApp
                           </Button>
                           <Button 
                             variant="outline"
                             onClick={() => window.location.href = `mailto:${hodContact.email}`}
-                            className="rounded-xl font-black uppercase text-[9px] tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
+                            className="rounded-xl font-bold uppercase text-xs tracking-widest h-12 border-indigo-100 hover:bg-indigo-100/50"
                           >
                             Email HOD
                           </Button>
@@ -505,46 +505,46 @@ export default function StudentDashboardContent() {
                </div>
                
                <div className="space-y-2">
-                  <h2 className="text-5xl font-black tracking-tighter uppercase italic">
+                  <h2 className="text-5xl font-bold tracking-tight uppercase italic">
                      CLEARANCE <span className="text-primary">CERTIFICATE</span>
                   </h2>
-                  <p className="text-[10px] font-black tracking-[0.6em] uppercase text-slate-400">University Administration Center</p>
+                  <p className="text-xs font-bold tracking-[0.6em] uppercase text-slate-400">University Administration Center</p>
                </div>
                
                <div className="py-10 space-y-8 border-y-2 border-slate-50">
                   <p className="text-lg font-medium text-slate-500 italic">This document officially confirms that</p>
                   <div className="space-y-2">
-                     <h3 className="text-4xl font-black tracking-tight text-slate-900">{profile?.full_name}</h3>
+                     <h3 className="text-4xl font-bold tracking-tight text-slate-900">{profile?.full_name}</h3>
                      <p className="text-xl font-bold tracking-widest uppercase text-primary">{profile?.reg_no}</p>
                   </div>
                   <p className="text-sm text-slate-600 font-medium leading-relaxed max-w-lg mx-auto">
                     Has successfully completed the mandatory university clearance protocol, including Library records, 
                     Hostel dues, Transport obligations, Finance accounts, and the 
-                    <span className="font-black text-slate-900 uppercase ml-1">{profile?.department_name}</span> academic survey.
+                    <span className="font-bold text-slate-900 uppercase ml-1">{profile?.department_name}</span> academic survey.
                   </p>
                </div>
                
                <div className="grid grid-cols-3 gap-10 pt-10">
                   <div className="flex flex-col items-center gap-4">
                      <div className="h-0.5 bg-slate-100 w-full" />
-                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Registrar Office</p>
+                     <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400">Registrar Office</p>
                   </div>
                   <div className="flex flex-col items-center">
                      <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center border-4 border-white shadow-xl">
                         <CheckCircle2 className="w-8 h-8 text-emerald-500" />
                      </div>
-                     <p className="text-[10px] font-black uppercase text-emerald-500 mt-4 tracking-widest">Digitally Verified</p>
+                     <p className="text-xs font-bold uppercase text-emerald-500 mt-4 tracking-widest">Digitally Verified</p>
                   </div>
                   <div className="flex flex-col items-center gap-4">
                      <div className="h-0.5 bg-slate-100 w-full" />
-                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Head of Dept.</p>
+                     <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400">Head of Dept.</p>
                   </div>
                </div>
             </div>
          </div>
          <div className="p-8 flex justify-end gap-3">
             <Button variant="ghost" onClick={() => setShowCertificate(false)} className="rounded-xl font-bold">Cancel</Button>
-            <Button onClick={() => window.print()} className="rounded-xl font-black uppercase tracking-widest text-[10px] bg-slate-900 text-white px-10 h-14">Print Official Copy</Button>
+            <Button onClick={() => window.print()} className="rounded-xl font-bold font-medium text-muted-foreground text-xs bg-slate-900 text-white px-10 h-14">Print Official Copy</Button>
          </div>
       </Dialog>
     </div>

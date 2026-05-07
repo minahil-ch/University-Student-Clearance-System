@@ -130,7 +130,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-black uppercase tracking-[0.2em] gap-2 text-slate-400 hover:text-primary transition-all">
+          <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-bold tracking-wider gap-2 text-slate-400 hover:text-primary transition-all">
             <ArrowLeft className="w-5 h-5" /> Back to Authorization Hub
           </Button>
         </motion.div>
@@ -141,12 +141,12 @@ export default function SettingsPage() {
               <Settings2 className="w-10 h-10" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
                 Protocol <span className="text-primary italic">Settings</span>
               </h1>
               <div className="flex items-center gap-3 mt-3">
-                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black uppercase tracking-widest">Live Identity</span>
-                <p className="text-slate-400 font-bold tracking-widest uppercase text-[10px]">{profile?.email}</p>
+                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-xs font-bold font-medium text-muted-foreground">Live Identity</span>
+                <p className="text-slate-400 font-bold tracking-widest uppercase text-xs">{profile?.email}</p>
               </div>
             </div>
           </div>
@@ -179,8 +179,8 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4">
                   <User className="w-8 h-8 text-primary" />
                   <div>
-                    <CardTitle className="text-2xl font-black uppercase tracking-tight">Identity Profile</CardTitle>
-                    <CardDescription className="font-bold text-slate-400 uppercase text-[10px] tracking-widest mt-1">Manage your institutional data</CardDescription>
+                    <CardTitle className="text-2xl font-bold tracking-tight">Identity Profile</CardTitle>
+                    <CardDescription className="font-bold text-slate-400 uppercase text-xs tracking-widest mt-1">Manage your institutional data</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
                 <form onSubmit={handleUpdateProfile} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Legal Name</label>
+                      <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Full Legal Name</label>
                       <div className="relative group">
                         <User className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
                         <Input 
@@ -200,7 +200,7 @@ export default function SettingsPage() {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Father&apos;s Name</label>
+                      <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Father&apos;s Name</label>
                       <div className="relative group">
                         <User className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
                         <Input 
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Contact Phone</label>
+                      <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Contact Phone</label>
                       <div className="relative group">
                         <Phone className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
                         <Input 
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Current CGPA</label>
+                      <label className="text-[11px] font-bold font-medium text-muted-foreground text-slate-400 ml-1">Current CGPA</label>
                       <div className="relative group">
                         <Hash className="absolute left-5 top-5 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors" />
                         <Input 
@@ -243,7 +243,7 @@ export default function SettingsPage() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="h-16 px-12 rounded-[1.5rem] bg-primary text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all"
+                      className="h-16 px-12 rounded-[1.5rem] bg-primary text-white font-bold font-medium text-muted-foreground text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all"
                     >
                       {loading ? "Syncing Identity..." : "Synchronize Profile Details"}
                     </Button>
@@ -261,15 +261,15 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-4">
                     <ShieldCheck className="w-8 h-8 text-emerald-400" />
                     <div>
-                      <CardTitle className="text-xl font-black uppercase tracking-tight">Security Center</CardTitle>
-                      <CardDescription className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Access Protocol Controls</CardDescription>
+                      <CardTitle className="text-xl font-bold tracking-tight">Security Center</CardTitle>
+                      <CardDescription className="text-slate-400 font-bold text-xs font-medium text-muted-foreground mt-1">Access Protocol Controls</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-10">
                   <form onSubmit={handleUpdatePassword} className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">New Terminal Password</label>
+                      <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">New Terminal Password</label>
                       <div className="relative">
                         <Lock className="absolute left-5 top-5 w-5 h-5 text-slate-300" />
                         <Input 
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Configuration</label>
+                      <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Confirm Configuration</label>
                       <div className="relative">
                         <Lock className="absolute left-5 top-5 w-5 h-5 text-slate-300" />
                         <Input 
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                     <Button
                       type="submit"
                       disabled={loading || !newPassword}
-                      className="w-full h-16 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black uppercase tracking-widest text-xs rounded-[1.5rem] shadow-xl transition-all active:scale-[0.98]"
+                      className="w-full h-16 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold font-medium text-muted-foreground text-xs rounded-[1.5rem] shadow-xl transition-all active:scale-[0.98]"
                     >
                       {loading ? "Verifying..." : "Update Security Token"}
                     </Button>
@@ -319,22 +319,22 @@ export default function SettingsPage() {
                      <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
                         <Briefcase className="w-6 h-6 text-white" />
                      </div>
-                     <h4 className="text-xl font-black uppercase tracking-tighter italic">Institutional Log</h4>
+                     <h4 className="text-xl font-bold tracking-tight">Institutional Log</h4>
                   </div>
                   <div className="space-y-4">
                      <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Auth Level</span>
-                        <span className="text-xs font-black uppercase">{profile.role}</span>
+                        <span className="text-xs font-bold font-medium text-muted-foreground opacity-60">Auth Level</span>
+                        <span className="text-xs font-bold uppercase">{profile.role}</span>
                      </div>
                      <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Department</span>
-                        <span className="text-xs font-black uppercase">{profile.department_name || "General"}</span>
+                        <span className="text-xs font-bold font-medium text-muted-foreground opacity-60">Department</span>
+                        <span className="text-xs font-bold uppercase">{profile.department_name || "General"}</span>
                      </div>
                      <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Status</span>
+                        <span className="text-xs font-bold font-medium text-muted-foreground opacity-60">Status</span>
                         <div className="flex items-center gap-1.5">
                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                           <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Authorized</span>
+                           <span className="text-xs font-bold font-medium text-muted-foreground text-emerald-400">Authorized</span>
                         </div>
                      </div>
                   </div>

@@ -86,25 +86,25 @@ export default function UniversityFormPage() {
               <GraduationCap className="w-12 h-12 text-emerald-500" />
             </div>
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-tight text-slate-900">Already Submitted!</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900">Already Submitted!</h2>
               <p className="text-slate-500 font-medium mt-3 leading-relaxed">
                 Your University Survey form has already been submitted successfully. Your responses have been recorded.
               </p>
             </div>
             <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100 text-left space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Next Step</p>
+              <p className="text-xs font-bold font-medium text-muted-foreground text-blue-600">Next Step</p>
               <p className="text-sm text-blue-800 font-medium">You can now proceed to submit your Clearance Form to initiate the departmental clearance process.</p>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => window.location.href = '/dashboard'}
-                className="flex-1 h-14 rounded-2xl bg-slate-100 text-slate-700 font-black uppercase tracking-widest text-sm hover:bg-slate-200 transition-all"
+                className="flex-1 h-14 rounded-2xl bg-slate-100 text-slate-700 font-bold font-medium text-muted-foreground text-sm hover:bg-slate-200 transition-all"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => window.location.href = '/form'}
-                className="flex-1 h-14 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-primary transition-all"
+                className="flex-1 h-14 rounded-2xl bg-slate-900 text-white font-bold font-medium text-muted-foreground text-sm hover:bg-primary transition-all"
               >
                 Clearance Form →
               </button>
@@ -177,13 +177,13 @@ export default function UniversityFormPage() {
             
             {rejectionRemarks ? (
               <div className="mt-6 p-6 bg-rose-50 border border-rose-100 rounded-3xl text-left">
-                <div className="flex items-center gap-3 text-rose-600 font-black uppercase text-xs mb-2">
+                <div className="flex items-center gap-3 text-rose-600 font-bold uppercase text-xs mb-2">
                   <AlertCircle className="w-5 h-5" /> Submission Rejected
                 </div>
                 <p className="text-sm text-rose-800 font-medium leading-relaxed italic">
                   &quot;{rejectionRemarks}&quot;
                 </p>
-                <p className="text-[10px] font-black text-rose-400 uppercase mt-4 tracking-widest">Please correct your details and re-submit.</p>
+                <p className="text-xs font-bold text-rose-400 uppercase mt-4 tracking-widest">Please correct your details and re-submit.</p>
               </div>
             ) : (
               <p className="text-muted-foreground mt-4 text-lg font-medium">
@@ -200,9 +200,9 @@ export default function UniversityFormPage() {
                  <div className="space-y-4 text-center md:text-left">
                     <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
                        <GraduationCap className="w-4 h-4 text-primary" />
-                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary italic">Official University Survey</span>
+                       <span className="text-xs font-bold tracking-wider text-primary italic">Official University Survey</span>
                     </div>
-                    <CardTitle className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                    <CardTitle className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
                        FUTURE <span className="text-primary italic">MAPPING</span>
                     </CardTitle>
                     <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
@@ -221,11 +221,11 @@ export default function UniversityFormPage() {
               <div className="space-y-8">
                 <div className="flex items-center gap-4">
                    <div className="w-1 h-8 bg-primary rounded-full" />
-                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Contact <span className="text-primary">Continuity</span></h4>
+                   <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Contact <span className="text-primary">Continuity</span></h4>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Personal Email Address</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Personal Email Address</label>
                     <Input
                       placeholder="e.g. name@outlook.com"
                       value={futureData.personal_email}
@@ -234,7 +234,7 @@ export default function UniversityFormPage() {
                     />
                   </div>
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Alternate WhatsApp (Optional)</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Alternate WhatsApp (Optional)</label>
                     <Input
                       placeholder="+92 3XX XXXXXXX"
                       value={futureData.alternate_phone}
@@ -249,11 +249,11 @@ export default function UniversityFormPage() {
               <div className="space-y-8 pt-10 border-t border-slate-100 dark:border-white/5">
                 <div className="flex items-center gap-4">
                    <div className="w-1 h-8 bg-indigo-500 rounded-full" />
-                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Employment <span className="text-indigo-500">Details</span></h4>
+                   <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Employment <span className="text-indigo-500">Details</span></h4>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Job Secured before Graduation?</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Job Secured before Graduation?</label>
                     <select
                       className="w-full h-16 px-6 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:ring-2 focus:ring-primary outline-none font-bold appearance-none cursor-pointer"
                       value={futureData.job_secured}
@@ -265,7 +265,7 @@ export default function UniversityFormPage() {
                   </div>
 
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Organization / Company Name</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Organization / Company Name</label>
                     <Input
                       placeholder="e.g. Systems Ltd, Google, etc."
                       value={futureData.company_name}
@@ -281,11 +281,11 @@ export default function UniversityFormPage() {
               <div className="space-y-8 pt-10 border-t border-slate-100 dark:border-white/5">
                 <div className="flex items-center gap-4">
                    <div className="w-1 h-8 bg-emerald-500 rounded-full" />
-                   <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Higher <span className="text-emerald-500">Aspiration</span></h4>
+                   <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Higher <span className="text-emerald-500">Aspiration</span></h4>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Prospective Institution (Optional)</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Prospective Institution (Optional)</label>
                     <Input
                       placeholder="Target University for MS/PhD"
                       value={futureData.higher_education_uni}
@@ -294,7 +294,7 @@ export default function UniversityFormPage() {
                     />
                   </div>
                   <div className="space-y-2.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Intended Degree Program</label>
+                    <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Intended Degree Program</label>
                     <Input
                       placeholder="e.g. MS Computer Science"
                       value={futureData.degree}
@@ -308,12 +308,12 @@ export default function UniversityFormPage() {
               <div className="flex flex-col md:flex-row items-center justify-between gap-8 pt-10 border-t border-slate-100 dark:border-white/5">
                 <div className="flex items-center gap-3 text-slate-400">
                    <AlertCircle className="w-5 h-5 animate-pulse" />
-                   <p className="text-[10px] font-black uppercase tracking-widest italic">Ensure all data is accurate before submission.</p>
+                   <p className="text-xs font-bold font-medium text-muted-foreground italic">Ensure all data is accurate before submission.</p>
                 </div>
                 <Button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="w-full md:w-auto h-16 px-14 rounded-2xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white shadow-2xl shadow-slate-900/20 font-black uppercase tracking-widest text-[11px] gap-4 transition-all active:scale-95"
+                  className="w-full md:w-auto h-16 px-14 rounded-2xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white shadow-2xl shadow-slate-900/20 font-bold font-medium text-muted-foreground text-[11px] gap-4 transition-all active:scale-95"
                 >
                   {loading ? "Capturing Data..." : <>Verify & Submit Form <ArrowRight className="w-5 h-5" /></>}
                 </Button>

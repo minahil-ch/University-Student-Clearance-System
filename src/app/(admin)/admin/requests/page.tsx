@@ -157,7 +157,7 @@ export default function AdminRequests() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter flex items-center gap-4">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight flex items-center gap-4">
               Staff <span className="text-primary italic">Access</span>
               <ShieldCheck className="w-10 h-10 text-primary" />
             </h2>
@@ -180,22 +180,22 @@ export default function AdminRequests() {
         <div className="flex items-center gap-4 mb-10 bg-slate-200/50 dark:bg-slate-800/50 p-2 rounded-[1.5rem] w-fit shadow-inner">
           <button 
             onClick={() => setActiveTab('pending')}
-            className={`px-8 py-3.5 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${activeTab === 'pending' ? 'bg-white dark:bg-slate-900 shadow-xl text-rose-500 scale-105' : 'text-slate-500 hover:text-slate-700 hover:scale-105'}`}
+            className={`px-8 py-3.5 rounded-xl text-xs font-bold tracking-wider transition-all flex items-center gap-2 ${activeTab === 'pending' ? 'bg-white dark:bg-slate-900 shadow-xl text-rose-500 scale-105' : 'text-slate-500 hover:text-slate-700 hover:scale-105'}`}
           >
-            Pending Approvals {pendingRequests.length > 0 && <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[10px] ml-1">{pendingRequests.length}</span>}
+            Pending Approvals {pendingRequests.length > 0 && <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-xs ml-1">{pendingRequests.length}</span>}
           </button>
           <button 
             onClick={() => setActiveTab('working')}
-            className={`px-8 py-3.5 rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${activeTab === 'working' ? 'bg-white dark:bg-slate-900 shadow-xl text-emerald-500 scale-105' : 'text-slate-500 hover:text-slate-700 hover:scale-105'}`}
+            className={`px-8 py-3.5 rounded-xl text-xs font-bold tracking-wider transition-all flex items-center gap-2 ${activeTab === 'working' ? 'bg-white dark:bg-slate-900 shadow-xl text-emerald-500 scale-105' : 'text-slate-500 hover:text-slate-700 hover:scale-105'}`}
           >
-            Approved Staff {workingStaff.length > 0 && <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full text-[10px] ml-1">{workingStaff.length}</span>}
+            Approved Staff {workingStaff.length > 0 && <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full text-xs ml-1">{workingStaff.length}</span>}
           </button>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
           <Card className="glass-card border-none shadow-xl">
             <CardHeader>
-              <CardTitle className="text-lg font-black">Manual Staff Creation</CardTitle>
+              <CardTitle className="text-lg font-bold">Manual Staff Creation</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleManualCreate} className="grid md:grid-cols-5 gap-3">
@@ -239,12 +239,12 @@ export default function AdminRequests() {
                              {activeTab === 'working' ? <UserCheck className="w-10 h-10 text-emerald-500" /> : <Clock className="w-10 h-10 text-primary" />}
                           </div>
                           <div>
-                             <h3 className="text-2xl font-black uppercase tracking-tight">{req.full_name}</h3>
+                             <h3 className="text-2xl font-bold tracking-tight">{req.full_name}</h3>
                              <div className="flex flex-wrap items-center gap-4 mt-3">
                                 <span className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-full">
                                    <Mail className="w-3.5 h-3.5 text-primary" /> {req.email}
                                 </span>
-                                <span className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-full">
+                                <span className="flex items-center gap-2 text-xs font-bold font-medium text-muted-foreground text-slate-500 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-full">
                                    <Building2 className="w-3.5 h-3.5 text-primary" /> {req.department_name || req.role}
                                 </span>
                              </div>
@@ -257,13 +257,13 @@ export default function AdminRequests() {
                               <Button 
                                 onClick={() => handleToggleApproval(req.id, req.full_name, false)} // Just a soft toggle or delete
                                 variant="ghost" 
-                                className="w-full md:w-auto h-14 px-8 rounded-2xl font-black uppercase text-xs tracking-widest text-rose-500 hover:bg-rose-500/10 gap-3"
+                                className="w-full md:w-auto h-14 px-8 rounded-2xl font-bold uppercase text-xs tracking-widest text-rose-500 hover:bg-rose-500/10 gap-3"
                               >
                                 <UserX className="w-5 h-5" /> Deny
                               </Button>
                               <Button 
                                 onClick={() => handleToggleApproval(req.id, req.full_name, true)}
-                                className="w-full md:w-auto h-14 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-primary/20 gap-3 active:scale-95 transition-all"
+                                className="w-full md:w-auto h-14 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold uppercase text-xs tracking-[0.2em] shadow-xl shadow-primary/20 gap-3 active:scale-95 transition-all"
                               >
                                 <CheckCircle2 className="w-5 h-5" /> Approve Access
                               </Button>
@@ -272,7 +272,7 @@ export default function AdminRequests() {
                              <Button 
                                 onClick={() => handleToggleApproval(req.id, req.full_name, false)}
                                 variant="outline"
-                                className="w-full md:w-auto h-14 px-8 rounded-2xl font-black uppercase text-xs tracking-widest text-rose-500 border-rose-500/20 hover:bg-rose-500 hover:text-white gap-3 shadow-xl shadow-rose-500/10 transition-all"
+                                className="w-full md:w-auto h-14 px-8 rounded-2xl font-bold uppercase text-xs tracking-widest text-rose-500 border-rose-500/20 hover:bg-rose-500 hover:text-white gap-3 shadow-xl shadow-rose-500/10 transition-all"
                               >
                                 <UserX className="w-5 h-5" /> Revoke Access
                               </Button>
@@ -292,7 +292,7 @@ export default function AdminRequests() {
                     <ShieldCheck className={`w-12 h-12 ${activeTab === 'working' ? 'text-primary' : 'text-emerald-500'}`} />
                  </div>
                  <div>
-                    <h3 className="text-3xl font-black uppercase tracking-tight">{activeTab === 'working' ? 'No Registered Admins' : 'No Pending Requests'}</h3>
+                    <h3 className="text-3xl font-bold tracking-tight">{activeTab === 'working' ? 'No Registered Admins' : 'No Pending Requests'}</h3>
                     <p className="text-muted-foreground text-lg font-medium mt-2 max-w-sm mx-auto leading-relaxed">
                       {activeTab === 'working' ? 'There are currently no approved system administrators for this portal.' : 'All staff registrations have been definitively evaluated.'}
                     </p>

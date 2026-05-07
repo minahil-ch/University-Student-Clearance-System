@@ -96,9 +96,9 @@ export default function DispatchManagement() {
         <header className="mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-               <Badge className="bg-primary/10 text-primary border-none rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest">Enterprise Module</Badge>
+               <Badge className="bg-primary/10 text-primary border-none rounded-lg px-3 py-1 text-xs font-bold font-medium text-muted-foreground">Enterprise Module</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic text-primary">Logistics & <span className="text-primary not-italic">Dispatch</span></h1>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-primary">Logistics & <span className="text-primary not-italic">Dispatch</span></h1>
             <p className="text-slate-500 font-bold text-lg mt-2 max-w-2xl leading-relaxed">
               Degree Fulfillment and Shipping Tracking. Verify addresses and orchestrate the final mile of the student lifecycle.
             </p>
@@ -120,30 +120,30 @@ export default function DispatchManagement() {
               <CardContent className="p-8">
                  <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center"><Clock className="w-6 h-6 text-amber-500" /></div>
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-widest font-black text-amber-500 border-amber-500/20">Awaiting Action</Badge>
+                    <Badge variant="outline" className="text-xs font-medium text-muted-foreground font-bold text-amber-500 border-amber-500/20">Awaiting Action</Badge>
                  </div>
-                 <p className="text-4xl font-black tracking-tighter">{pendingDispatches}</p>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Pending Address Verification</p>
+                 <p className="text-4xl font-bold tracking-tight">{pendingDispatches}</p>
+                 <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Pending Address Verification</p>
               </CardContent>
            </Card>
            <Card className="glass-card border-none shadow-xl overflow-hidden group">
               <CardContent className="p-8">
                  <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center"><Package className="w-6 h-6 text-blue-500" /></div>
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-widest font-black text-blue-500 border-blue-500/20">In Processing</Badge>
+                    <Badge variant="outline" className="text-xs font-medium text-muted-foreground font-bold text-blue-500 border-blue-500/20">In Processing</Badge>
                  </div>
-                 <p className="text-4xl font-black tracking-tighter">{processingDispatches}</p>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Degrees in Preparation</p>
+                 <p className="text-4xl font-bold tracking-tight">{processingDispatches}</p>
+                 <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Degrees in Preparation</p>
               </CardContent>
            </Card>
            <Card className="glass-card border-none shadow-xl overflow-hidden group">
               <CardContent className="p-8">
                  <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center"><Truck className="w-6 h-6 text-emerald-500" /></div>
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-widest font-black text-emerald-500 border-emerald-500/20">Shipped</Badge>
+                    <Badge variant="outline" className="text-xs font-medium text-muted-foreground font-bold text-emerald-500 border-emerald-500/20">Shipped</Badge>
                  </div>
-                 <p className="text-4xl font-black tracking-tighter">{shippedDispatches}</p>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Successfully Dispatched</p>
+                 <p className="text-4xl font-bold tracking-tight">{shippedDispatches}</p>
+                 <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Successfully Dispatched</p>
               </CardContent>
            </Card>
         </div>
@@ -154,8 +154,8 @@ export default function DispatchManagement() {
             <div className="flex items-center gap-4">
                <Package className="w-8 h-8 text-primary" />
                <div>
-                  <CardTitle className="text-xl font-black uppercase tracking-tighter italic">Fulfillment Queue</CardTitle>
-                  <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Manage degree shipping status</CardDescription>
+                  <CardTitle className="text-xl font-bold tracking-tight">Fulfillment Queue</CardTitle>
+                  <CardDescription className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mt-1">Manage degree shipping status</CardDescription>
                </div>
             </div>
           </CardHeader>
@@ -164,10 +164,10 @@ export default function DispatchManagement() {
                 <table className="w-full text-left">
                    <thead className="bg-slate-50 border-b border-slate-100">
                       <tr>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Student Identity</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Shipping Address</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Logistics Status</th>
-                         <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Action</th>
+                         <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Identity</th>
+                         <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Shipping Address</th>
+                         <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Logistics Status</th>
+                         <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400 text-right">Action</th>
                       </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-50">
@@ -175,12 +175,12 @@ export default function DispatchManagement() {
                          <tr key={s.id} className="hover:bg-slate-50/50 transition-all group">
                             <td className="px-8 py-6">
                                <div className="flex items-center gap-4">
-                                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center font-black">
+                                  <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold">
                                      {s.full_name?.charAt(0) || "U"}
                                   </div>
                                   <div>
-                                     <p className="font-black text-slate-900 text-sm uppercase">{s.full_name}</p>
-                                     <p className="text-[10px] font-black text-primary uppercase tracking-widest">{s.reg_no}</p>
+                                     <p className="font-bold text-slate-900 text-sm uppercase">{s.full_name}</p>
+                                     <p className="text-xs font-bold text-primary font-medium text-muted-foreground">{s.reg_no}</p>
                                   </div>
                                </div>
                             </td>
@@ -193,14 +193,14 @@ export default function DispatchManagement() {
                                </div>
                             </td>
                             <td className="px-8 py-6">
-                               <Badge className={`px-3 py-1 text-[9px] uppercase tracking-widest font-black border-none
+                               <Badge className={`px-3 py-1 text-xs font-medium text-muted-foreground font-bold border-none
                                  ${!s.dispatch_status || s.dispatch_status === 'pending' ? 'bg-amber-100 text-amber-700' : 
                                    s.dispatch_status === 'processing' ? 'bg-blue-100 text-blue-700' : 
                                    s.dispatch_status === 'shipped' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
                                   {s.dispatch_status || 'Pending Verification'}
                                </Badge>
                                {s.tracking_number && (
-                                  <p className="text-[9px] font-black text-slate-400 uppercase mt-2 tracking-widest">
+                                  <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">
                                      TRK: <span className="text-slate-900">{s.tracking_number}</span>
                                   </p>
                                )}
@@ -209,7 +209,7 @@ export default function DispatchManagement() {
                                <Button 
                                  size="sm"
                                  onClick={() => setSelectedStudent(s)}
-                                 className="rounded-xl h-10 px-6 font-black uppercase text-[10px] tracking-widest bg-slate-900 text-white hover:bg-primary shadow-xl"
+                                 className="rounded-xl h-10 px-6 font-bold uppercase text-xs tracking-widest bg-slate-900 text-white hover:bg-primary shadow-xl"
                                >
                                   Manage Dispatch
                                </Button>
@@ -228,8 +228,8 @@ export default function DispatchManagement() {
               <div className="w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-8 border border-white/20">
                  <div className="flex justify-between items-start mb-8">
                     <div>
-                       <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-900">Dispatch Control</h3>
-                       <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">Update Degree Shipping Status</p>
+                       <h3 className="text-2xl font-bold tracking-tight text-slate-900">Dispatch Control</h3>
+                       <p className="text-xs font-bold text-primary font-medium text-muted-foreground mt-1">Update Degree Shipping Status</p>
                     </div>
                     <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => setSelectedStudent(null)}>
                        <ExternalLink className="w-5 h-5 rotate-180" />
@@ -237,20 +237,20 @@ export default function DispatchManagement() {
                  </div>
 
                  <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 mb-8 space-y-2">
-                    <p className="text-xs font-black uppercase text-slate-400">Student: <span className="text-slate-900">{selectedStudent.full_name}</span></p>
-                    <p className="text-xs font-black uppercase text-slate-400">Address: <span className="text-slate-900">{selectedStudent.shipping_address || "Not specified"}</span></p>
+                    <p className="text-xs font-bold uppercase text-slate-400">Student: <span className="text-slate-900">{selectedStudent.full_name}</span></p>
+                    <p className="text-xs font-bold uppercase text-slate-400">Address: <span className="text-slate-900">{selectedStudent.shipping_address || "Not specified"}</span></p>
                  </div>
 
                  <div className="space-y-4 mb-8">
                     <Button 
                       onClick={() => updateDispatchStatus(selectedStudent.id, 'verified')}
-                      variant="outline" className="w-full justify-start h-14 rounded-2xl px-6 font-black uppercase text-xs tracking-widest"
+                      variant="outline" className="w-full justify-start h-14 rounded-2xl px-6 font-bold uppercase text-xs tracking-widest"
                     >
                        <ShieldCheck className="w-5 h-5 mr-3 text-blue-500" /> Mark Address Verified
                     </Button>
                     <Button 
                       onClick={() => updateDispatchStatus(selectedStudent.id, 'processing')}
-                      variant="outline" className="w-full justify-start h-14 rounded-2xl px-6 font-black uppercase text-xs tracking-widest"
+                      variant="outline" className="w-full justify-start h-14 rounded-2xl px-6 font-bold uppercase text-xs tracking-widest"
                     >
                        <Package className="w-5 h-5 mr-3 text-amber-500" /> Mark as Processing (Printing)
                     </Button>
@@ -265,7 +265,7 @@ export default function DispatchManagement() {
                        <Button 
                          onClick={() => updateDispatchStatus(selectedStudent.id, 'shipped', trackingNo)}
                          disabled={!trackingNo}
-                         className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase text-xs tracking-widest shadow-xl"
+                         className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase text-xs tracking-widest shadow-xl"
                        >
                           <Truck className="w-5 h-5 mr-2" /> Dispatch
                        </Button>

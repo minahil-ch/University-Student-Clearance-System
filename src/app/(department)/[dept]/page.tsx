@@ -17,7 +17,7 @@ const DepartmentDashboardContent = dynamic(
             <Logo className="w-8 h-8" />
           </div>
         </div>
-        <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 animate-pulse">
           Establishing Secure Authority Connection...
         </p>
       </div>

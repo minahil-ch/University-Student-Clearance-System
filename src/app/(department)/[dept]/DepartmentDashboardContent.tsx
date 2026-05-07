@@ -464,7 +464,7 @@ export default function DepartmentDashboardContent(props: any) {
           <Logo className="w-8 h-8" />
         </div>
       </div>
-      <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 animate-pulse">
+      <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 animate-pulse">
         {loading ? "Syncing Departmental Data..." : "Authorizing Authority Access..."}
       </p>
     </div>
@@ -482,16 +482,16 @@ export default function DepartmentDashboardContent(props: any) {
             </div>
             <div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
-                <h2 className="text-4xl font-black tracking-tighter uppercase text-primary leading-none italic">
+                <h2 className="text-4xl font-bold tracking-tight uppercase text-primary leading-none italic">
                   CUI <span className="text-primary not-italic">CLEARANCE SYSTEM</span>
                 </h2>
                 <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
                 <div className="hidden md:flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Hub</span>
-                  <span className="text-xs font-black uppercase tracking-tight text-primary">Institutional Access</span>
+                  <span className="text-xs font-bold uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Hub</span>
+                  <span className="text-xs font-bold tracking-tight text-primary">Institutional Access</span>
                 </div>
               </div>
-              <h3 className="mt-4 text-xl font-black uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
+              <h3 className="mt-4 text-xl font-bold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
                 <ShieldCheck className="w-6 h-6 text-primary" /> {deptLabel} Authority Hub
               </h3>
             </div>
@@ -533,8 +533,8 @@ export default function DepartmentDashboardContent(props: any) {
                       <stat.icon className="w-7 h-7" />
                    </div>
                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1 leading-none">{stat.label}</p>
-                      <h4 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter italic leading-none">{stat.value}</h4>
+                      <p className="text-xs font-bold tracking-wider text-slate-400 mb-1 leading-none">{stat.label}</p>
+                      <h4 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight italic leading-none">{stat.value}</h4>
                    </div>
                 </div>
              </motion.div>
@@ -548,7 +548,7 @@ export default function DepartmentDashboardContent(props: any) {
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
-                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
+                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
                   currentTab === tab 
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -563,7 +563,7 @@ export default function DepartmentDashboardContent(props: any) {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            <div className="flex items-center gap-3 text-xs font-bold tracking-wider text-slate-400">
                <Filter className="w-4 h-4" /> Filter Range:
             </div>
             <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5">
@@ -571,7 +571,7 @@ export default function DepartmentDashboardContent(props: any) {
                 <button
                   key={filter}
                   onClick={() => setTimeFilter(filter)}
-                  className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                  className={`px-6 py-2.5 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all duration-300 ${
                     timeFilter === filter ? 'bg-white dark:bg-slate-900 text-primary shadow-xl' : 'text-slate-400 hover:text-slate-600'
                   }`}
                 >
@@ -587,12 +587,12 @@ export default function DepartmentDashboardContent(props: any) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-slate-300" />
-                <CardTitle className="text-sm font-black uppercase tracking-[0.3em] text-slate-400">
+                <CardTitle className="text-sm font-bold uppercase tracking-[0.3em] text-slate-400">
                   {currentTab === 'pending' ? 'Pending Requests Queue' : 
                    currentTab === 'surveys' ? `Pending Form Submissions` : 'Cleared History'}
                 </CardTitle>
               </div>
-              <div className="text-[10px] font-black bg-primary/10 text-primary px-4 py-1.5 rounded-full">
+              <div className="text-xs font-bold bg-primary/10 text-primary px-4 py-1.5 rounded-full">
                 {filteredItems.length} Entries
               </div>
             </div>
@@ -603,10 +603,10 @@ export default function DepartmentDashboardContent(props: any) {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Student Profile</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Personal Details</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Verification Status</th>
-                    <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Actions</th>
+                    <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Student Profile</th>
+                    <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Personal Details</th>
+                    <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Verification Status</th>
+                    <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -627,14 +627,14 @@ export default function DepartmentDashboardContent(props: any) {
                                 <User className="w-6 h-6" />
                               </div>
                               <div>
-                                <div className="font-black text-slate-900 text-lg leading-tight mb-1">
+                                <div className="font-bold text-slate-900 text-lg leading-tight mb-1">
                                   {student?.full_name}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-0.5 rounded-md">
+                                  <span className="text-xs font-bold font-medium text-muted-foreground text-primary bg-primary/5 px-2 py-0.5 rounded-md">
                                     {student?.reg_no}
                                   </span>
-                                  <span className="text-[10px] font-bold text-slate-400 italic">
+                                  <span className="text-xs font-bold text-slate-400 italic">
                                     {student?.department_name}
                                   </span>
                                 </div>
@@ -644,16 +644,16 @@ export default function DepartmentDashboardContent(props: any) {
 
                           <td className="px-8 py-6">
                             <div className="space-y-1">
-                               <p className="text-[10px] font-black text-slate-900 uppercase">F. Name: <span className="text-slate-500">{student?.father_name || 'N/A'}</span></p>
-                               <p className="text-[10px] font-black text-slate-900 uppercase">CGPA: <span className="text-emerald-600">{student?.cgpa || '0.00'}</span></p>
-                               <p className="text-[10px] font-black text-slate-900 uppercase">Contact: <span className="text-slate-500">{student?.phone || 'N/A'}</span></p>
+                               <p className="text-xs font-bold text-slate-900 uppercase">F. Name: <span className="text-slate-500">{student?.father_name || 'N/A'}</span></p>
+                               <p className="text-xs font-bold text-slate-900 uppercase">CGPA: <span className="text-emerald-600">{student?.cgpa || '0.00'}</span></p>
+                               <p className="text-xs font-bold text-slate-900 uppercase">Contact: <span className="text-slate-500">{student?.phone || 'N/A'}</span></p>
                             </div>
                           </td>
 
                           <td className="px-8 py-6">
                             {currentTab === 'surveys' ? (
                               <div className="space-y-1">
-                                <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest ${
+                                <div className={`flex items-center gap-1.5 text-xs font-bold font-medium text-muted-foreground ${
                                   item.status === 'approved' ? 'text-emerald-500' : 
                                   item.status === 'rejected' ? 'text-rose-500' : 'text-indigo-500'
                                 }`}>
@@ -661,13 +661,13 @@ export default function DepartmentDashboardContent(props: any) {
                                    item.status === 'rejected' ? <XCircle className="w-3.5 h-3.5" /> : <ClipboardList className="w-3.5 h-3.5" />}
                                   {item.status}
                                 </div>
-                                <p className="text-[9px] font-bold text-slate-400">Captured: {formatDate(item.created_at)}</p>
+                                <p className="text-xs font-bold text-slate-400">Captured: {formatDate(item.created_at)}</p>
                               </div>
                             ) : (
                               <div className="space-y-2">
                                 <StatusBadge status={item.status} />
                                 {isAcademic && (
-                                  <div className={`flex items-center gap-1.5 text-[10px] font-bold ${item.form_submitted ? 'text-emerald-500' : 'text-slate-400'}`}>
+                                  <div className={`flex items-center gap-1.5 text-xs font-bold ${item.form_submitted ? 'text-emerald-500' : 'text-slate-400'}`}>
                                     {item.form_submitted ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
                                     {item.form_submitted ? 'Form: Submitted' : 'Form: Pending'}
                                   </div>
@@ -683,7 +683,7 @@ export default function DepartmentDashboardContent(props: any) {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setSelectedStudent({ ...item, isSurvey: true })}
-                                  className="rounded-xl font-black uppercase text-[10px] h-10 px-5 gap-2 border-slate-100 hover:bg-slate-50"
+                                  className="rounded-xl font-bold uppercase text-xs h-10 px-5 gap-2 border-slate-100 hover:bg-slate-50"
                                 >
                                   <Eye className="w-4 h-4" /> View Details
                                 </Button>
@@ -692,7 +692,7 @@ export default function DepartmentDashboardContent(props: any) {
                                   <Button
                                     size="sm"
                                     onClick={() => setSelectedStudent({ ...item, isSurvey: false })}
-                                    className="rounded-xl font-black uppercase text-[10px] h-10 px-5 gap-2 bg-slate-100 text-slate-900 hover:bg-slate-200"
+                                    className="rounded-xl font-bold uppercase text-xs h-10 px-5 gap-2 bg-slate-100 text-slate-900 hover:bg-slate-200"
                                   >
                                     <ClipboardList className="w-4 h-4" /> Review
                                   </Button>
@@ -700,7 +700,7 @@ export default function DepartmentDashboardContent(props: any) {
                                   <Button
                                     size="sm"
                                     onClick={() => setCustomMessageModal({ isOpen: true, student: item.profiles })}
-                                    className="rounded-xl font-black uppercase text-[10px] h-10 px-4 gap-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 shadow-sm"
+                                    className="rounded-xl font-bold uppercase text-xs h-10 px-4 gap-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 shadow-sm"
                                   >
                                     <Mail className="w-4 h-4" /> Msg
                                   </Button>
@@ -710,7 +710,7 @@ export default function DepartmentDashboardContent(props: any) {
                                       <Button
                                         size="sm"
                                         onClick={() => handleUpdateStatus(item.id, 'cleared', item.profiles)}
-                                        className="rounded-xl font-black uppercase text-[10px] h-10 px-6 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20"
+                                        className="rounded-xl font-bold uppercase text-xs h-10 px-6 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20"
                                       >
                                         Approve
                                       </Button>
@@ -719,7 +719,7 @@ export default function DepartmentDashboardContent(props: any) {
                                           size="sm"
                                           variant="destructive"
                                           onClick={() => handleUpdateStatus(item.id, 'issue', item.profiles)}
-                                          className="rounded-xl font-black uppercase text-[10px] h-10 px-6"
+                                          className="rounded-xl font-bold uppercase text-xs h-10 px-6"
                                         >
                                           Issue
                                         </Button>
@@ -736,7 +736,7 @@ export default function DepartmentDashboardContent(props: any) {
                   </AnimatePresence>
                 </tbody>
               </table>
-              {loading && <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest animate-pulse">Syncing...</div>}
+              {loading && <div className="p-20 text-center text-slate-400 font-bold font-medium text-muted-foreground animate-pulse">Syncing...</div>}
             </div>
           </CardContent>
         </Card>

@@ -72,11 +72,11 @@ export default function AcademicPortalsPage() {
 
         <div className="flex flex-col items-center justify-center gap-4 mb-6">
           <Logo className="w-16 h-16 md:w-20 md:h-20" />
-          <h1 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter px-4 text-slate-900 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold italic tracking-tight px-4 text-slate-900 dark:text-white">
             ACADEMIC <span className="text-primary italic">DEPARTMENTS</span>
           </h1>
         </div>
-        <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto font-medium px-4 uppercase tracking-[0.2em]">
+        <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto font-medium px-4 tracking-wider">
           Select your department to access the departmental authority portal
         </p>
       </motion.div>
@@ -98,7 +98,7 @@ export default function AcademicPortalsPage() {
             </div>
 
             <div className="flex-1 space-y-2">
-              <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-tight uppercase">
                 {portal.name}
               </h3>
               <p className="text-[12px] text-slate-400 dark:text-slate-500 font-bold leading-relaxed">
@@ -117,7 +117,7 @@ export default function AcademicPortalsPage() {
       </div>
 
       <div className="mt-16 text-center">
-        <p className="text-slate-400 dark:text-slate-500 text-[10px] font-medium tracking-widest uppercase">
+        <p className="text-slate-400 dark:text-slate-500 text-xs font-medium tracking-widest uppercase">
           &copy; 2026 CUI Vehari Academic Authority Network
         </p>
       </div>

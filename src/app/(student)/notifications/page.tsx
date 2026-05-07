@@ -71,7 +71,7 @@ export default function NotificationsPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-4xl font-black tracking-tight flex items-center gap-4">
+            <h2 className="text-4xl font-bold tracking-tight flex items-center gap-4">
               Real-Time <span className="text-primary italic">Live Feed</span>
               <Bell className="w-8 h-8 text-primary animate-bounce delay-100" />
             </h2>
@@ -107,7 +107,7 @@ export default function NotificationsPage() {
                       
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
-                          <h4 className="text-lg font-black uppercase tracking-widest">{item.department_key.replace(/_/g, ' ')}</h4>
+                          <h4 className="text-lg font-bold font-medium text-muted-foreground">{item.department_key.replace(/_/g, ' ')}</h4>
                           <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground bg-slate-100 dark:bg-slate-900 px-3 py-1 rounded-full">
                             <CalendarDays className="w-3 h-3" />
                             {formatDate(item.updated_at)}

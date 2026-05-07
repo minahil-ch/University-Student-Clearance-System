@@ -243,7 +243,7 @@ export default function ClearanceForm() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-        <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Preparing clearance form…</p>
+        <p className="text-sm font-bold font-medium text-muted-foreground text-muted-foreground">Preparing clearance form…</p>
       </div>
     )
   }
@@ -258,18 +258,18 @@ export default function ClearanceForm() {
               <CheckCircle2 className="w-12 h-12 text-emerald-500" />
             </div>
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-tight text-slate-900">Already Submitted!</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900">Already Submitted!</h2>
               <p className="text-slate-500 font-medium mt-3 leading-relaxed">
                 Your clearance form has already been submitted successfully. You can track your clearance status on your dashboard.
               </p>
             </div>
             <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 text-left space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600">What's Next?</p>
+              <p className="text-xs font-bold font-medium text-muted-foreground text-emerald-600">What's Next?</p>
               <p className="text-sm text-emerald-800 font-medium">Your request is currently being reviewed by the departmental staff. You will receive email notifications as each department processes your clearance.</p>
             </div>
             <button
               onClick={() => router.push('/dashboard')}
-              className="w-full h-14 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-sm hover:bg-primary transition-all"
+              className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold font-medium text-muted-foreground text-sm hover:bg-primary transition-all"
             >
               Go to My Dashboard →
             </button>
@@ -289,7 +289,7 @@ export default function ClearanceForm() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight px-4 text-slate-900 dark:text-white uppercase italic">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight px-4 text-slate-900 dark:text-white uppercase italic">
               COMSATS <span className="gradient-text italic">UNIVERSITY</span>
             </h2>
             <p className="text-muted-foreground mt-4 text-lg font-medium">
@@ -304,7 +304,7 @@ export default function ClearanceForm() {
               return (
                 <>
                   <div className="flex items-center">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-300 ${
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                       submitted ? "bg-emerald-500 text-white" :
                       step === 2 ? "bg-primary text-white scale-110 shadow-2xl shadow-primary/20" :
                       "bg-slate-200 dark:bg-slate-800 text-slate-400"
@@ -312,7 +312,7 @@ export default function ClearanceForm() {
                       {submitted ? <CheckCircle2 className="w-6 h-6" /> : 1}
                     </div>
                     <div className={`w-16 h-1 ${submitted ? "bg-emerald-500" : "bg-slate-200 dark:bg-slate-800"}`} />
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-300 ${
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                       submitted ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
                     }`}>
                       {submitted ? <CheckCircle2 className="w-6 h-6" /> : 2}
@@ -340,9 +340,9 @@ export default function ClearanceForm() {
                        <div className="space-y-4">
                           <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20">
                              <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 italic">Identity Verification</span>
+                             <span className="text-xs font-bold tracking-wider text-emerald-500 italic">Identity Verification</span>
                           </div>
-                          <CardTitle className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
+                          <CardTitle className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
                              CLEARANCE <span className="text-emerald-500 italic">INITIATION</span>
                           </CardTitle>
                           <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
@@ -355,7 +355,7 @@ export default function ClearanceForm() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                       <div className="space-y-8">
                          <div className="space-y-2.5">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Full Name (Per Records)</label>
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Full Name (Per Records)</label>
                             <Input 
                               value={profile.full_name}
                               onChange={(e) => setProfile({...profile, full_name: e.target.value})}
@@ -363,7 +363,7 @@ export default function ClearanceForm() {
                             />
                          </div>
                          <div className="space-y-2.5">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Registration Number</label>
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Registration Number</label>
                             <Input 
                               value={profile.reg_no}
                               onChange={(e) => setProfile({...profile, reg_no: e.target.value})}
@@ -374,7 +374,7 @@ export default function ClearanceForm() {
 
                       <div className="space-y-8">
                          <div className="space-y-2.5">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Father&apos;s Name</label>
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Father&apos;s Name</label>
                             <Input 
                               value={profile.father_name}
                               onChange={(e) => setProfile({...profile, father_name: e.target.value})}
@@ -382,7 +382,7 @@ export default function ClearanceForm() {
                             />
                          </div>
                          <div className="space-y-2.5">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Current CGPA</label>
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Current CGPA</label>
                             <Input 
                               value={profile.cgpa}
                               onChange={(e) => setProfile({...profile, cgpa: e.target.value})}
@@ -395,16 +395,16 @@ export default function ClearanceForm() {
                     <div className="pt-10 border-t border-slate-100 dark:border-white/5 space-y-8">
                        <div className="flex items-center gap-4">
                           <div className="w-1 h-8 bg-primary rounded-full" />
-                          <h4 className="text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">Academic <span className="text-primary italic">Routing</span></h4>
+                          <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Academic <span className="text-primary italic">Routing</span></h4>
                        </div>
                        
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                           <div className="space-y-2.5">
-                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Select Your Department</label>
+                             <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Select Your Department</label>
                              <div className="relative">
                                <Building2 className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-primary pointer-events-none" />
                                <select 
-                                 className="w-full h-16 pl-16 pr-8 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 text-sm font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                                 className="w-full h-16 pl-16 pr-8 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 text-sm font-bold font-medium text-muted-foreground outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
                                  value={profile.department_name}
                                  onChange={(e) => setProfile({...profile, department_name: e.target.value})}
                                >
@@ -417,7 +417,7 @@ export default function ClearanceForm() {
                              </div>
                           </div>
                           <div className="space-y-2.5">
-                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Graduating Batch / Year</label>
+                             <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Graduating Batch / Year</label>
                              <Input 
                                value={profile.graduated_year}
                                onChange={(e) => setProfile((prev: any) => ({...prev, graduated_year: e.target.value}))}
@@ -433,11 +433,11 @@ export default function ClearanceForm() {
                          <div className="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
                             <Send className="w-5 h-5" />
                          </div>
-                         <p className="text-[10px] font-bold text-blue-800 dark:text-blue-400 leading-tight">
+                         <p className="text-xs font-bold text-blue-800 dark:text-blue-400 leading-tight">
                            Your request will be broadcasted to all departments for verification.
                          </p>
                       </div>
-                      <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto h-16 px-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/20 text-white font-black uppercase tracking-widest text-[11px] gap-4 transition-all active:scale-95">
+                      <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto h-16 px-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/20 text-white font-bold font-medium text-muted-foreground text-[11px] gap-4 transition-all active:scale-95">
                         {loading ? "Establishing Identity..." : (
                           <>Launch Clearance Queue <ArrowRight className="w-5 h-5" /></>
                         )}
@@ -460,12 +460,12 @@ export default function ClearanceForm() {
                   <div className="w-32 h-32 rounded-[2.5rem] bg-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto mb-8 animate-bounce">
                     <CheckCircle2 className="w-16 h-16" />
                   </div>
-                  <h3 className="text-4xl font-black uppercase tracking-tighter">Request Transmitted!</h3>
+                  <h3 className="text-4xl font-bold tracking-tight">Request Transmitted!</h3>
                   <p className="text-muted-foreground text-xl max-w-lg mx-auto leading-relaxed">
                     Your clearance identity has been established. You can now monitor the approvals from your command center.
                   </p>
                   <div className="pt-10">
-                    <Button onClick={() => window.location.href = "/dashboard"} size="lg" className="h-16 px-12 rounded-2xl bg-primary shadow-2xl shadow-primary/30 font-black uppercase tracking-[0.2em]">
+                    <Button onClick={() => window.location.href = "/dashboard"} size="lg" className="h-16 px-12 rounded-2xl bg-primary shadow-2xl shadow-primary/30 font-bold tracking-wider">
                       Enter Dashboard
                     </Button>
                   </div>
@@ -485,12 +485,12 @@ export default function ClearanceForm() {
                   <div className="w-32 h-32 rounded-[2.5rem] bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-8">
                     <ShieldCheck className="w-16 h-16" />
                   </div>
-                  <h3 className="text-4xl font-black uppercase tracking-tighter">Already Submitted</h3>
+                  <h3 className="text-4xl font-bold tracking-tight">Already Submitted</h3>
                   <p className="text-muted-foreground text-lg max-w-lg mx-auto leading-relaxed">
                     You have already established your clearance profile and cannot submit it again. Your information is safely locked in the system.
                   </p>
                   <div className="pt-10">
-                    <Button onClick={() => window.location.href = "/dashboard"} size="lg" className="h-16 px-12 rounded-2xl bg-amber-500 hover:bg-amber-600 shadow-2xl shadow-amber-500/20 font-black uppercase tracking-[0.2em]">
+                    <Button onClick={() => window.location.href = "/dashboard"} size="lg" className="h-16 px-12 rounded-2xl bg-amber-500 hover:bg-amber-600 shadow-2xl shadow-amber-500/20 font-bold tracking-wider">
                       Return to Dashboard
                     </Button>
                   </div>
