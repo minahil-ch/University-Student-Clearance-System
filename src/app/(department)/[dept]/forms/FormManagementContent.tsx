@@ -56,8 +56,8 @@ export default function FormManagementContent() {
         .from('department_forms')
         .insert({
           department_key: departmentKey,
-          name: newForm.name,
-          link: newForm.link
+          form_name: newForm.name,
+          form_link: newForm.link
         })
 
       if (error) throw error
@@ -158,14 +158,14 @@ export default function FormManagementContent() {
                           <FileText className="w-6 h-6" />
                         </div>
                         <div>
-                          <h5 className="font-black text-slate-900 uppercase text-sm tracking-tight">{form.name}</h5>
-                          <a href={form.link} target="_blank" className="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-primary transition-colors">
-                            <Link2 className="w-3 h-3" /> {form.link.substring(0, 40)}...
+                          <h5 className="font-black text-slate-900 uppercase text-sm tracking-tight">{form.form_name}</h5>
+                          <a href={form.form_link} target="_blank" className="text-[10px] font-bold text-slate-400 flex items-center gap-1 hover:text-primary transition-colors">
+                            <Link2 className="w-3 h-3" /> {form.form_link ? form.form_link.substring(0, 40) : ""}...
                           </a>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => window.open(form.link, '_blank')} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-primary">
+                        <Button variant="ghost" size="sm" onClick={() => window.open(form.form_link, '_blank')} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-primary">
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => handleDeleteForm(form.id)} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-rose-500">
