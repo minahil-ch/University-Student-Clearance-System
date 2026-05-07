@@ -25,6 +25,7 @@ export default function StudentDashboardContent() {
   const [clearanceStarted, setClearanceStarted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showCertificate, setShowCertificate] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
   const [hodContact, setHodContact] = useState<any>(null)
   const supabase = createClient()
 
@@ -115,11 +116,11 @@ export default function StudentDashboardContent() {
     <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">
       <Sidebar role="student" />
       
-      <main className="flex-1 lg:ml-64 p-6 md:p-10">
-        <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
+      <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
+        <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white uppercase px-4 leading-none">
-              COMSATS <span className="text-primary italic">UNIVERSITY</span> <span className="text-slate-400">ISLAMABAD</span>
+              COMSATS <span className="text-primary italic">UNIVERSITY</span> <span className="text-primary italic">ISLAMABAD</span>
             </h2>
             <div className="flex items-center gap-3 mt-4 px-4">
               <div className="flex -space-x-2">
@@ -131,15 +132,64 @@ export default function StudentDashboardContent() {
               </p>
             </div>
           </motion.div>
-          <div className="flex items-center gap-4 px-4">
+          <div className="flex items-center gap-4 px-4 relative">
              <NotificationBell />
-             <Button 
-               variant="outline" 
-               onClick={() => window.location.href = '/details'}
-               className="h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em]"
-             >
-               <User className="w-4 h-4 text-primary" /> My Profile
-             </Button>
+             <div className="relative">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowProfile(!showProfile)}
+                  className={`h-14 px-8 rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all gap-2 font-black text-[11px] uppercase tracking-[0.2em] ${showProfile ? 'border-primary text-primary' : ''}`}
+                >
+                  <User className="w-4 h-4 text-primary" /> My Profile
+                </Button>
+                
+                {/* Profile Card Dropdown */}
+                <AnimatePresence>
+                  {showProfile && (
+                    <>
+                      <div className="fixed inset-0 z-[9998]" onClick={() => setShowProfile(false)} />
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 top-full mt-4 w-72 bg-white dark:bg-slate-900 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 dark:border-slate-800 p-8 overflow-hidden z-[9999]"
+                      >
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12" />
+                        <div className="flex flex-col items-center text-center space-y-4">
+                           <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-2xl text-slate-400 border border-slate-200 dark:border-slate-700">
+                              {profile?.full_name?.[0]}
+                           </div>
+                           <div>
+                              <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase leading-none">{profile?.full_name}</h4>
+                              <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-1.5">{profile?.reg_no}</p>
+                           </div>
+                           <div className="w-full h-px bg-slate-50 dark:bg-slate-800 my-2" />
+                           <div className="w-full space-y-3 text-left">
+                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                 <span>CGPA</span>
+                                 <span className="text-emerald-500 font-bold">{profile?.cgpa || '0.00'}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                 <span>Dept</span>
+                                 <span className="text-slate-900 dark:text-white font-bold">{profile?.department_name}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                 <span>Session</span>
+                                 <span className="text-slate-900 dark:text-white font-bold">{profile?.session || 'N/A'}</span>
+                              </div>
+                           </div>
+                           <Button 
+                             onClick={() => window.location.href = '/settings'}
+                             className="w-full h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black uppercase tracking-widest text-[10px] shadow-xl active:scale-95 transition-all"
+                           >
+                              Edit Profile
+                           </Button>
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+             </div>
           </div>
         </header>
 
