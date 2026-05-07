@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { toast } from "sonner"
-import { FileText, Plus, Trash2, Link2, ExternalLink, GraduationCap } from "lucide-react"
+import { FileText, Plus, Trash2, Link2, ExternalLink, GraduationCap, Edit2, X } from "lucide-react"
 import { canonicalClearanceDepartmentKey } from "@/lib/departmentKeys"
 
 export default function FormManagementContent() {
@@ -19,6 +19,7 @@ export default function FormManagementContent() {
   const [departmentForms, setDepartmentForms] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [newForm, setNewForm] = useState({ name: "", link: "" })
+  const [editingFormId, setEditingFormId] = useState<string | null>(null)
   const supabase = createClient()
 
   const departmentKey = deptString ? canonicalClearanceDepartmentKey(deptString) : ''
@@ -52,16 +53,32 @@ export default function FormManagementContent() {
     }
 
     try {
-      const { error } = await supabase
-        .from('department_forms')
-        .insert({
-          department_key: departmentKey,
-          form_name: newForm.name,
-          form_link: newForm.link
-        })
+      if (editingFormId) {
+        const { error } = await supabase
+          .from('department_forms')
+          .update({
+            form_name: newForm.name,
+            form_link: newForm.link,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingFormId)
 
-      if (error) throw error
-      toast.success("Academic form generated and published!")
+        if (error) throw error
+        toast.success("Requirement updated successfully!")
+        setEditingFormId(null)
+      } else {
+        const { error } = await supabase
+          .from('department_forms')
+          .insert({
+            department_key: departmentKey,
+            form_name: newForm.name,
+            form_link: newForm.link
+          })
+
+        if (error) throw error
+        toast.success("Academic form generated and published!")
+      }
+
       setNewForm({ name: "", link: "" })
       fetchForms()
     } catch (err: any) {
@@ -95,10 +112,12 @@ export default function FormManagementContent() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <div className="xl:col-span-1 space-y-8">
             <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden">
-              <CardHeader className="bg-slate-900 p-8 text-white">
+               <CardHeader className="bg-slate-900 p-8 text-white">
                  <div className="flex items-center gap-3">
-                   <Plus className="w-6 h-6 text-primary" />
-                   <CardTitle className="text-xl font-black uppercase tracking-tight">Create New Form</CardTitle>
+                   {editingFormId ? <Edit2 className="w-6 h-6 text-amber-400" /> : <Plus className="w-6 h-6 text-primary" />}
+                   <CardTitle className="text-xl font-black uppercase tracking-tight">
+                     {editingFormId ? "Edit Requirement" : "Create New Form"}
+                   </CardTitle>
                  </div>
               </CardHeader>
               <CardContent className="p-8">
@@ -121,9 +140,21 @@ export default function FormManagementContent() {
                       placeholder="https://forms.google.com/..."
                     />
                   </div>
-                  <Button type="submit" className="w-full h-14 bg-primary text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-primary/20">
-                    Publish to Students
-                  </Button>
+                  <div className="flex items-center gap-3 pt-2">
+                    <Button type="submit" className={`flex-1 h-14 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl ${editingFormId ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20' : 'bg-primary hover:bg-primary/90 shadow-primary/20'}`}>
+                      {editingFormId ? "Update Form" : "Publish to Students"}
+                    </Button>
+                    {editingFormId && (
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => { setEditingFormId(null); setNewForm({ name: "", link: "" }) }}
+                        className="h-14 w-14 rounded-2xl border-slate-200 text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-0"
+                      >
+                        <X className="w-5 h-5" />
+                      </Button>
+                    )}
+                  </div>
                 </form>
               </CardContent>
             </Card>
@@ -165,10 +196,21 @@ export default function FormManagementContent() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => window.open(form.form_link, '_blank')} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-primary">
+                        <Button variant="ghost" size="sm" onClick={() => window.open(form.form_link, '_blank')} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-primary transition-colors">
                           <ExternalLink className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDeleteForm(form.id)} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-rose-500">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => {
+                            setEditingFormId(form.id)
+                            setNewForm({ name: form.form_name, link: form.form_link })
+                          }} 
+                          className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-amber-500 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDeleteForm(form.id)} className="rounded-xl h-10 w-10 p-0 text-slate-400 hover:text-rose-500 transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
