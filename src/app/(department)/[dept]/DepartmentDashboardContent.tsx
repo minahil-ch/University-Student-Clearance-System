@@ -157,12 +157,14 @@ export default function DepartmentDashboardContent(props: any) {
 
       if (currentTab === 'pending') {
         statusQuery = statusQuery.eq('status', 'pending')
-      } else if (currentTab === 'history') {
-        statusQuery = statusQuery.neq('status', 'pending')
+      } else if (currentTab === 'approved') {
+        statusQuery = statusQuery.eq('status', 'cleared')
+      } else if (currentTab === 'rejected') {
+        statusQuery = statusQuery.eq('status', 'issue')
       }
 
       // Time Filtering for History
-      if (currentTab === 'history' || (currentTab === 'surveys' && surveySubTab !== 'pending')) {
+      if (['approved', 'rejected'].includes(currentTab) || (currentTab === 'surveys' && surveySubTab !== 'pending')) {
         if (timeFilter === 'today') {
           const today = new Date().toISOString().split('T')[0]
           statusQuery = statusQuery.gte('updated_at', today)
@@ -336,7 +338,7 @@ export default function DepartmentDashboardContent(props: any) {
               ...studentProfile, 
               department: departmentKey, 
               status,
-              remarks: status === 'issue' ? (remarks[clearanceId] || null) : null,
+              remarks: remarks[clearanceId] || null,
               recipientEmail: studentProfile.email,
               senderEmail: staffEmail
             }).then(() => console.log(`Status email (${status}) sent`)).catch(err => console.error("Email fail:", err))
@@ -513,7 +515,7 @@ export default function DepartmentDashboardContent(props: any) {
              { label: "Pending Requests", value: stats.pending, icon: ClipboardList, color: "indigo", delay: 0.1 },
              { label: "Total Cleared", value: stats.cleared, icon: CheckCircle2, color: "emerald", delay: 0.2 },
              { label: "Issue Reports", value: stats.issues, icon: AlertCircle, color: "rose", delay: 0.3 },
-             { label: "Pending Forms", value: stats.surveys, icon: FileText, color: "amber", delay: 0.4 }
+             ...(isAcademic ? [{ label: "Pending Forms", value: stats.surveys, icon: FileText, color: "amber", delay: 0.4 }] : [])
            ].map((stat, i) => (
              <motion.div 
                key={i}
@@ -539,11 +541,11 @@ export default function DepartmentDashboardContent(props: any) {
         {/* Global Control Hub */}
         <div className="flex flex-wrap items-center justify-between gap-8 mb-10 bg-white/40 dark:bg-slate-900/40 p-6 rounded-[3rem] border border-slate-100 dark:border-white/5 backdrop-blur-xl shadow-xl relative z-10">
           <div className="flex flex-wrap gap-3 p-1.5 bg-slate-200/30 dark:bg-slate-800/30 rounded-[2rem]">
-            {(['pending', 'surveys', 'history'] as const).map((tab) => (
+            {(isAcademic ? ['pending', 'surveys', 'approved', 'rejected'] : ['pending', 'approved', 'rejected']).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}
-                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
+                className={`px-8 py-3 rounded-[1.5rem] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-2 ${
                   currentTab === tab 
                   ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
@@ -551,8 +553,9 @@ export default function DepartmentDashboardContent(props: any) {
               >
                 {tab === 'pending' && <ClipboardList className="w-4 h-4" />}
                 {tab === 'surveys' && <FileText className="w-4 h-4" />}
-                {tab === 'history' && <CheckCircle2 className="w-4 h-4" />}
-                {tab === 'surveys' ? 'Pending Forms' : tab === 'pending' ? 'Pending Requests' : 'History Log'}
+                {tab === 'approved' && <CheckCircle2 className="w-4 h-4" />}
+                {tab === 'rejected' && <AlertCircle className="w-4 h-4" />}
+                {tab === 'surveys' ? 'Pending Forms' : tab === 'pending' ? 'Pending Requests' : tab === 'approved' ? 'Approved' : 'Rejected'}
               </button>
             ))}
           </div>
@@ -584,7 +587,8 @@ export default function DepartmentDashboardContent(props: any) {
                 <Calendar className="w-5 h-5 text-slate-300" />
                 <CardTitle className="text-sm font-bold uppercase tracking-[0.3em] text-slate-400">
                   {currentTab === 'pending' ? 'Pending Requests Queue' : 
-                   currentTab === 'surveys' ? `Pending Form Submissions` : 'Cleared History'}
+                   currentTab === 'surveys' ? 'Pending Form Submissions' : 
+                   currentTab === 'approved' ? 'Approved Requests' : 'Rejected Requests'}
                 </CardTitle>
               </div>
               <div className="text-xs font-bold bg-primary/10 text-primary px-4 py-1.5 rounded-full">

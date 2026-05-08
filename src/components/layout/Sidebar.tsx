@@ -48,25 +48,30 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
     department: [
       { label: "Dashboard", href: `/${departmentPortalPathSlug(departmentName || '')}`, icon: LayoutDashboard },
       { label: "Pending Requests", href: `/${departmentPortalPathSlug(departmentName || '')}/requests`, icon: Clock },
-      { label: "Cleared Students", href: `/${departmentPortalPathSlug(departmentName || '')}/cleared`, icon: CheckCircle2 },
+      { label: "Approved Students", href: `/${departmentPortalPathSlug(departmentName || '')}/cleared`, icon: CheckCircle2 },
+      { label: "Rejected Students", href: `/${departmentPortalPathSlug(departmentName || '')}/rejected`, icon: AlertCircle },
       { label: "Form Management", href: `/${departmentPortalPathSlug(departmentName || '')}/forms`, icon: FileText },
       { label: "Notifications", href: `/${departmentPortalPathSlug(departmentName || '')}/notifications`, icon: Bell },
     ],
     transport: [
-      { label: "Dashboard", href: "/transport", icon: Truck },
-      { label: "History", href: "/history", icon: FileText },
+      { label: "Dashboard", href: "/transport", icon: LayoutDashboard },
+      { label: "Approved Students", href: "/transport/cleared", icon: CheckCircle2 },
+      { label: "Rejected Students", href: "/transport/rejected", icon: AlertCircle },
     ],
     library: [
-      { label: "Dashboard", href: "/library", icon: BookOpen },
-      { label: "History", href: "/history", icon: FileText },
+      { label: "Dashboard", href: "/library", icon: LayoutDashboard },
+      { label: "Approved Students", href: "/library/cleared", icon: CheckCircle2 },
+      { label: "Rejected Students", href: "/library/rejected", icon: AlertCircle },
     ],
     hostel: [
       { label: "Dashboard", href: "/hostel", icon: LayoutDashboard },
-      { label: "History", href: "/history", icon: FileText },
+      { label: "Approved Students", href: "/hostel/cleared", icon: CheckCircle2 },
+      { label: "Rejected Students", href: "/hostel/rejected", icon: AlertCircle },
     ],
     finance: [
       { label: "Dashboard", href: "/finance", icon: LayoutDashboard },
-      { label: "History", href: "/history", icon: FileText },
+      { label: "Approved Students", href: "/finance/cleared", icon: CheckCircle2 },
+      { label: "Rejected Students", href: "/finance/rejected", icon: AlertCircle },
     ],
     admin: [
       { label: "Overview", href: "/admin", icon: Shield },

@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { StatusBadge } from "@/components/ui/StatusBadge"
+import { Badge } from "@/components/ui/Badge"
 import { useParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Search, Mail, User, ShieldCheck, ClipboardList, Eye, 
-  CheckCircle2, AlertCircle, Clock, Filter, Calendar
+  CheckCircle2, AlertCircle, Clock, Filter, Calendar, X, FileText
 } from "lucide-react"
 import { toast } from "sonner"
 import { formatDate } from "@/lib/utils"

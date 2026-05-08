@@ -42,6 +42,8 @@ export default function AddStudentPage() {
       if (authError) throw authError
       if (!authData.user) throw new Error("Failed to create user")
 
+      const userId = authData.user.id;
+
       // 2. Update Profile with full details
       const { error: profileError } = await supabase
         .from('profiles')
@@ -52,7 +54,7 @@ export default function AddStudentPage() {
           session: formData.session,
           role: 'student'
         })
-        .eq('id', authData.user.id)
+        .eq('id', userId)
 
       if (profileError) throw profileError
 
@@ -60,7 +62,7 @@ export default function AddStudentPage() {
       const { error: futureError } = await supabase
         .from('future_data')
         .insert({
-          student_id: authData.user.id,
+          student_id: userId,
           reason: "Manual Addition by Admin",
           status: "completed"
         })
@@ -70,7 +72,7 @@ export default function AddStudentPage() {
       // 4. Manually add Cleared Status for all departments
       const departments = ['library', 'transport', 'finance', 'hostel', `academic-${formData.department_name.toLowerCase().replace(/\s+/g, '-')}`]
       const clearanceInserts = departments.map(dept => ({
-        student_id: authData.user.id,
+        student_id: userId,
         department_key: dept,
         status: 'cleared',
         remarks: 'Manually cleared by Admin'
