@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge"
 import { motion, AnimatePresence } from "framer-motion"
 import { formatDate } from "@/lib/utils"
 import { getPortalContact } from "@/lib/portalContacts"
+import { toast } from "sonner"
 import { 
   Phone, Mail, User, CheckCircle2, 
   Building2, Truck, BookOpen, ArrowRight, 
@@ -47,7 +48,7 @@ export default function StudentDashboardContent() {
         id: `virtual-${key}-${idx}`,
         department_key: key,
         status: "pending",
-        remarks: key.startsWith('academic-') ? "Awaiting core clearance." : "Pending initiation.",
+        remarks: null,
         updated_at: new Date().toISOString(),
         created_at: new Date().toISOString(),
       }
