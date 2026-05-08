@@ -151,7 +151,8 @@ export default function ClearanceForm() {
           .upsert({
             student_id: user.id,
             department_key: deptKey,
-            status: 'pending'
+            status: 'pending',
+            ...(deptKey.startsWith('academic-') ? {} : { form_submitted: true })
           }, { onConflict: 'student_id,department_key' })
       }
 

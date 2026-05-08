@@ -100,6 +100,28 @@ export default function StudentDashboardContent() {
     }
   }
 
+  const markFormAsFilled = async () => {
+    try {
+      const academicKey = `academic-${(profile?.department_name || '').toLowerCase().replace(/\s+/g, '-')}`
+      const { error } = await supabase
+        .from('clearance_status')
+        .update({ form_submitted: true })
+        .eq('student_id', profile?.id)
+        .eq('department_key', academicKey)
+      
+      if (error) throw error
+      toast.success("Department form marked as filled!")
+      
+      setClearanceData(prev => prev.map(c => c.department_key === academicKey ? { ...c, form_submitted: true } : c))
+    } catch (err: any) {
+      toast.error(err.message || "Failed to mark form as filled")
+    }
+  }
+
+  const academicStatus = clearanceData.find(c => c.department_key.startsWith('academic-'))
+  const isAcademicFormSubmitted = academicStatus?.form_submitted === true
+  const isAcademicCleared = academicStatus?.status === 'cleared'
+
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
       <div className="relative">
@@ -373,30 +395,50 @@ export default function StudentDashboardContent() {
                           <FileText className="w-6 h-6 text-primary" />
                           <h4 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Academic Department Forms</h4>
                        </div>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {deptForms.map((form) => (
-                            <Card key={form.id} className="glass-card border-none rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
-                               <CardContent className="p-8 flex items-center justify-between">
-                                  <div className="flex items-center gap-4">
-                                     <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                                        <ClipboardCheck className="w-6 h-6" />
-                                     </div>
-                                     <div>
-                                        <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.form_name}</h5>
-                                        <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Required for HOD Approval</p>
-                                     </div>
-                                  </div>
-                                  <Button 
-                                    onClick={() => window.open(form.form_link, '_blank')}
-                                    variant="ghost" 
-                                    className="h-12 w-12 rounded-xl p-0 text-slate-300 group-hover:text-primary group-hover:bg-primary/5 transition-all"
-                                  >
-                                     <ExternalLink className="w-5 h-5" />
-                                  </Button>
-                               </CardContent>
-                            </Card>
-                          ))}
-                       </div>
+                       
+                       {(isAcademicCleared || isAcademicFormSubmitted) ? (
+                         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-[2.5rem] p-10 flex items-center justify-center gap-5 text-emerald-600 shadow-inner">
+                            <CheckCircle2 className="w-10 h-10" />
+                            <div>
+                               <h5 className="font-bold text-xl uppercase tracking-tight">Form Submitted Successfully</h5>
+                               <p className="text-sm font-bold font-medium opacity-80 mt-1 text-emerald-600/80">The academic department is reviewing your clearance request.</p>
+                            </div>
+                         </div>
+                       ) : (
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {deptForms.map((form) => (
+                              <Card key={form.id} className="glass-card border-none rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
+                                 <CardContent className="p-8 flex flex-col xl:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-4 w-full">
+                                       <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                          <ClipboardCheck className="w-6 h-6" />
+                                       </div>
+                                       <div className="overflow-hidden">
+                                          <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight truncate">{form.form_name}</h5>
+                                          <p className="text-[11px] font-bold text-slate-400 font-medium text-muted-foreground mt-1 tracking-wider uppercase">Required for HOD Approval</p>
+                                       </div>
+                                    </div>
+                                    <div className="flex gap-3 w-full xl:w-auto mt-4 xl:mt-0">
+                                      <Button 
+                                        onClick={() => window.open(form.form_link, '_blank')}
+                                        variant="outline" 
+                                        className="h-12 flex-1 xl:w-12 xl:flex-none rounded-xl p-0 text-slate-400 hover:text-primary hover:border-primary transition-all bg-white"
+                                        title="Open Form"
+                                      >
+                                         <ExternalLink className="w-5 h-5" />
+                                      </Button>
+                                      <Button 
+                                        onClick={markFormAsFilled}
+                                        className="h-12 flex-[2] xl:w-auto rounded-xl px-6 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] uppercase tracking-widest shadow-lg shadow-emerald-500/20 whitespace-nowrap"
+                                      >
+                                         Mark as Filled
+                                      </Button>
+                                    </div>
+                                 </CardContent>
+                              </Card>
+                            ))}
+                         </div>
+                       )}
                     </div>
                   )}
               </div>

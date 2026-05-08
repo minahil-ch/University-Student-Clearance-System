@@ -269,7 +269,7 @@ export default function RequestsContent() {
                               <Button
                                 size="sm"
                                 onClick={() => handleUpdateStatus(item.id, 'cleared', item.profiles)}
-                                disabled={isAcademic && !item.form_submitted}
+                                disabled={!item.form_submitted}
                                 className={`rounded-xl font-bold uppercase text-xs h-10 px-6 bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 disabled:opacity-30 disabled:grayscale`}
                               >
                                 Approve
