@@ -236,12 +236,12 @@ export default function StudentDashboardContent() {
               desc: uniFormDone ? "Verified & Locked" : "Action Required"
             },
             { 
-              done: clearanceStarted, 
+              done: allCoreCleared, 
               label: "Department Review", 
               step: "STEP 02", 
               icon: ClipboardCheck, 
               color: "emerald",
-              desc: clearanceStarted ? "Requirements Met" : "Awaiting Form"
+              desc: allCoreCleared ? "Requirements Met" : (uniFormDone ? "Awaiting Approvals" : "Awaiting Survey")
             },
             { 
               done: isFinalCleared, 
