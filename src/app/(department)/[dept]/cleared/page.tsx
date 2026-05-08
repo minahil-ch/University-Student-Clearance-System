@@ -32,7 +32,7 @@ export default function ClearedStudentsPage() {
           id,
           status,
           updated_at,
-          profiles:student_id!student_id (
+          profiles!student_id (
             full_name,
             reg_no,
             email,
