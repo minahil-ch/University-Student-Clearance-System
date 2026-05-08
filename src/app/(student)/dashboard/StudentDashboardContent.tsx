@@ -11,7 +11,7 @@ import { getPortalContact } from "@/lib/portalContacts"
 import { 
   Phone, Mail, User, CheckCircle2, 
   Building2, Truck, BookOpen, ArrowRight, 
-  FileText, ClipboardCheck, GraduationCap, LayoutDashboard, ShieldCheck
+  FileText, ClipboardCheck, GraduationCap, LayoutDashboard, ShieldCheck, ExternalLink
 } from "lucide-react"
 import { Logo } from "@/components/ui/Logo"
 import { Button } from "@/components/ui/Button"
@@ -382,12 +382,12 @@ export default function StudentDashboardContent() {
                                         <ClipboardCheck className="w-6 h-6" />
                                      </div>
                                      <div>
-                                        <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.name}</h5>
+                                        <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm leading-tight">{form.form_name}</h5>
                                         <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground mt-1">Required for HOD Approval</p>
                                      </div>
                                   </div>
                                   <Button 
-                                    onClick={() => window.open(form.link, '_blank')}
+                                    onClick={() => window.open(form.form_link, '_blank')}
                                     variant="ghost" 
                                     className="h-12 w-12 rounded-xl p-0 text-slate-300 group-hover:text-primary group-hover:bg-primary/5 transition-all"
                                   >
