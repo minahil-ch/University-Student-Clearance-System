@@ -119,7 +119,7 @@ export async function middleware(request: NextRequest) {
 
       // Admin can access everything
       if (pRole === 'admin' || isMasterAdmin) isAllowed = true
-      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications'))) isAllowed = true
+      else if (pRole === 'student' && (pathname.startsWith('/dashboard') || pathname.startsWith('/form') || pathname.startsWith('/uni-form') || pathname.startsWith('/notifications') || pathname.startsWith('/details'))) isAllowed = true
       else if ((pRole === 'transport' || normalizedDept === 'transport') && (pathname.startsWith('/transport') || pathname.startsWith('/history'))) isAllowed = true
       else if ((pRole === 'library' || normalizedDept === 'library') && (pathname.startsWith('/library') || pathname.startsWith('/history'))) isAllowed = true
       else if ((pRole === 'hostel' || normalizedDept === 'hostel') && (pathname.startsWith('/hostel') || pathname.startsWith('/history'))) isAllowed = true

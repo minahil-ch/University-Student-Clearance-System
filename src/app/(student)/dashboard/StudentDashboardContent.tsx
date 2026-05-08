@@ -289,107 +289,112 @@ export default function StudentDashboardContent() {
 
         <div className="flex flex-col gap-8">
            {/* Live Status Tracker - Full Width */}
-           <div className="w-full">
-            <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-white/5 shadow-2xl overflow-hidden group">
-              <div className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                 <div className="flex items-center gap-6 text-center md:text-left">
-                    <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
-                       <LayoutDashboard className="w-8 h-8" />
-                    </div>
-                    <div>
-                       <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-none uppercase">Live Status <span className="text-primary italic">Tracker</span></h3>
-                       <p className="text-xs font-bold text-slate-400 mt-2 tracking-wider">Official Campus Verification Queue</p>
-                    </div>
-                 </div>
-                 <div className="flex flex-col items-center md:items-end">
-                    <div className="flex items-center gap-4 mb-2">
-                       <span className="text-xs font-bold text-slate-400 font-medium text-muted-foreground">Global Completion</span>
-                       <span className="text-2xl font-bold text-emerald-500 italic">
-                         {Math.round((orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100)}%
-                       </span>
-                    </div>
-                    <div className="w-48 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5 shadow-inner">
-                       <motion.div 
-                         initial={{ width: 0 }}
-                         animate={{ width: `${(orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100}%` }}
-                         className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
-                       />
-                    </div>
-                 </div>
-              </div>
-
-              <div className="p-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {orderedClearanceData.map((item, index) => (
-                    <motion.div 
-                      key={item.id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.05 }}
-                      className={`group/item flex items-center justify-between p-6 rounded-3xl border-2 transition-all duration-500 ${
-                        item.status === 'cleared' ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
-                        item.status === 'issue' ? 'bg-rose-50/30 border-rose-100 dark:bg-rose-500/5 dark:border-rose-500/20' : 
-                        'bg-white dark:bg-slate-900 border-slate-50 dark:border-white/5 shadow-sm hover:shadow-xl'
-                      }`}
-                    >
-                      <div className="flex items-center gap-5">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover/item:scale-110 shadow-lg ${
-                          item.status === 'cleared' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
-                          item.status === 'issue' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
-                          'bg-slate-50 dark:bg-slate-950 text-slate-300'
-                        }`}>
-                          {getDepartmentIcon(item.department_key)}
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold uppercase text-slate-400 tracking-[0.2em] mb-1 leading-none">{item.department_key}</p>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">
-                            {item.department_key.startsWith("academic-") ? "Final Academic" : item.department_key.replace(/_/g, " ")}
-                          </h5>
-                        </div>
+           {uniFormDone ? (
+             <div className="w-full">
+              <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-white/5 shadow-2xl overflow-hidden group">
+                <div className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                   <div className="flex items-center gap-6 text-center md:text-left">
+                      <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
+                         <LayoutDashboard className="w-8 h-8" />
                       </div>
-                      <div className="flex flex-col items-end gap-1">
-                         <StatusBadge status={item.status} className="h-8 rounded-xl px-4 text-xs font-bold font-medium text-muted-foreground border-none shadow-sm" />
-                         {item.remarks && <p className="text-xs font-bold text-rose-500 mt-1 italic max-w-[100px] truncate">&quot;{item.remarks}&quot;</p>}
+                      <div>
+                         <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight leading-none uppercase">Live Status <span className="text-primary italic">Tracker</span></h3>
+                         <p className="text-xs font-bold text-slate-400 mt-2 tracking-wider">Official Campus Verification Queue</p>
                       </div>
-                    </motion.div>
-                  ))}
+                   </div>
+                   <div className="flex flex-col items-center md:items-end">
+                      <div className="flex items-center gap-4 mb-2">
+                         <span className="text-xs font-bold text-slate-400 font-medium text-muted-foreground">Global Completion</span>
+                         <span className="text-2xl font-bold text-emerald-500 italic">
+                           {Math.round((orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100)}%
+                         </span>
+                      </div>
+                      <div className="w-48 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5 shadow-inner">
+                         <motion.div 
+                           initial={{ width: 0 }}
+                           animate={{ width: `${(orderedClearanceData.filter(s => s.status === 'cleared').length / (orderedClearanceData.length || 1)) * 100}%` }}
+                           className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"
+                         />
+                      </div>
+                   </div>
                 </div>
 
-                  {clearanceStarted ? (
-                    <div className="mt-10 p-10 bg-emerald-600 rounded-[2.5rem] text-white text-center space-y-4 relative overflow-hidden shadow-2xl">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-                      <div className="relative z-10">
-                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                           <CheckCircle2 className="w-8 h-8 text-white" />
-                        </div>
-                        <h4 className="text-2xl font-bold tracking-tight">Clearance Form Filed</h4>
-                        <p className="text-emerald-100 font-medium text-sm max-w-sm mx-auto leading-relaxed">
-                          Your clearance request is currently being processed by the departments. You will be notified of any updates.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="mt-10 p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
-                       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-                       <div className="relative z-10">
-                          <h4 className="text-2xl font-bold tracking-tight">Start Clearance Process</h4>
-                          <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
-                            One-click initiation. This will guide you through the mandatory university survey and department clearance.
-                          </p>
-                          <div className="pt-6">
-                             <Button 
-                               onClick={() => { window.location.href = !uniFormDone ? "/uni-form" : "/form" }}
-                               className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-bold font-medium text-muted-foreground text-xs gap-3 active:scale-95 transition-all"
-                             >
-                                Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
-                             </Button>
+                <div className="p-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {orderedClearanceData.map((item, index) => (
+                      <motion.div 
+                        key={item.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.05 }}
+                        className={`group/item flex items-center justify-between p-6 rounded-3xl border-2 transition-all duration-500 ${
+                          item.status === 'cleared' ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
+                          item.status === 'issue' ? 'bg-rose-50/30 border-rose-100 dark:bg-rose-500/5 dark:border-rose-500/20' : 
+                          'bg-white dark:bg-slate-900 border-slate-50 dark:border-white/5 shadow-sm hover:shadow-xl'
+                        }`}
+                      >
+                        <div className="flex items-center gap-5">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover/item:scale-110 shadow-lg ${
+                            item.status === 'cleared' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
+                            item.status === 'issue' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
+                            'bg-slate-50 dark:bg-slate-950 text-slate-300'
+                          }`}>
+                            {getDepartmentIcon(item.department_key)}
                           </div>
-                       </div>
+                          <div>
+                            <p className="text-xs font-bold uppercase text-slate-400 tracking-[0.2em] mb-1 leading-none">{item.department_key}</p>
+                            <h5 className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">
+                              {item.department_key.startsWith("academic-") ? "Final Academic" : item.department_key.replace(/_/g, " ")}
+                            </h5>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                           <StatusBadge status={item.status} className="h-8 rounded-xl px-4 text-xs font-bold font-medium text-muted-foreground border-none shadow-sm" />
+                           {item.remarks && <p className="text-xs font-bold text-rose-500 mt-1 italic max-w-[100px] truncate">&quot;{item.remarks}&quot;</p>}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="mt-10 p-10 bg-emerald-600 rounded-[2.5rem] text-white text-center space-y-4 relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                    <div className="relative z-10">
+                      <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                         <CheckCircle2 className="w-8 h-8 text-white" />
+                      </div>
+                      <h4 className="text-2xl font-bold tracking-tight">Clearance Form Filed</h4>
+                      <p className="text-emerald-100 font-medium text-sm max-w-sm mx-auto leading-relaxed">
+                        Your clearance request is currently being processed by the departments. You will be notified of any updates.
+                      </p>
                     </div>
-                  )}
+                  </div>
+                </div>
+              </div>
+             </div>
+           ) : (
+             <div className="w-full">
+                <div className="p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+                   <div className="relative z-10">
+                      <h4 className="text-2xl font-bold tracking-tight">Start Clearance Process</h4>
+                      <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
+                        Please fill the clearance form. One-click initiation will guide you through the mandatory university survey and department clearance.
+                      </p>
+                      <div className="pt-6">
+                         <Button 
+                           onClick={() => { window.location.href = "/uni-form" }}
+                           className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-bold font-medium text-muted-foreground text-xs gap-3 active:scale-95 transition-all"
+                         >
+                            Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
+                         </Button>
+                      </div>
+                   </div>
+                </div>
+             </div>
+           )}
 
                   {/* Department Specific Forms Section */}
-                  {deptForms.length > 0 && (
+                  {uniFormDone && deptForms.length > 0 && (
                     <div className="mt-10">
                        <div className="flex items-center gap-3 mb-6 px-4">
                           <FileText className="w-6 h-6 text-primary" />
@@ -441,10 +446,6 @@ export default function StudentDashboardContent() {
                        )}
                     </div>
                   )}
-              </div>
-            </div>
-           </div>
-
            {/* Helplines and HOD - Side by Side */}
            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Helplines */}
