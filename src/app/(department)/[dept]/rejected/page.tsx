@@ -33,11 +33,11 @@ export default function RejectedStudentsPage() {
           status,
           remarks,
           updated_at,
-          profiles!student_id (
+          profiles:student_id!student_id (
             full_name,
             reg_no,
             email,
-            session
+            department_name
           )
         `)
         .eq('department_key', departmentKey)
@@ -61,12 +61,12 @@ export default function RejectedStudentsPage() {
   }, [students, searchQuery])
 
   const exportToCSV = () => {
-    const headers = ["Full Name", "Reg No", "Email", "Session", "Remarks", "Date"]
+    const headers = ["Full Name", "Reg No", "Email", "Department", "Remarks", "Date"]
     const rows = filteredStudents.map(s => [
       s.profiles.full_name,
       s.profiles.reg_no,
       s.profiles.email,
-      s.profiles.session,
+      s.profiles.department_name,
       s.remarks || "No remarks",
       new Date(s.updated_at).toLocaleDateString()
     ])
@@ -120,7 +120,7 @@ export default function RejectedStudentsPage() {
                   <tr className="border-b border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Profile</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Issue Details</th>
-                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Session</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Department</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400 text-right">Date Flagged</th>
                   </tr>
                 </thead>
@@ -147,7 +147,7 @@ export default function RejectedStudentsPage() {
                               </p>
                            </div>
                         </td>
-                        <td className="px-8 py-6 text-sm font-bold text-slate-400 uppercase">{s.profiles.session}</td>
+                        <td className="px-8 py-6 text-sm font-bold text-slate-400 uppercase">{s.profiles.department_name}</td>
                         <td className="px-8 py-6 text-right font-bold text-xs text-rose-500 font-medium text-muted-foreground">
                           <span className="px-3 py-1 bg-rose-500/10 rounded-full">{new Date(s.updated_at).toLocaleDateString()}</span>
                         </td>

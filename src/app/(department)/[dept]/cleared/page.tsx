@@ -32,11 +32,11 @@ export default function ClearedStudentsPage() {
           id,
           status,
           updated_at,
-          profiles!student_id (
+          profiles:student_id!student_id (
             full_name,
             reg_no,
             email,
-            session
+            department_name
           )
         `)
         .eq('department_key', departmentKey)
@@ -60,12 +60,12 @@ export default function ClearedStudentsPage() {
   }, [students, searchQuery])
 
   const exportToCSV = () => {
-    const headers = ["Full Name", "Reg No", "Email", "Session", "Cleared Date"]
+    const headers = ["Full Name", "Reg No", "Email", "Department", "Cleared Date"]
     const rows = filteredStudents.map(s => [
       s.profiles.full_name,
       s.profiles.reg_no,
       s.profiles.email,
-      s.profiles.session,
+      s.profiles.department_name,
       new Date(s.updated_at).toLocaleDateString()
     ])
 
@@ -118,7 +118,7 @@ export default function ClearedStudentsPage() {
                   <tr className="border-b border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Profile</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Registration</th>
-                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Session</th>
+                    <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Department</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400 text-right">Verification Date</th>
                   </tr>
                 </thead>
@@ -138,7 +138,7 @@ export default function ClearedStudentsPage() {
                           </div>
                         </td>
                         <td className="px-8 py-6 font-bold text-sm text-slate-600 dark:text-slate-400">{s.profiles.reg_no}</td>
-                        <td className="px-8 py-6 text-sm font-bold text-slate-400 uppercase">{s.profiles.session}</td>
+                        <td className="px-8 py-6 text-sm font-bold text-slate-400 uppercase">{s.profiles.department_name}</td>
                         <td className="px-8 py-6 text-right font-bold text-xs text-emerald-500 font-medium text-muted-foreground">
                           <span className="px-3 py-1 bg-emerald-500/10 rounded-full">{new Date(s.updated_at).toLocaleDateString()}</span>
                         </td>
