@@ -96,6 +96,19 @@ export default function StudentDashboardContent() {
           .eq('department_key', `academic-${profile.department_name.toLowerCase().replace(/\s+/g, '-')}`)
         setDeptForms(forms || [])
       }
+
+      const { data: deptProfiles } = await supabase
+         .from('profiles')
+         .select('role, phone')
+         .in('role', ['transport', 'library', 'finance', 'hostel'])
+      
+      if (deptProfiles) {
+         const contactMap: Record<string, string> = {}
+         deptProfiles.forEach(p => {
+            if (p.phone) contactMap[p.role] = p.phone
+         })
+         setDepartmentContacts(contactMap)
+      }
     } finally {
       setLoading(false)
     }
@@ -460,6 +473,7 @@ export default function StudentDashboardContent() {
                   <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                       {['transport', 'library', 'finance', 'hostel'].map((key) => {
                         const portal = getPortalContact(key)
+                        const realPhone = departmentContacts[key] || 'Not Provided'
                         return (
                           <div key={key} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between group hover:bg-white transition-all">
                             <div className="flex items-center gap-4">
@@ -468,11 +482,11 @@ export default function StudentDashboardContent() {
                               </div>
                               <div>
                                 <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400">{portal.label}</p>
-                                <p className="text-xs font-bold">{portal.phone}</p>
+                                <p className="text-xs font-bold text-slate-900">{realPhone}</p>
                               </div>
                             </div>
-                            <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => window.open(`https://wa.me/${portal.phone.replace(/\+/g, '')}`, '_blank')}>
-                              <Phone className="w-4 h-4" />
+                            <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => realPhone !== 'Not Provided' && window.open(`https://wa.me/${realPhone.replace(/\+/g, '')}`, '_blank')}>
+                              <Phone className="w-4 h-4 text-slate-900" />
                             </Button>
                           </div>
                         )
