@@ -149,7 +149,7 @@ export default function StudentDashboardContent() {
       <Sidebar role="student" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
-        <header className="mb-14 pb-6 border-b-2 border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
+        <header className="mb-14 pb-6 border-b-[3px] border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary uppercase px-4 leading-none italic">
               CUI <span className="not-italic">CLEARANCE SYSTEM</span>
@@ -328,10 +328,10 @@ export default function StudentDashboardContent() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.05 }}
-                        className={`group/item flex items-center justify-between p-6 rounded-3xl border-2 transition-all duration-500 ${
+                        className={`group/item flex items-center justify-between p-6 rounded-3xl border-[3px] transition-all duration-500 ${
                           item.status === 'cleared' ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
                           item.status === 'issue' ? 'bg-rose-50/30 border-rose-100 dark:bg-rose-500/5 dark:border-rose-500/20' : 
-                          'bg-white dark:bg-slate-900 border-slate-50 dark:border-white/5 shadow-sm hover:shadow-xl'
+                          'bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl'
                         }`}
                       >
                         <div className="flex items-center gap-5">
@@ -413,7 +413,7 @@ export default function StudentDashboardContent() {
                        ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {deptForms.map((form) => (
-                              <Card key={form.id} className="glass-card border-none rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
+                              <Card key={form.id} className="glass-card border-[3px] border-slate-100 dark:border-slate-800 rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
                                  <CardContent className="p-8 flex flex-col xl:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-4 w-full">
                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -451,7 +451,7 @@ export default function StudentDashboardContent() {
            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Helplines */}
               <div className="xl:col-span-2">
-                <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
+                <Card className="glass-card border-[3px] border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
                   <CardHeader className="p-8 border-b border-slate-100">
                       <CardTitle className="text-xl font-bold tracking-tight flex items-center gap-3">
                         <Phone className="w-6 h-6 text-primary" /> Department Helplines
@@ -484,7 +484,7 @@ export default function StudentDashboardContent() {
               {/* HOD Card */}
               <div className="xl:col-span-1">
                 {hodContact && (
-                  <Card className="glass-card border-none rounded-[2.5rem] shadow-2xl overflow-hidden group h-full">
+                  <Card className="glass-card shadow-lg border-[3px] border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300 rounded-[2rem] overflow-hidden group h-full">
                     <div className="p-8 bg-indigo-50/50 h-full flex flex-col">
                        <div className="flex items-center gap-4 mb-6">
                           <div className="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">

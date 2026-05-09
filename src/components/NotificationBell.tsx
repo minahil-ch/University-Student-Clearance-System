@@ -17,6 +17,24 @@ export function NotificationBell() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+
+    if (profile?.role === 'student') {
+      const { data: uniForm } = await supabase.from('future_data').select('id').eq('student_id', user.id).maybeSingle()
+      if (!uniForm) {
+        setNotifications([{
+          id: 'welcome-1',
+          title: 'Registration Required',
+          message: 'Welcome to CUI Clearance! Please fill the university survey registration form.',
+          type: 'warning',
+          is_seen: false,
+          created_at: new Date().toISOString()
+        }])
+        setUnreadCount(1)
+        return
+      }
+    }
+
     const { data } = await supabase
       .from('notifications')
       .select('*')
@@ -47,6 +65,11 @@ export function NotificationBell() {
   }, [])
 
   const markAsSeen = async () => {
+    if (notifications.length === 1 && notifications[0].id === 'welcome-1') {
+      setIsOpen(false)
+      return
+    }
+
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 

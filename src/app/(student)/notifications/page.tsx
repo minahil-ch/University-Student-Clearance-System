@@ -24,6 +24,21 @@ export default function NotificationsPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
+    const { data: uniForm } = await supabase.from('future_data').select('id').eq('student_id', user.id).maybeSingle()
+
+    if (!uniForm) {
+      setNotifications([{
+        id: 'welcome-1',
+        department_key: 'Registration System',
+        status: 'pending',
+        isWelcome: true,
+        remarks: 'Welcome to CUI Clearance! Please fill your registration form to initiate your clearance process.',
+        updated_at: new Date().toISOString()
+      }])
+      setLoading(false)
+      return
+    }
+
     // Since we don't have a dedicated notifications table, we will use clearance_status changes as mock notifications for now
     const { data: clearance } = await supabase
       .from('clearance_status')
@@ -66,16 +81,16 @@ export default function NotificationsPage() {
       <Sidebar role="student" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
-        <header className="mb-12">
+        <header className="mb-12 pb-6 border-b-[3px] border-slate-200 dark:border-slate-800">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-4xl font-bold tracking-tight flex items-center gap-4">
+            <h2 className="text-4xl font-bold tracking-tight flex items-center gap-4 text-slate-900 dark:text-white">
               Real-Time <span className="text-primary italic">Live Feed</span>
               <Bell className="w-8 h-8 text-primary animate-bounce delay-100" />
             </h2>
-            <p className="text-muted-foreground mt-2 font-medium">Tracking all departmental verdicts securely</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-2 font-bold tracking-tight">Tracking all departmental verdicts securely</p>
           </motion.div>
         </header>
 
@@ -94,7 +109,7 @@ export default function NotificationsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <Card className="glass-card border-none shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <Card className="glass-card border-[3px] border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-[2rem]">
                     <CardContent className="p-6 flex items-start gap-6">
                       <div className={`p-4 rounded-full flex-shrink-0 ${
                         item.status === 'cleared' ? 'bg-emerald-500/10 text-emerald-500' : 
@@ -107,8 +122,8 @@ export default function NotificationsPage() {
                       
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
-                          <h4 className="text-lg font-bold font-medium text-muted-foreground">{item.department_key.replace(/_/g, ' ')}</h4>
-                          <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground bg-slate-100 dark:bg-slate-900 px-3 py-1 rounded-full">
+                          <h4 className="text-lg font-bold text-slate-700 dark:text-slate-200">{item.department_key.replace(/_/g, ' ')}</h4>
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800">
                             <CalendarDays className="w-3 h-3" />
                             {formatDate(item.updated_at)}
                           </div>
@@ -125,7 +140,9 @@ export default function NotificationsPage() {
                               </div>
                             </div>
                           ) : (
-                            <span className="font-medium text-amber-600 dark:text-amber-400">Your profile is under review by organizational staff.</span>
+                            <span className="font-bold text-amber-600 dark:text-amber-400">
+                              {item.isWelcome ? item.remarks : "Your profile is under review by organizational staff."}
+                            </span>
                           )}
                         </div>
                       </div>
