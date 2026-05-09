@@ -83,13 +83,13 @@ export default function DispatchManagement() {
   const shippedDispatches = students.filter(s => s.dispatch_status === 'shipped' || s.dispatch_status === 'delivered').length
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="admin" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-12">

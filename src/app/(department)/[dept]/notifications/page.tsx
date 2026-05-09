@@ -48,13 +48,13 @@ export default function DepartmentNotificationsPage() {
   if (!deptString) return null
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <Sidebar role="department" departmentName={deptString} />
       
       <main className="flex-1 w-full lg:ml-64 p-6 md:p-10">

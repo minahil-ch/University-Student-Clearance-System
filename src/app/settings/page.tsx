@@ -121,13 +121,13 @@ export default function SettingsPage() {
   }
 
   if (!profile) return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center bg-blue-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
+    <div className="min-h-screen bg-blue-50/50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-bold tracking-wider gap-2 text-slate-400 hover:text-primary transition-all">

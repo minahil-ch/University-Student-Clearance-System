@@ -32,7 +32,7 @@ export default function AuditLogsPortal() {
   }, [])
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
@@ -50,7 +50,7 @@ export default function AuditLogsPortal() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <Sidebar role="admin" />
       
       <main className="flex-1 w-full lg:max-w-[calc(100%-16rem)] lg:ml-64 p-8 xl:p-12">

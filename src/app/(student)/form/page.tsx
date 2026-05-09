@@ -242,7 +242,7 @@ export default function ClearanceForm() {
 
   if (!pageReady) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
         <p className="text-sm font-bold font-medium text-muted-foreground text-muted-foreground">Preparing clearance form…</p>
       </div>
@@ -251,7 +251,7 @@ export default function ClearanceForm() {
 
   if (alreadySubmitted) {
     return (
-      <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
         <Sidebar role="student" />
         <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
           <div className="max-w-md w-full text-center space-y-6">
@@ -281,7 +281,7 @@ export default function ClearanceForm() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <Sidebar role="student" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">

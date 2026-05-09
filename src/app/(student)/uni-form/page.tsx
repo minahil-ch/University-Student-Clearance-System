@@ -78,7 +78,7 @@ export default function UniversityFormPage() {
 
   if (alreadySubmitted) {
     return (
-      <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
         <Sidebar role="student" />
         <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
           <div className="max-w-md w-full text-center space-y-6">
@@ -166,7 +166,7 @@ export default function UniversityFormPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <Sidebar role="student" />
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
         <header className="mb-10 text-center max-w-2xl mx-auto">

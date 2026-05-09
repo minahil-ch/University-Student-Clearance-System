@@ -246,7 +246,7 @@ export default function AdminDashboardContent() {
   ]
 
   if (loading && !stats.totalStudents) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-950 gap-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
@@ -258,7 +258,7 @@ export default function AdminDashboardContent() {
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
       <Sidebar role="admin" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">

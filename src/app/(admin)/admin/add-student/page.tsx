@@ -101,7 +101,7 @@ export default function AddStudentPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="admin" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
