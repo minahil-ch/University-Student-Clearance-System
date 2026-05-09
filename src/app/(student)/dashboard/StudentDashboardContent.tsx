@@ -149,7 +149,7 @@ export default function StudentDashboardContent() {
       <Sidebar role="student" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
-        <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
+        <header className="mb-14 pb-6 border-b-2 border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start gap-8 relative z-40 overflow-visible">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary uppercase px-4 leading-none italic">
               CUI <span className="not-italic">CLEARANCE SYSTEM</span>
@@ -159,7 +159,7 @@ export default function StudentDashboardContent() {
                 <div className="w-6 h-6 rounded-full bg-blue-500 border-2 border-white dark:border-slate-950" />
                 <div className="w-6 h-6 rounded-full bg-indigo-500 border-2 border-white dark:border-slate-950" />
               </div>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight">
+              <p className="text-slate-600 dark:text-slate-400 font-bold text-sm tracking-tight">
                 Official Institutional Hub &bull; Student Access
               </p>
             </div>

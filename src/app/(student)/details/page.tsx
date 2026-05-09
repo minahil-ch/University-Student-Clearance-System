@@ -24,7 +24,8 @@ export default function StudentDetailsPage() {
     full_name: "",
     father_name: "",
     phone: "",
-    cgpa: ""
+    cgpa: "",
+    session: ""
   })
   const supabase = createClient()
 
@@ -39,7 +40,8 @@ export default function StudentDetailsPage() {
         full_name: profile.full_name || "",
         father_name: profile.father_name || "",
         phone: profile.phone || "",
-        cgpa: profile.cgpa || ""
+        cgpa: profile.cgpa || "",
+        session: profile.session || ""
       })
     }
     setLoading(false)
@@ -60,12 +62,12 @@ export default function StudentDetailsPage() {
       <Sidebar role="student" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
-        <header className="mb-14 flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
+        <header className="mb-14 pb-6 border-b-2 border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white uppercase px-4 leading-none">
               MY <span className="text-primary italic">DETAILS</span>
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight px-4 mt-4 tracking-wider">
+            <p className="text-slate-600 dark:text-slate-400 font-bold text-sm tracking-tight px-4 mt-4 tracking-wider">
               Manage your institutional identity & profile information
             </p>
           </motion.div>
@@ -110,7 +112,7 @@ export default function StudentDetailsPage() {
                  <div className="space-y-8">
                    <DetailItem icon={Building2} label="Department" value={profile?.department_name || 'General'} />
                    <DetailItem icon={BookOpen} label="Academic CGPA" value={profile?.cgpa || '0.00'} color="text-emerald-600" />
-                   <DetailItem icon={Hash} label="User UUID" value={profile?.id.slice(0, 18) + '...'} />
+                   <DetailItem icon={Hash} label="Registration Number" value={profile?.reg_no || 'Not Listed'} />
                  </div>
                </div>
             </CardContent>
@@ -120,7 +122,7 @@ export default function StudentDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              <StatusCard icon={ShieldCheck} label="Account Status" value="Verified" color="emerald" />
              <StatusCard icon={CreditCard} label="Clearance Mode" value="Digital" color="blue" />
-             <StatusCard icon={Calendar} label="Batch" value="2022-2026" color="indigo" />
+             <StatusCard icon={Calendar} label="Batch Session" value={profile?.session || 'Not Listed (Update Below)'} color="indigo" />
           </div>
         </div>
       </main>
@@ -130,22 +132,28 @@ export default function StudentDetailsPage() {
         <div className="space-y-6 py-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Full Name</label>
+              <label className="text-xs font-bold text-slate-500 ml-1">Full Name</label>
               <Input value={editProfile.full_name} onChange={(e) => setEditProfile({...editProfile, full_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Father Name</label>
+              <label className="text-xs font-bold text-slate-500 ml-1">Father Name</label>
               <Input value={editProfile.father_name} onChange={(e) => setEditProfile({...editProfile, father_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">WhatsApp Phone</label>
+              <label className="text-xs font-bold text-slate-500 ml-1">WhatsApp Phone</label>
               <Input value={editProfile.phone} onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold font-medium text-muted-foreground text-slate-400 ml-1">Current CGPA</label>
+              <label className="text-xs font-bold text-slate-500 ml-1">Current CGPA</label>
               <Input value={editProfile.cgpa} onChange={(e) => setEditProfile({...editProfile, cgpa: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 ml-1">Batch / Session (e.g., 2022-2026)</label>
+              <Input value={editProfile.session} onChange={(e) => setEditProfile({...editProfile, session: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" placeholder="2022-2026" />
             </div>
           </div>
         </div>
@@ -169,12 +177,12 @@ export default function StudentDetailsPage() {
 
 function DetailItem({ icon: Icon, label, value, color = "text-slate-900" }: any) {
   return (
-    <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100/50 group hover:bg-white hover:shadow-xl transition-all duration-500">
-      <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors shadow-sm">
+    <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border-2 border-slate-200 group hover:bg-white hover:shadow-xl transition-all duration-500">
+      <div className="w-12 h-12 rounded-2xl bg-white border-2 border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors shadow-sm">
         <Icon className="w-6 h-6" />
       </div>
       <div>
-        <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mb-1">{label}</p>
+        <p className="text-xs font-bold text-slate-500 mb-1">{label}</p>
         <p className={`text-base font-bold ${color} tracking-tight`}>{value}</p>
       </div>
     </div>
@@ -183,12 +191,12 @@ function DetailItem({ icon: Icon, label, value, color = "text-slate-900" }: any)
 
 function StatusCard({ icon: Icon, label, value, color }: any) {
   return (
-    <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-white/5 flex flex-col items-center text-center gap-4 group hover:scale-105 transition-transform">
+    <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border-2 border-slate-200 dark:border-white/10 flex flex-col items-center text-center gap-4 group hover:scale-105 transition-transform">
        <div className={`w-14 h-14 rounded-2xl bg-${color}-500/10 text-${color}-500 flex items-center justify-center group-hover:rotate-12 transition-transform`}>
           <Icon className="w-7 h-7" />
        </div>
        <div>
-         <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mb-1">{label}</p>
+         <p className="text-xs font-bold text-slate-500 mb-1">{label}</p>
          <p className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{value}</p>
        </div>
     </div>

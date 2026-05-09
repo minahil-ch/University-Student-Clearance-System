@@ -97,7 +97,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
       </Button>
 
       <div className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 glass-card border-r transition-transform duration-300 transform lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-40 w-64 glass-card border-r-2 border-slate-200 dark:border-slate-800 transition-transform duration-300 transform lg:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full p-6">
