@@ -121,13 +121,13 @@ export default function SettingsPage() {
   }
 
   if (!profile) return (
-    <div className="flex min-h-screen items-center justify-center bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-blue-50/50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
+    <div className="min-h-screen bg-sky-50/50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <Button variant="ghost" onClick={handleBackToDashboard} className="mb-8 font-bold tracking-wider gap-2 text-slate-400 hover:text-primary transition-all">
@@ -194,7 +194,7 @@ export default function SettingsPage() {
                         <Input 
                           value={formData.full_name}
                           onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          className="pl-14 h-16 rounded-[1.5rem] bg-sky-50/50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
                           placeholder="Your Name"
                         />
                       </div>
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                         <Input 
                           value={formData.father_name}
                           onChange={(e) => setFormData({...formData, father_name: e.target.value})}
-                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          className="pl-14 h-16 rounded-[1.5rem] bg-sky-50/50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
                           placeholder="Father's Name"
                         />
                       </div>
@@ -218,7 +218,7 @@ export default function SettingsPage() {
                         <Input 
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          className="pl-14 h-16 rounded-[1.5rem] bg-sky-50/50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
                           placeholder="+92 XXX XXXXXXX"
                         />
                       </div>
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                           step="0.01"
                           value={formData.cgpa}
                           onChange={(e) => setFormData({...formData, cgpa: e.target.value})}
-                          className="pl-14 h-16 rounded-[1.5rem] bg-slate-50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
+                          className="pl-14 h-16 rounded-[1.5rem] bg-sky-50/50 dark:bg-slate-950 border-none focus:ring-2 focus:ring-primary/20 text-sm font-bold"
                           placeholder="0.00"
                         />
                       </div>

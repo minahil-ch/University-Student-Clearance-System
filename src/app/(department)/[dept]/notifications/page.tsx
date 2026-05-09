@@ -48,13 +48,13 @@ export default function DepartmentNotificationsPage() {
   if (!deptString) return null
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="department" departmentName={deptString} />
       
       <main className="flex-1 w-full lg:ml-64 p-6 md:p-10">
@@ -85,7 +85,7 @@ export default function DepartmentNotificationsPage() {
                     </div>
                  </CardHeader>
                  <CardContent className="p-8 space-y-6">
-                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <div className="flex items-center justify-between p-4 bg-sky-50/50 rounded-2xl">
                        <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400">Total Sent</p>
                        <p className="text-2xl font-bold text-slate-900">{logs.length}</p>
                     </div>
@@ -105,7 +105,7 @@ export default function DepartmentNotificationsPage() {
              <AnimatePresence>
                {logs.length === 0 ? (
                  <div className="py-20 text-center text-slate-400 font-medium flex flex-col items-center gap-4 bg-white rounded-[2.5rem] shadow-sm border border-slate-100">
-                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
+                   <div className="w-20 h-20 bg-sky-50/50 rounded-full flex items-center justify-center">
                      <Bell className="w-10 h-10 text-slate-300" />
                    </div>
                    <p className="text-xs font-bold font-medium text-muted-foreground">No outbound notifications yet.</p>
@@ -139,7 +139,7 @@ export default function DepartmentNotificationsPage() {
                                  From: {item.sender_email || "System"}
                                </p>
                              </div>
-                             <div className="flex items-center gap-2 text-xs font-bold font-medium text-muted-foreground text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                             <div className="flex items-center gap-2 text-xs font-bold font-medium text-muted-foreground text-slate-400 bg-sky-50/50 px-3 py-1.5 rounded-full border border-slate-100">
                                <Clock className="w-3 h-3" />
                                {formatDate(item.created_at)}
                              </div>

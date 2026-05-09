@@ -459,7 +459,7 @@ export default function DepartmentDashboardContent(props: any) {
   const deptLabel = departmentKey.replace(/-/g, ' ').toUpperCase()
 
   if (!accessReady || loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
@@ -473,7 +473,7 @@ export default function DepartmentDashboardContent(props: any) {
   )
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role={sidebarRole} departmentName={sidebarDeptName} />
 
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -601,7 +601,7 @@ export default function DepartmentDashboardContent(props: any) {
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <tr className="bg-sky-50/50/50 border-b border-slate-100">
                     <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Student Profile</th>
                     <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Personal Details</th>
                     <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Verification Status</th>
@@ -682,7 +682,7 @@ export default function DepartmentDashboardContent(props: any) {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setSelectedStudent({ ...item, isSurvey: true })}
-                                  className="rounded-xl font-bold uppercase text-xs h-10 px-5 gap-2 border-slate-100 hover:bg-slate-50"
+                                  className="rounded-xl font-bold uppercase text-xs h-10 px-5 gap-2 border-slate-100 hover:bg-sky-50/50"
                                 >
                                   <Eye className="w-4 h-4" /> View Details
                                 </Button>

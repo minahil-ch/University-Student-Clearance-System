@@ -152,13 +152,13 @@ export default function RequestsContent() {
   )
 
   if (!accessReady || loading) return (
-    <div className="flex min-h-screen items-center justify-center bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen items-center justify-center bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="department" departmentName={sidebarDeptName} />
 
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -209,7 +209,7 @@ export default function RequestsContent() {
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <tr className="bg-sky-50/50/50 border-b border-slate-100">
                     <th className="px-8 py-6 text-xs font-bold tracking-wider text-slate-400">Student Profile</th>
                     <th className="px-8 py-6 text-xs font-bold tracking-wider text-slate-400">Personal Details</th>
                     <th className="px-8 py-6 text-xs font-bold tracking-wider text-slate-400">Requirement Status</th>
@@ -262,7 +262,7 @@ export default function RequestsContent() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setSelectedStudent(item)}
-                                className="rounded-xl font-bold uppercase text-xs h-10 px-4 border-slate-200 hover:bg-slate-50 gap-2"
+                                className="rounded-xl font-bold uppercase text-xs h-10 px-4 border-slate-200 hover:bg-sky-50/50 gap-2"
                               >
                                 <Eye className="w-4 h-4" /> Review
                               </Button>
@@ -350,7 +350,7 @@ export default function RequestsContent() {
                     </div>
                   </div>
 
-                  <div className="p-8 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-white/5">
+                  <div className="p-8 bg-sky-50/50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-white/5">
                      <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
                            <FileText className="w-5 h-5 text-primary" />

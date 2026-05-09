@@ -32,7 +32,7 @@ export default function AuditLogsPortal() {
   }, [])
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
@@ -50,7 +50,7 @@ export default function AuditLogsPortal() {
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="admin" />
       
       <main className="flex-1 w-full lg:max-w-[calc(100%-16rem)] lg:ml-64 p-8 xl:p-12">
@@ -77,7 +77,7 @@ export default function AuditLogsPortal() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors"
+                    className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-colors"
                   >
                     <div className="flex items-center gap-6">
                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${getActionColor(log.action)}`}>

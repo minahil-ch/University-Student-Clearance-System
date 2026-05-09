@@ -246,7 +246,7 @@ export default function AdminDashboardContent() {
   ]
 
   if (loading && !stats.totalStudents) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
@@ -258,7 +258,7 @@ export default function AdminDashboardContent() {
   )
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="admin" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
@@ -401,7 +401,7 @@ export default function AdminDashboardContent() {
             </div>
             
             <Card className="glass-card border-none shadow-xl overflow-hidden">
-              <CardHeader className="border-b bg-slate-50/50 dark:bg-slate-900/50 px-8 py-6">
+              <CardHeader className="border-b bg-sky-50/50/50 dark:bg-slate-900/50 px-8 py-6">
                 <CardTitle className="flex items-center gap-3 text-2xl font-bold"><History className="w-6 h-6 text-primary" /> System Audit Trail</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -463,7 +463,7 @@ export default function AdminDashboardContent() {
                         .map(student => {
                           const isFullyApproved = fullyApprovedStudents.includes(student.id);
                           return (
-                            <tr key={student.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                            <tr key={student.id} className="hover:bg-sky-50/50 dark:hover:bg-slate-900/50">
                               <td className="px-8 py-5">
                                 <div className="font-bold">{student.full_name}</div>
                                 <div className="text-xs text-muted-foreground">{student.email}</div>
@@ -544,7 +544,7 @@ export default function AdminDashboardContent() {
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                       {requests.map(req => (
-                        <tr key={req.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                        <tr key={req.id} className="hover:bg-sky-50/50 dark:hover:bg-slate-900/50">
                           <td className="px-8 py-5">
                             <div className="font-bold">{req.full_name}</div>
                             <div className="text-xs text-muted-foreground">{req.email}</div>

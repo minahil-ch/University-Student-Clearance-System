@@ -83,13 +83,13 @@ export default function DispatchManagement() {
   const shippedDispatches = students.filter(s => s.dispatch_status === 'shipped' || s.dispatch_status === 'delivered').length
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="admin" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-12">
@@ -162,7 +162,7 @@ export default function DispatchManagement() {
           <CardContent className="p-0">
              <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                   <thead className="bg-slate-50 border-b border-slate-100">
+                   <thead className="bg-sky-50/50 border-b border-slate-100">
                       <tr>
                          <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Identity</th>
                          <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Shipping Address</th>
@@ -172,7 +172,7 @@ export default function DispatchManagement() {
                    </thead>
                    <tbody className="divide-y divide-slate-50">
                       {filteredStudents.map((s) => (
-                         <tr key={s.id} className="hover:bg-slate-50/50 transition-all group">
+                         <tr key={s.id} className="hover:bg-sky-50/50/50 transition-all group">
                             <td className="px-8 py-6">
                                <div className="flex items-center gap-4">
                                   <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold">
@@ -236,7 +236,7 @@ export default function DispatchManagement() {
                     </Button>
                  </div>
 
-                 <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 mb-8 space-y-2">
+                 <div className="p-5 bg-sky-50/50 rounded-2xl border border-slate-100 mb-8 space-y-2">
                     <p className="text-xs font-bold uppercase text-slate-400">Student: <span className="text-slate-900">{selectedStudent.full_name}</span></p>
                     <p className="text-xs font-bold uppercase text-slate-400">Address: <span className="text-slate-900">{selectedStudent.shipping_address || "Not specified"}</span></p>
                  </div>
@@ -260,7 +260,7 @@ export default function DispatchManagement() {
                          placeholder="Enter Tracking Number..." 
                          value={trackingNo}
                          onChange={(e) => setTrackingNo(e.target.value)}
-                         className="h-14 rounded-2xl bg-slate-50 border-slate-200 font-bold"
+                         className="h-14 rounded-2xl bg-sky-50/50 border-slate-200 font-bold"
                        />
                        <Button 
                          onClick={() => updateDispatchStatus(selectedStudent.id, 'shipped', trackingNo)}

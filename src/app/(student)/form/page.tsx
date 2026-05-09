@@ -242,7 +242,7 @@ export default function ClearanceForm() {
 
   if (!pageReady) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
         <p className="text-sm font-bold font-medium text-muted-foreground text-muted-foreground">Preparing clearance form…</p>
       </div>
@@ -251,7 +251,7 @@ export default function ClearanceForm() {
 
   if (alreadySubmitted) {
     return (
-      <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+      <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
         <Sidebar role="student" />
         <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
           <div className="max-w-md w-full text-center space-y-6">
@@ -281,7 +281,7 @@ export default function ClearanceForm() {
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="student" />
       
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
@@ -360,7 +360,7 @@ export default function ClearanceForm() {
                             <Input 
                               value={profile.full_name}
                               onChange={(e) => setProfile({...profile, full_name: e.target.value})}
-                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
                             />
                          </div>
                          <div className="space-y-2.5">
@@ -368,7 +368,7 @@ export default function ClearanceForm() {
                             <Input 
                               value={profile.reg_no}
                               onChange={(e) => setProfile({...profile, reg_no: e.target.value})}
-                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
                             />
                          </div>
                       </div>
@@ -379,7 +379,7 @@ export default function ClearanceForm() {
                             <Input 
                               value={profile.father_name}
                               onChange={(e) => setProfile({...profile, father_name: e.target.value})}
-                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
                             />
                          </div>
                          <div className="space-y-2.5">
@@ -387,7 +387,7 @@ export default function ClearanceForm() {
                             <Input 
                               value={profile.cgpa}
                               onChange={(e) => setProfile({...profile, cgpa: e.target.value})}
-                              className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
                             />
                          </div>
                       </div>
@@ -405,7 +405,7 @@ export default function ClearanceForm() {
                              <div className="relative">
                                <Building2 className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-primary pointer-events-none" />
                                <select 
-                                 className="w-full h-16 pl-16 pr-8 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 text-sm font-bold font-medium text-muted-foreground outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                                 className="w-full h-16 pl-16 pr-8 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 text-sm font-bold font-medium text-muted-foreground outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
                                  value={profile.department_name}
                                  onChange={(e) => setProfile({...profile, department_name: e.target.value})}
                                >
@@ -422,7 +422,7 @@ export default function ClearanceForm() {
                              <Input 
                                value={profile.graduated_year}
                                onChange={(e) => setProfile((prev: any) => ({...prev, graduated_year: e.target.value}))}
-                               className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                               className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                                placeholder="e.g. 2026"
                              />
                           </div>

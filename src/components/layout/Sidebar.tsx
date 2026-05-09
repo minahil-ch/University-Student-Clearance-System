@@ -121,7 +121,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
                     "flex items-center gap-3 px-5 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden",
                     isActive 
                       ? "bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-2xl shadow-slate-900/20" 
-                      : "text-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
+                      : "text-slate-900 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
                   )}
                   onClick={() => setIsOpen(false)}
                 >

@@ -83,7 +83,7 @@ export default function ClearedStudentsPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="department" departmentName={dept as string} />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -115,7 +115,7 @@ export default function ClearedStudentsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b border-slate-50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
+                  <tr className="border-b border-slate-50 dark:border-white/5 bg-sky-50/50/50 dark:bg-slate-900/50">
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Student Profile</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Registration</th>
                     <th className="px-8 py-6 text-xs font-bold font-medium text-muted-foreground text-slate-400">Department</th>
@@ -125,7 +125,7 @@ export default function ClearedStudentsPage() {
                 <tbody className="divide-y divide-slate-50 dark:divide-white/5">
                   {filteredStudents.length > 0 ? (
                     filteredStudents.map((s) => (
-                      <tr key={s.id} className="group hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                      <tr key={s.id} className="group hover:bg-sky-50/50/50 dark:hover:bg-white/5 transition-colors">
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
@@ -148,7 +148,7 @@ export default function ClearedStudentsPage() {
                     <tr>
                       <td colSpan={4} className="px-8 py-20 text-center">
                         <div className="flex flex-col items-center gap-4">
-                           <div className="w-16 h-16 rounded-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+                           <div className="w-16 h-16 rounded-full bg-sky-50/50 dark:bg-slate-900 flex items-center justify-center">
                              <CheckCircle2 className="w-8 h-8 text-slate-200" />
                            </div>
                            <p className="text-xs font-bold font-medium text-muted-foreground text-slate-300">No cleared students recorded</p>

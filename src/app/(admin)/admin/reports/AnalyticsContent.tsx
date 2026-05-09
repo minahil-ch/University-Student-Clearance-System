@@ -178,13 +178,13 @@ export default function AnalyticsContent() {
   }
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="admin" />
 
       <main className="flex-1 lg:ml-64 p-6 md:p-12">
@@ -252,7 +252,7 @@ export default function AnalyticsContent() {
                <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                       <thead className="bg-slate-50/50">
+                       <thead className="bg-sky-50/50/50">
                          <tr>
                            <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400">Department Node</th>
                            <th className="px-8 py-5 text-xs font-bold font-medium text-muted-foreground text-slate-400 text-center">Clearance Rate</th>
@@ -261,7 +261,7 @@ export default function AnalyticsContent() {
                        </thead>
                        <tbody className="divide-y divide-slate-50">
                           {data.deptPerformance.map((dept: any, i: number) => (
-                            <tr key={i} className="hover:bg-slate-50/40 transition-all">
+                            <tr key={i} className="hover:bg-sky-50/50/40 transition-all">
                                <td className="px-8 py-6">
                                   <div className="flex items-center gap-4">
                                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
@@ -307,7 +307,7 @@ export default function AnalyticsContent() {
                 </CardHeader>
                 <CardContent className="p-8 space-y-4">
                    {data.batchDistribution.map((batch: any, i: number) => (
-                     <div key={i} className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.5rem] hover:bg-white hover:shadow-lg transition-all border border-slate-100/50">
+                     <div key={i} className="flex items-center justify-between p-5 bg-sky-50/50 rounded-[1.5rem] hover:bg-white hover:shadow-lg transition-all border border-slate-100/50">
                         <div className="flex items-center gap-4">
                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center font-bold text-primary text-xs shadow-sm">
                               {batch.batch.slice(-2)}

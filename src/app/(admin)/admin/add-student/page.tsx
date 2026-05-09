@@ -101,7 +101,7 @@ export default function AddStudentPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="admin" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -134,7 +134,7 @@ export default function AddStudentPage() {
                          type="email" 
                          value={formData.email} 
                          onChange={e => setFormData({...formData, email: e.target.value})}
-                         className="pl-14 h-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none font-bold" 
+                         className="pl-14 h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                          placeholder="student@cui.edu.pk"
                          required
                        />
@@ -145,7 +145,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.full_name} 
                       onChange={e => setFormData({...formData, full_name: e.target.value})}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Muhammad Abdullah"
                       required
                     />
@@ -155,7 +155,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.reg_no} 
                       onChange={e => setFormData({...formData, reg_no: e.target.value})}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none font-bold uppercase" 
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold uppercase" 
                       placeholder="CIIT/FA20-BCS-001/VHR"
                       required
                     />
@@ -165,7 +165,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.department_name} 
                       onChange={e => setFormData({...formData, department_name: e.target.value})}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Computer Science"
                       required
                     />
@@ -175,7 +175,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.session} 
                       onChange={e => setFormData({...formData, session: e.target.value})}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Fall 2020"
                       required
                     />

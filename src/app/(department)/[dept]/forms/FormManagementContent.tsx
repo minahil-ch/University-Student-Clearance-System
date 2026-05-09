@@ -100,7 +100,7 @@ export default function FormManagementContent() {
   if (!departmentKey) return null
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="department" departmentName={deptString} />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -127,7 +127,7 @@ export default function FormManagementContent() {
                     <Input 
                       value={newForm.name} 
                       onChange={e => setNewForm({...newForm, name: e.target.value})}
-                      className="h-14 rounded-2xl bg-slate-50 border-none font-bold text-sm" 
+                      className="h-14 rounded-2xl bg-sky-50/50 border-none font-bold text-sm" 
                       placeholder="e.g. Thesis Submission Form"
                     />
                   </div>
@@ -136,7 +136,7 @@ export default function FormManagementContent() {
                     <Input 
                       value={newForm.link} 
                       onChange={e => setNewForm({...newForm, link: e.target.value})}
-                      className="h-14 rounded-2xl bg-slate-50 border-none font-bold text-sm" 
+                      className="h-14 rounded-2xl bg-sky-50/50 border-none font-bold text-sm" 
                       placeholder="https://forms.google.com/..."
                     />
                   </div>
@@ -183,7 +183,7 @@ export default function FormManagementContent() {
               <CardContent className="p-8">
                 <div className="space-y-4">
                   {departmentForms.map((form) => (
-                    <div key={form.id} className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-xl transition-all">
+                    <div key={form.id} className="p-6 bg-sky-50/50 rounded-[2rem] border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-xl transition-all">
                       <div className="flex items-center gap-5">
                         <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-primary shadow-sm">
                           <FileText className="w-6 h-6" />
@@ -218,7 +218,7 @@ export default function FormManagementContent() {
                   ))}
                   {departmentForms.length === 0 && (
                     <div className="py-20 text-center flex flex-col items-center gap-4">
-                       <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
+                       <div className="w-16 h-16 rounded-full bg-sky-50/50 flex items-center justify-center">
                          <FileText className="w-8 h-8 text-slate-100" />
                        </div>
                        <p className="text-xs font-bold font-medium text-muted-foreground text-slate-300">No active forms published</p>

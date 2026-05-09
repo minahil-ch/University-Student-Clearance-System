@@ -52,13 +52,13 @@ export default function StudentDetailsPage() {
   }, [])
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-6">
       <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="student" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10">
@@ -133,27 +133,27 @@ export default function StudentDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 ml-1">Full Name</label>
-              <Input value={editProfile.full_name} onChange={(e) => setEditProfile({...editProfile, full_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+              <Input value={editProfile.full_name} onChange={(e) => setEditProfile({...editProfile, full_name: e.target.value})} className="h-12 rounded-xl bg-sky-50/50 border-none" />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 ml-1">Father Name</label>
-              <Input value={editProfile.father_name} onChange={(e) => setEditProfile({...editProfile, father_name: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+              <Input value={editProfile.father_name} onChange={(e) => setEditProfile({...editProfile, father_name: e.target.value})} className="h-12 rounded-xl bg-sky-50/50 border-none" />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 ml-1">WhatsApp Phone</label>
-              <Input value={editProfile.phone} onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+              <Input value={editProfile.phone} onChange={(e) => setEditProfile({...editProfile, phone: e.target.value})} className="h-12 rounded-xl bg-sky-50/50 border-none" />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 ml-1">Current CGPA</label>
-              <Input value={editProfile.cgpa} onChange={(e) => setEditProfile({...editProfile, cgpa: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+              <Input value={editProfile.cgpa} onChange={(e) => setEditProfile({...editProfile, cgpa: e.target.value})} className="h-12 rounded-xl bg-sky-50/50 border-none" />
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 ml-1">Batch / Session (e.g., 2022-2026)</label>
-              <Input value={editProfile.session} onChange={(e) => setEditProfile({...editProfile, session: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" placeholder="2022-2026" />
+              <Input value={editProfile.session} onChange={(e) => setEditProfile({...editProfile, session: e.target.value})} className="h-12 rounded-xl bg-sky-50/50 border-none" placeholder="2022-2026" />
             </div>
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function StudentDetailsPage() {
 
 function DetailItem({ icon: Icon, label, value, color = "text-slate-900" }: any) {
   return (
-    <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border-2 border-slate-200 group hover:bg-white hover:shadow-xl transition-all duration-500">
+    <div className="flex items-center gap-6 p-6 bg-sky-50/50 rounded-[2rem] border-2 border-slate-200 group hover:bg-white hover:shadow-xl transition-all duration-500">
       <div className="w-12 h-12 rounded-2xl bg-white border-2 border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors shadow-sm">
         <Icon className="w-6 h-6" />
       </div>

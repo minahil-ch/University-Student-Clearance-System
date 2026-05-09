@@ -29,6 +29,7 @@ export default function StudentDashboardContent() {
   const [showProfile, setShowProfile] = useState(false)
   const [hodContact, setHodContact] = useState<any>(null)
   const [deptForms, setDeptForms] = useState<any[]>([])
+  const [departmentContacts, setDepartmentContacts] = useState<Record<string, string>>({})
   const supabase = createClient()
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function StudentDashboardContent() {
   const isAcademicCleared = academicStatus?.status === 'cleared'
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50/50 dark:bg-slate-950 gap-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-6">
       <div className="relative">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8">
@@ -158,7 +159,7 @@ export default function StudentDashboardContent() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950 font-sans">
       <Sidebar role="student" />
       
       <main className="flex-1 lg:ml-64 p-6 md:p-10 overflow-visible">
@@ -208,7 +209,7 @@ export default function StudentDashboardContent() {
                               <h4 className="text-lg font-bold text-slate-900 dark:text-white uppercase leading-none">{profile?.full_name}</h4>
                               <p className="text-xs font-bold text-primary font-medium text-muted-foreground mt-1.5">{profile?.reg_no}</p>
                            </div>
-                           <div className="w-full h-px bg-slate-50 dark:bg-slate-800 my-2" />
+                           <div className="w-full h-px bg-sky-50/50 dark:bg-slate-800 my-2" />
                            <div className="w-full space-y-3 text-left">
                               <div className="flex justify-between items-center text-xs font-bold font-medium text-muted-foreground text-slate-400">
                                  <span>CGPA</span>
@@ -351,7 +352,7 @@ export default function StudentDashboardContent() {
                           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover/item:scale-110 shadow-lg ${
                             item.status === 'cleared' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 
                             item.status === 'issue' ? 'bg-rose-500 text-white shadow-rose-500/20' : 
-                            'bg-slate-50 dark:bg-slate-950 text-slate-300'
+                            'bg-sky-50/50 dark:bg-slate-950 text-slate-300'
                           }`}>
                             {getDepartmentIcon(item.department_key)}
                           </div>
@@ -475,7 +476,7 @@ export default function StudentDashboardContent() {
                         const portal = getPortalContact(key)
                         const realPhone = departmentContacts[key] || 'Not Provided'
                         return (
-                          <div key={key} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between group hover:bg-white transition-all">
+                          <div key={key} className="p-5 bg-sky-50/50 rounded-2xl border border-slate-100 flex items-center justify-between group hover:bg-white transition-all">
                             <div className="flex items-center gap-4">
                               <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
                                 {getDepartmentIcon(key)}

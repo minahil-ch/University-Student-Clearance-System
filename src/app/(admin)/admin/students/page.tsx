@@ -73,7 +73,7 @@ export default function AdminStudents() {
   if (!isClient) return null
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="admin" />
       <main className="flex-1 w-full lg:max-w-[calc(100%-16rem)] lg:ml-64 p-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 mt-2">
@@ -126,7 +126,7 @@ export default function AdminStudents() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-100 dark:border-slate-800">
+                  <tr className="bg-sky-50/50/80 dark:bg-slate-900/80 border-b border-slate-100 dark:border-slate-800">
                     <th className="px-8 py-5 text-xs font-bold tracking-wider text-slate-400">Identity</th>
                     {activeTab !== 'future' ? (
                       <>
@@ -146,7 +146,7 @@ export default function AdminStudents() {
                   {activeDataList.map((item: any) => {
                     if (activeTab === 'future') {
                       return (
-                        <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-all duration-300">
+                        <tr key={item.id} className="hover:bg-sky-50/50/50 dark:hover:bg-slate-900/50 transition-all duration-300">
                           <td className="px-8 py-6">
                             <div className="font-bold text-slate-800 dark:text-slate-200">{item.student?.full_name}</div>
                             <div className="text-xs font-bold uppercase text-primary mt-1">{item.student?.reg_no}</div>
@@ -167,7 +167,7 @@ export default function AdminStudents() {
                     return (
                       <React.Fragment key={item.id}>
                         <tr 
-                          className={`hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all cursor-pointer group ${expandedId === item.id ? 'bg-slate-50 dark:bg-slate-900/50' : ''}`}
+                          className={`hover:bg-sky-50/50 dark:hover:bg-slate-900/50 transition-all cursor-pointer group ${expandedId === item.id ? 'bg-sky-50/50 dark:bg-slate-900/50' : ''}`}
                           onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                         >
                           <td className="px-8 py-6">
@@ -215,7 +215,7 @@ export default function AdminStudents() {
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
                             >
-                              <td colSpan={4} className="px-6 py-2 bg-slate-50/30 dark:bg-slate-900/20">
+                              <td colSpan={4} className="px-6 py-2 bg-sky-50/50/30 dark:bg-slate-900/20">
                                 <motion.div 
                                   initial={{ x: -20, opacity: 0 }}
                                   animate={{ x: 0, opacity: 1 }}
@@ -224,7 +224,7 @@ export default function AdminStudents() {
                                   <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
                                     {/* Column 1: Core Profile */}
                                     <div className="space-y-6 xl:col-span-1">
-                                       <div className="flex flex-col items-center text-center p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-slate-700">
+                                       <div className="flex flex-col items-center text-center p-6 bg-sky-50/50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100 dark:border-slate-700">
                                          <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-indigo-600 p-1 mb-4 shadow-xl">
                                             <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-3xl font-bold text-primary">
                                               {item.full_name?.[0]}
@@ -266,7 +266,7 @@ export default function AdminStudents() {
                                           { label: "Clearance Pct", value: `${(item.totalDepts === 0 ? 0 : (item.clearedDepts / item.totalDepts) * 100).toFixed(0)}% Complete`, icon: Navigation },
                                         ].map((info) => (
                                           <div key={info.label} className="p-4 rounded-2xl bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 hover:border-primary/20 transition-all">
-                                            <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-primary border border-slate-100 dark:border-slate-800">
+                                            <div className="w-10 h-10 rounded-xl bg-sky-50/50 dark:bg-slate-900 flex items-center justify-center text-primary border border-slate-100 dark:border-slate-800">
                                               <info.icon className="w-4 h-4" />
                                             </div>
                                             <div>
@@ -281,7 +281,7 @@ export default function AdminStudents() {
                                          <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-slate-400 border-l-3 border-emerald-500 pl-4 mb-4">Internal Department Clearances</h4>
                                          <div className="flex flex-wrap gap-2">
                                             {item.clearance_status?.map((portal: any) => (
-                                              <div key={portal.id} className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
+                                              <div key={portal.id} className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-sky-50/50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
                                                 <span className="text-xs font-bold tracking-tight text-slate-500">{portal.department_key}</span>
                                                 <StatusBadge status={portal.status} className="h-4 border-none text-[8px] font-bold px-2" />
                                               </div>
@@ -330,7 +330,7 @@ export default function AdminStudents() {
                                          </Button>
                                       </div>
 
-                                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 text-center border border-slate-100 dark:border-slate-800">
+                                      <div className="p-4 rounded-xl bg-sky-50/50 dark:bg-slate-950 text-center border border-slate-100 dark:border-slate-800">
                                          <p className="text-xs font-bold text-slate-400 font-medium text-muted-foreground leading-relaxed">
                                            Direct contact via WhatsApp/Email bypasses manual logging for immediate resolution.
                                          </p>
@@ -357,7 +357,7 @@ export default function AdminStudents() {
 
               {!loading && activeDataList.length === 0 && (
                 <div className="py-32 text-center flex flex-col items-center gap-6">
-                  <div className="w-20 h-20 rounded-[2rem] bg-slate-50 dark:bg-slate-900 flex items-center justify-center shadow-inner">
+                  <div className="w-20 h-20 rounded-[2rem] bg-sky-50/50 dark:bg-slate-900 flex items-center justify-center shadow-inner">
                     <Search className="w-10 h-10 text-slate-200" />
                   </div>
                   <div>

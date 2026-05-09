@@ -78,7 +78,7 @@ export default function UniversityFormPage() {
 
   if (alreadySubmitted) {
     return (
-      <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+      <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
         <Sidebar role="student" />
         <main className="flex-1 lg:ml-64 flex items-center justify-center p-6">
           <div className="max-w-md w-full text-center space-y-6">
@@ -166,7 +166,7 @@ export default function UniversityFormPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50/50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
       <Sidebar role="student" />
       <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
         <header className="mb-10 text-center max-w-2xl mx-auto">
@@ -230,7 +230,7 @@ export default function UniversityFormPage() {
                       placeholder="e.g. name@outlook.com"
                       value={futureData.personal_email}
                       onChange={(e) => setFutureData({ ...futureData, personal_email: e.target.value })}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
                   <div className="space-y-2.5">
@@ -239,7 +239,7 @@ export default function UniversityFormPage() {
                       placeholder="+92 3XX XXXXXXX"
                       value={futureData.alternate_phone}
                       onChange={(e) => setFutureData({ ...futureData, alternate_phone: e.target.value })}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function UniversityFormPage() {
                   <div className="space-y-2.5">
                     <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Job Secured before Graduation?</label>
                     <select
-                      className="w-full h-16 px-6 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:ring-2 focus:ring-primary outline-none font-bold appearance-none cursor-pointer"
+                      className="w-full h-16 px-6 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:ring-2 focus:ring-primary outline-none font-bold appearance-none cursor-pointer"
                       value={futureData.job_secured}
                       onChange={(e) => setFutureData({ ...futureData, job_secured: e.target.value })}
                     >
@@ -270,7 +270,7 @@ export default function UniversityFormPage() {
                       placeholder="e.g. Systems Ltd, Google, etc."
                       value={futureData.company_name}
                       onChange={(e) => setFutureData({ ...futureData, company_name: e.target.value })}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm disabled:opacity-30 transition-all font-bold"
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm disabled:opacity-30 transition-all font-bold"
                       disabled={futureData.job_secured === "No"}
                     />
                   </div>
@@ -290,7 +290,7 @@ export default function UniversityFormPage() {
                       placeholder="Target University for MS/PhD"
                       value={futureData.higher_education_uni}
                       onChange={(e) => setFutureData({ ...futureData, higher_education_uni: e.target.value })}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
                   <div className="space-y-2.5">
@@ -299,7 +299,7 @@ export default function UniversityFormPage() {
                       placeholder="e.g. MS Computer Science"
                       value={futureData.degree}
                       onChange={(e) => setFutureData({ ...futureData, degree: e.target.value })}
-                      className="h-16 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
+                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
                     />
                   </div>
                 </div>
