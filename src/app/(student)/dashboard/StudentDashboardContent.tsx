@@ -258,30 +258,30 @@ export default function StudentDashboardContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className={`group relative p-8 rounded-[2.5rem] border-2 transition-all duration-700 overflow-hidden ${
+              className={`group relative p-8 rounded-[2.5rem] border-[3px] transition-all duration-700 overflow-hidden ${
                 step.done 
                 ? 'bg-white dark:bg-slate-900 border-primary/20 shadow-2xl shadow-primary/5' 
-                : 'bg-white/40 dark:bg-slate-900/20 border-slate-100 dark:border-slate-800 grayscale'
+                : 'bg-white/40 dark:bg-slate-900/20 border-slate-900 dark:border-slate-800'
               }`}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
               
               <div className="flex items-center justify-between mb-6">
                 <div className={`p-4 rounded-2xl shadow-lg transition-transform group-hover:scale-110 ${
-                  step.done ? `bg-emerald-500 text-white` : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                  step.done ? `bg-emerald-500 text-white` : 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white'
                 }`}>
                   <step.icon className="w-6 h-6" />
                 </div>
-                <span className={`text-[11px] font-bold tracking-widest ${step.done ? 'text-emerald-500' : 'text-slate-300'}`}>
+                <span className={`text-[11px] font-bold tracking-widest ${step.done ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-400'}`}>
                   {step.done ? <CheckCircle2 className="w-6 h-6" /> : step.step}
                 </span>
               </div>
               
-              <h4 className={`text-xl font-bold tracking-tight leading-none ${step.done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+              <h4 className={`text-xl font-bold tracking-tight leading-none ${step.done ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
                 {step.label}
               </h4>
-              <p className="text-xs font-bold font-medium text-muted-foreground text-slate-400 mt-3 flex items-center gap-2">
-                <span className={`w-1.5 h-1.5 rounded-full ${step.done ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+              <p className="text-xs font-bold text-slate-700 dark:text-slate-400 mt-3 flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${step.done ? 'bg-emerald-500 animate-pulse' : 'bg-slate-900 dark:bg-slate-400'}`} />
                 {step.desc}
               </p>
             </motion.div>
@@ -331,7 +331,7 @@ export default function StudentDashboardContent() {
                         className={`group/item flex items-center justify-between p-6 rounded-3xl border-[3px] transition-all duration-500 ${
                           item.status === 'cleared' ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
                           item.status === 'issue' ? 'bg-rose-50/30 border-rose-100 dark:bg-rose-500/5 dark:border-rose-500/20' : 
-                          'bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl'
+                          'bg-white dark:bg-slate-900 border-slate-900 dark:border-white/20 shadow-sm hover:shadow-xl'
                         }`}
                       >
                         <div className="flex items-center gap-5">
@@ -413,7 +413,7 @@ export default function StudentDashboardContent() {
                        ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {deptForms.map((form) => (
-                              <Card key={form.id} className="glass-card border-[3px] border-slate-100 dark:border-slate-800 rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
+                              <Card key={form.id} className="glass-card border-[3px] border-slate-900 dark:border-slate-800 rounded-[2rem] shadow-xl overflow-hidden group hover:scale-[1.02] transition-all">
                                  <CardContent className="p-8 flex flex-col xl:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-4 w-full">
                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -451,7 +451,7 @@ export default function StudentDashboardContent() {
            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Helplines */}
               <div className="xl:col-span-2">
-                <Card className="glass-card border-[3px] border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
+                <Card className="glass-card border-[3px] border-slate-900 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
                   <CardHeader className="p-8 border-b border-slate-100">
                       <CardTitle className="text-xl font-bold tracking-tight flex items-center gap-3">
                         <Phone className="w-6 h-6 text-primary" /> Department Helplines
@@ -484,7 +484,7 @@ export default function StudentDashboardContent() {
               {/* HOD Card */}
               <div className="xl:col-span-1">
                 {hodContact && (
-                  <Card className="glass-card shadow-lg border-[3px] border-slate-100 hover:border-slate-200 dark:border-slate-800 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300 rounded-[2rem] overflow-hidden group h-full">
+                  <Card className="glass-card shadow-lg border-[3px] border-slate-900 hover:border-slate-950 dark:border-slate-800 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300 rounded-[2rem] overflow-hidden group h-full">
                     <div className="p-8 bg-indigo-50/50 h-full flex flex-col">
                        <div className="flex items-center gap-4 mb-6">
                           <div className="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20">

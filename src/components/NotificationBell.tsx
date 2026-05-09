@@ -65,8 +65,10 @@ export function NotificationBell() {
   }, [])
 
   const markAsSeen = async () => {
+    setUnreadCount(0)
+    setNotifications(prev => prev.map(n => ({ ...n, is_seen: true })))
+
     if (notifications.length === 1 && notifications[0].id === 'welcome-1') {
-      setIsOpen(false)
       return
     }
 
@@ -78,9 +80,6 @@ export function NotificationBell() {
       .update({ is_seen: true })
       .eq('user_id', user.id)
       .eq('is_seen', false)
-    
-    setUnreadCount(0)
-    setNotifications(prev => prev.map(n => ({ ...n, is_seen: true })))
   }
 
   const deleteNotification = async (id: string) => {
