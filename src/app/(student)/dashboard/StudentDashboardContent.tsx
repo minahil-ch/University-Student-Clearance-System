@@ -304,7 +304,7 @@ export default function StudentDashboardContent() {
 
         <div className="flex flex-col gap-8">
            {/* Live Status Tracker - Full Width */}
-           {uniFormDone ? (
+           {clearanceStarted ? (
              <div className="w-full">
               <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-white/5 shadow-2xl overflow-hidden group">
                 <div className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -397,10 +397,10 @@ export default function StudentDashboardContent() {
                       </p>
                       <div className="pt-6">
                          <Button 
-                           onClick={() => { window.location.href = "/uni-form" }}
+                           onClick={() => { window.location.href = uniFormDone ? "/form" : "/uni-form" }}
                            className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-bold font-medium text-muted-foreground text-xs gap-3 active:scale-95 transition-all"
                          >
-                            Start Filing Clearance Form <ArrowRight className="w-5 h-5" />
+                            {uniFormDone ? "Fill Clearance Form" : "Start Filing Clearance Form"} <ArrowRight className="w-5 h-5" />
                          </Button>
                       </div>
                    </div>

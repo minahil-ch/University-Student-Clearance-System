@@ -291,10 +291,10 @@ export default function ClearanceForm() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight px-4 text-slate-900 dark:text-white uppercase italic">
-              COMSATS <span className="gradient-text italic">UNIVERSITY</span>
+              OFFICIAL <span className="gradient-text italic">CLEARANCE FORM</span>
             </h2>
             <p className="text-muted-foreground mt-4 text-lg font-medium">
-              Complete your formal profile to initiate campus-wide clearance.
+              Please verify your institutional data to initiate campus-wide clearance.
             </p>
           </motion.div>
 
@@ -344,10 +344,10 @@ export default function ClearanceForm() {
                              <span className="text-xs font-bold tracking-wider text-emerald-500 italic">Identity Verification</span>
                           </div>
                           <CardTitle className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
-                             CLEARANCE <span className="text-emerald-500 italic">INITIATION</span>
+                             INSTITUTIONAL <span className="text-emerald-500 italic">VERIFICATION</span>
                           </CardTitle>
                           <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
-                            Establish your official profile to trigger the campus-wide verification queue.
+                            Step 2/2: Confirm your details to trigger the campus-wide verification queue.
                           </p>
                        </div>
                     </div>
@@ -438,9 +438,9 @@ export default function ClearanceForm() {
                            Your request will be broadcasted to all departments for verification.
                          </p>
                       </div>
-                      <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto h-16 px-16 rounded-2xl bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/20 text-white font-bold font-medium text-muted-foreground text-[11px] gap-4 transition-all active:scale-95">
-                        {loading ? "Establishing Identity..." : (
-                          <>Launch Clearance Queue <ArrowRight className="w-5 h-5" /></>
+                      <Button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto h-16 px-16 rounded-2xl bg-slate-900 hover:bg-black shadow-2xl shadow-slate-900/20 text-white font-bold font-medium text-muted-foreground text-[11px] gap-4 transition-all active:scale-95 uppercase tracking-widest">
+                        {loading ? "Registering Application..." : (
+                          <>Submit Final Clearance Request <ArrowRight className="w-5 h-5" /></>
                         )}
                       </Button>
                     </div>
