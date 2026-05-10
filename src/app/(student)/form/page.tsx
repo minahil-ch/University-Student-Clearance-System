@@ -34,7 +34,7 @@ export default function ClearanceForm() {
     email: "",
     cgpa: "",
     department_name: "Computer Science",
-    graduated_year: new Date().getFullYear().toString()
+    session: new Date().getFullYear().toString()
   })
 
   const supabase = createClient()
@@ -57,6 +57,7 @@ export default function ClearanceForm() {
           phone: pData.phone || "",
           email: pData.email || "",
           cgpa: pData.cgpa || "",
+          session: pData.session || "",
           department_name: pData.department_name || "Computer Science"
         }))
       } else {
@@ -119,6 +120,7 @@ export default function ClearanceForm() {
             cgpa: profile.cgpa,
             department_name: profile.department_name,
             reg_no: profile.reg_no,
+            session: profile.session,
             email: user.email // Strictly match auth to avoid RLS mismatches!
           })
           .eq('id', user.id)
@@ -134,6 +136,7 @@ export default function ClearanceForm() {
             cgpa: profile.cgpa,
             department_name: profile.department_name,
             reg_no: profile.reg_no,
+            session: profile.session,
             email: user.email, // Strictly match auth
             role: 'student'
           })
@@ -418,12 +421,12 @@ export default function ClearanceForm() {
                              </div>
                           </div>
                           <div className="space-y-2.5">
-                             <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Graduating Batch / Year</label>
+                             <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Batch / Session (e.g., 2022-2026)</label>
                              <Input 
-                               value={profile.graduated_year}
-                               onChange={(e) => setProfile((prev: any) => ({...prev, graduated_year: e.target.value}))}
+                               value={profile.session}
+                               onChange={(e) => setProfile((prev: any) => ({...prev, session: e.target.value}))}
                                className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-primary/30 transition-all font-bold"
-                               placeholder="e.g. 2026"
+                               placeholder="e.g. 2022-2026"
                              />
                           </div>
                        </div>

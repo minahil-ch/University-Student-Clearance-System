@@ -343,8 +343,9 @@ export default function StudentDashboardContent() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.05 }}
                         className={`group/item flex items-center justify-between p-6 rounded-3xl border-[3px] transition-all duration-500 ${
-                          item.status === 'cleared' ? 'bg-emerald-50/30 border-emerald-100 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
-                          item.status === 'issue' ? 'bg-rose-50/30 border-rose-100 dark:bg-rose-500/5 dark:border-rose-500/20' : 
+                          item.status === 'cleared' ? 'bg-emerald-50/50 border-emerald-500/30 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
+                          item.status === 'pending' ? 'bg-rose-50/50 border-rose-500/30 dark:bg-rose-500/5 dark:border-rose-500/20 shadow-lg shadow-rose-500/5' :
+                          item.status === 'issue' ? 'bg-rose-100/50 border-rose-500 dark:bg-rose-500/10 dark:border-rose-500/40' : 
                           'bg-white dark:bg-slate-900 border-slate-900 dark:border-white/20 shadow-sm hover:shadow-xl'
                         }`}
                       >
@@ -486,9 +487,24 @@ export default function StudentDashboardContent() {
                                 <p className="text-xs font-bold text-slate-900">{realPhone}</p>
                               </div>
                             </div>
-                            <Button variant="ghost" className="rounded-full w-10 h-10 p-0" onClick={() => realPhone !== 'Not Provided' && window.open(`https://wa.me/${realPhone.replace(/\+/g, '')}`, '_blank')}>
-                              <Phone className="w-4 h-4 text-slate-900" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                               <Button 
+                                 variant="ghost" 
+                                 className="rounded-full w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary transition-all" 
+                                 onClick={() => realPhone !== 'Not Provided' && window.open(`tel:${realPhone}`, '_self')}
+                                 title="Call Now"
+                               >
+                                 <Phone className="w-4 h-4" />
+                               </Button>
+                               <Button 
+                                 variant="ghost" 
+                                 className="rounded-full w-9 h-9 p-0 hover:bg-primary/10 hover:text-primary transition-all" 
+                                 onClick={() => window.location.href = `mailto:${portal.email}`}
+                                 title="Send Email"
+                               >
+                                 <Mail className="w-4 h-4" />
+                               </Button>
+                            </div>
                           </div>
                         )
                       })}

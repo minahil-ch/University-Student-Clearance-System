@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   department_name TEXT,
   reg_no TEXT,
   cgpa TEXT,
+  session TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -98,6 +99,7 @@ CREATE TABLE IF NOT EXISTS public.notification_logs (
 
 -- 3. ENSURE ALL COLUMNS EXIST (Migration for existing tables)
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS session TEXT;
 ALTER TABLE public.clearance_status ADD COLUMN IF NOT EXISTS form_submitted BOOLEAN DEFAULT FALSE;
 ALTER TABLE public.future_data ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
 ALTER TABLE public.future_data ADD COLUMN IF NOT EXISTS admin_remarks TEXT;
@@ -139,7 +141,8 @@ BEGIN
         new.raw_user_meta_data->>'reg_no', 
         new.raw_user_meta_data->>'phone', 
         new.raw_user_meta_data->>'cgpa', 
-        new.raw_user_meta_data->>'department_name'
+        new.raw_user_meta_data->>'department_name',
+        new.raw_user_meta_data->>'session'
     ) ON CONFLICT (id) DO UPDATE SET
         full_name = EXCLUDED.full_name,
         email = EXCLUDED.email,

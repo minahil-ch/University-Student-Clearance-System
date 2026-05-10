@@ -10,7 +10,7 @@ export function StatusBadge({ status, className }: { status: 'cleared' | 'pendin
     },
     pending: {
       label: "Pending",
-      className: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
+      className: "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20",
       icon: Clock
     },
     issue: {
