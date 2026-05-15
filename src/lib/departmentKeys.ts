@@ -11,7 +11,7 @@ export function canonicalClearanceDepartmentKey(dept: string | null | undefined)
   if (!raw) return ""
   if (raw.startsWith("academic-")) return raw
   
-  const coreDepts = ["library", "transport", "finance", "hostel", "admin", "student"]
+  const coreDepts = ["library", "transport", "finance", "hostel", "dispatch", "admin", "student"]
   if (coreDepts.includes(raw)) return raw
   
   return `academic-${raw}`

@@ -301,30 +301,41 @@ export default function ClearanceForm() {
             </p>
           </motion.div>
 
-          {/* Progress: clearance form → submitted */}
+          {/* Progress: Survey (Done) → clearance form → submitted */}
           <div className="flex items-center justify-center gap-4 mt-8">
-            {(() => {
-              const submitted = step >= 3 || step === 4
-              return (
-                <>
-                  <div className="flex items-center">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
-                      submitted ? "bg-emerald-500 text-white" :
-                      step === 2 ? "bg-primary text-white scale-110 shadow-2xl shadow-primary/20" :
-                      "bg-slate-200 dark:bg-slate-800 text-slate-400"
-                    }`}>
-                      {submitted ? <CheckCircle2 className="w-6 h-6" /> : 1}
-                    </div>
-                    <div className={`w-16 h-1 ${submitted ? "bg-emerald-500" : "bg-slate-200 dark:bg-slate-800"}`} />
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
-                      submitted ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
-                    }`}>
-                      {submitted ? <CheckCircle2 className="w-6 h-6" /> : 2}
-                    </div>
-                  </div>
-                </>
-              )
-            })()}
+            <div className="flex items-center">
+              {/* Step 1: Survey (Always done here) */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold shadow-lg shadow-emerald-500/20">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">Survey Done</span>
+              </div>
+              
+              <div className="w-12 h-1 bg-emerald-500 mx-2" />
+
+              {/* Step 2: Clearance Form */}
+              <div className="flex flex-col items-center gap-2">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                  step >= 3 ? "bg-emerald-500 text-white" : "bg-primary text-white scale-110 shadow-2xl shadow-primary/20"
+                }`}>
+                  {step >= 3 ? <CheckCircle2 className="w-6 h-6" /> : 2}
+                </div>
+                <span className={`text-[10px] font-bold uppercase tracking-tighter ${step >= 3 ? 'text-emerald-500' : 'text-primary'}`}>Clearance Form</span>
+              </div>
+
+              <div className={`w-12 h-1 mx-2 ${step >= 3 ? "bg-emerald-500" : "bg-slate-200 dark:bg-slate-800"}`} />
+
+              {/* Step 3: Monitoring */}
+              <div className="flex flex-col items-center gap-2">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                  step >= 3 ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-400"
+                }`}>
+                  {step >= 3 ? <CheckCircle2 className="w-6 h-6" /> : 3}
+                </div>
+                <span className={`text-[10px] font-bold uppercase tracking-tighter ${step >= 3 ? 'text-emerald-500' : 'text-slate-400'}`}>Monitoring</span>
+              </div>
+            </div>
           </div>
         </header>
 

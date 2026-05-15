@@ -30,7 +30,7 @@ import { Logo } from "@/components/ui/Logo"
 import { motion } from "framer-motion"
 
 interface SidebarProps {
-  role: 'admin' | 'student' | 'department' | 'transport' | 'library' | 'hostel' | 'finance'
+  role: 'admin' | 'student' | 'department' | 'transport' | 'library' | 'hostel' | 'finance' | 'dispatch'
   departmentName?: string
 }
 
@@ -43,6 +43,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
       { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { label: "My Details", href: "/details", icon: User },
       { label: "Clearance Form", href: "/form", icon: FileText },
+      { label: "Dispatch", href: "/degree-dispatch", icon: Truck },
       { label: "Notifications", href: "/notifications", icon: Mail },
     ],
     department: [
@@ -72,6 +73,11 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
       { label: "Dashboard", href: "/finance", icon: LayoutDashboard },
       { label: "Approved Students", href: "/finance/cleared", icon: CheckCircle2 },
       { label: "Rejected Students", href: "/finance/rejected", icon: AlertCircle },
+    ],
+    dispatch: [
+      { label: "Degree Hub", href: "/dispatch", icon: LayoutDashboard },
+      { label: "Awarded Degrees", href: "/dispatch/cleared", icon: CheckCircle2 },
+      { label: "Pending Awards", href: "/dispatch/rejected", icon: AlertCircle },
     ],
     admin: [
       { label: "Overview", href: "/admin", icon: Shield },

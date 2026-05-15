@@ -360,7 +360,16 @@ export default function StudentDashboardContent() {
                           <div>
                             <p className="text-xs font-bold uppercase text-slate-400 tracking-[0.2em] mb-1 leading-none">{item.department_key}</p>
                             <h5 className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">
-                              {item.department_key.startsWith("academic-") ? "Final Academic" : item.department_key.replace(/_/g, " ")}
+                              {item.department_key.startsWith("academic-") ? (
+                                <>
+                                  Final Academic 
+                                  {!allCoreCleared && item.status === 'pending' && (
+                                    <span className="ml-2 text-[10px] text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md italic normal-case">
+                                      Waiting for core depts
+                                    </span>
+                                  )}
+                                </>
+                              ) : item.department_key.replace(/_/g, " ")}
                             </h5>
                           </div>
                         </div>

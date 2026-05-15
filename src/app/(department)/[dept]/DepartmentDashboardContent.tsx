@@ -107,6 +107,7 @@ export default function DepartmentDashboardContent(props: any) {
         (profile.role === "transport" && routeSlug === "transport") ||
         (profile.role === "hostel" && routeSlug === "hostel") ||
         (profile.role === "finance" && routeSlug === "finance") ||
+        (profile.role === "dispatch" && routeSlug === "dispatch") ||
         (profile.role === "department" &&
           requestedClearance === canonicalClearanceDepartmentKey(profile.department_name || ""))
 
@@ -122,9 +123,9 @@ export default function DepartmentDashboardContent(props: any) {
         return
       }
 
-      if (profile.role === "library" || profile.role === "transport" || profile.role === "hostel" || profile.role === "finance") {
+      if (['library', 'transport', 'hostel', 'finance', 'dispatch'].includes(profile.role)) {
         setSidebarRole(profile.role as any)
-        setSidebarDeptName(profile.role)
+        setSidebarDeptName(profile.role === 'dispatch' ? 'Degree Awarded' : profile.role)
       } else {
         setSidebarRole("department")
         setSidebarDeptName(profile.department_name || departmentKey.replace(/-/g, " "))
@@ -150,7 +151,8 @@ export default function DepartmentDashboardContent(props: any) {
           id, status, remarks, form_submitted, updated_at,
           profiles:student_id (
             id, full_name, father_name, reg_no, email, phone, cgpa, department_name,
-            future_data (*)
+            future_data (*),
+            clearance_status (department_key, status)
           )
         `)
         .eq('department_key', dbKey)
@@ -175,13 +177,36 @@ export default function DepartmentDashboardContent(props: any) {
       }
 
       const { data: statusData } = await statusQuery
-      setStudents(statusData || [])
+      
+      // Academic Portal Filter: Only show students cleared by all 4 core depts
+      let finalStudents = statusData || []
+      if (isAcademic) {
+        finalStudents = (statusData || []).filter((item: any) => {
+          const allStatuses = item.profiles?.clearance_status || []
+          const coreDepts = ['library', 'transport', 'finance', 'hostel']
+          return coreDepts.every(key => 
+            allStatuses.some((s: any) => s.department_key === key && s.status === 'cleared')
+          )
+        })
+      }
+      setStudents(finalStudents)
 
       // Fetch Global Stats for the Bar
-      const { data: allStatuses } = await supabase
+      const { data: allStatusesRaw } = await supabase
         .from('clearance_status')
-        .select('status')
+        .select('status, profiles:student_id(clearance_status(department_key, status))')
         .eq('department_key', dbKey)
+
+      let allStatuses = allStatusesRaw || []
+      if (isAcademic) {
+        allStatuses = allStatuses.filter((item: any) => {
+          const statuses = item.profiles?.clearance_status || []
+          const coreDepts = ['library', 'transport', 'finance', 'hostel']
+          return coreDepts.every(key => 
+            statuses.some((s: any) => s.department_key === key && s.status === 'cleared')
+          )
+        })
+      }
       
       const deptLabel = sidebarDeptName || departmentKey.replace(/-/g, " ")
       const { data: surveyProfiles } = await supabase.from('future_data').select('id, status, profiles:student_id(department_name)')
@@ -626,8 +651,30 @@ export default function DepartmentDashboardContent(props: any) {
                                 <User className="w-6 h-6" />
                               </div>
                               <div>
-                                <div className="font-bold text-slate-900 text-lg leading-tight mb-1">
+                                <div className="font-bold text-slate-900 text-lg leading-tight mb-1 flex items-center gap-3">
                                   {student?.full_name}
+                                  <div className="flex items-center gap-1.5 ml-2">
+                                     {student?.phone && (
+                                       <a 
+                                         href={`https://wa.me/${student.phone.replace(/\+/g, '')}`} 
+                                         target="_blank" 
+                                         rel="noopener noreferrer"
+                                         className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg shadow-emerald-500/20"
+                                         title="Chat on WhatsApp"
+                                       >
+                                          <Phone className="w-3.5 h-3.5" />
+                                       </a>
+                                     )}
+                                     {student?.email && (
+                                       <a 
+                                         href={`mailto:${student.email}`}
+                                         className="w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-lg shadow-indigo-500/20"
+                                         title="Send Email"
+                                       >
+                                          <Mail className="w-3.5 h-3.5" />
+                                       </a>
+                                     )}
+                                  </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs font-bold font-medium text-muted-foreground text-primary bg-primary/5 px-2 py-0.5 rounded-md">
