@@ -167,11 +167,13 @@ export default function AdminDashboardContent() {
   }, [])
 
   const downloadCSV = (data: any[], filename: string) => {
-    const headers = ["Name", "Reg No", "Department", "Status"]
+    const headers = ["Name", "Reg No", "Email", "Department", "Initial Password", "Status"]
     const rows = data.map(s => [
       s.full_name, 
       s.reg_no, 
+      s.email,
       s.department_name, 
+      s.reg_no, // Initial password is the registration number
       fullyApprovedStudents.includes(s.id) ? "Cleared" : "Pending"
     ])
 
@@ -316,14 +318,14 @@ export default function AdminDashboardContent() {
                 { label: 'Pending Ops', value: stats.totalStudents - fullyApprovedStudents.length, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
                 { label: 'Critical Issues', value: stats.issues, icon: AlertTriangle, color: 'text-rose-500', bg: 'bg-rose-500/10' },
               ].map((stat, i) => (
-                <Card key={i} className="glass-card border-none shadow-2xl overflow-hidden rounded-[3rem] group hover:scale-[1.02] transition-all duration-500">
-                  <CardContent className="p-10 flex items-center justify-between">
+                <Card key={i} className="glass-card border-none shadow-2xl overflow-hidden rounded-[2.5rem] group hover:scale-[1.01] transition-all duration-500">
+                  <CardContent className="p-6 flex items-center justify-between">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">{stat.label}</p>
-                      <h4 className="text-5xl font-bold tracking-tighter text-slate-900 dark:text-white">{stat.value}</h4>
+                      <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">{stat.label}</p>
+                      <h4 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white">{stat.value}</h4>
                     </div>
-                    <div className={`w-16 h-16 rounded-[1.5rem] ${stat.bg} ${stat.color} flex items-center justify-center group-hover:rotate-12 transition-transform`}>
-                      <stat.icon className="w-8 h-8" />
+                    <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center group-hover:rotate-12 transition-transform`}>
+                      <stat.icon className="w-6 h-6" />
                     </div>
                   </CardContent>
                 </Card>
@@ -331,11 +333,11 @@ export default function AdminDashboardContent() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
-                <CardHeader className="px-10 py-8">
-                  <CardTitle className="text-xl font-bold">Clearance Status Matrix</CardTitle>
+              <Card className="glass-card border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
+                <CardHeader className="px-8 py-6">
+                  <CardTitle className="text-lg font-bold">Clearance Status Matrix</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[350px] flex flex-col items-center justify-center p-10 pt-0">
+                <CardContent className="h-[280px] flex flex-col items-center justify-center p-8 pt-0">
                   {mounted && (
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>
@@ -401,7 +403,7 @@ export default function AdminDashboardContent() {
                         placeholder="Search database..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-11 pr-4 py-3 bg-white dark:bg-slate-900 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-primary/20 transition-all w-64 text-sm font-medium"
+                        className="pl-11 pr-4 py-3 bg-white dark:bg-slate-900 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-primary/20 transition-all w-64 text-sm font-bold"
                       />
                    </div>
                    <Button onClick={() => downloadCSV(filteredStudents, `University_Clearance_Report_${new Date().toISOString().split('T')[0]}.csv`)} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-11 px-6 shadow-xl shadow-primary/20 flex items-center gap-2">
