@@ -15,7 +15,9 @@ import {
   ShieldCheck,
   ArrowRight,
   Send,
-  FileSearch
+  FileSearch,
+  Phone,
+  Mail
 } from "lucide-react"
 import { toast } from "sonner"
 import { Logo } from "@/components/ui/Logo"
@@ -28,6 +30,7 @@ export default function DispatchPage() {
   const [academicCleared, setAcademicCleared] = useState(false)
   const [dispatchStatus, setDispatchStatus] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
+  const [dispatchStaff, setDispatchStaff] = useState<any>(null)
 
   useEffect(() => {
     fetchStatus()
@@ -53,6 +56,15 @@ export default function DispatchPage() {
         
         setAcademicCleared(academic?.status === 'cleared')
         setDispatchStatus(dispatch)
+
+        // Fetch Dispatch Staff Contact
+        const { data: staff } = await supabase
+          .from('profiles')
+          .select('full_name, email, phone')
+          .eq('role', 'dispatch')
+          .eq('is_approved', true)
+          .maybeSingle()
+        setDispatchStaff(staff)
       }
     } catch (err: any) {
       toast.error(err.message)
@@ -231,27 +243,49 @@ export default function DispatchPage() {
                       </CardContent>
                    </Card>
 
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-xl flex items-center gap-6 group hover:border-primary transition-all">
-                         <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <FileSearch className="w-7 h-7" />
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-xl flex items-center gap-6 group hover:border-primary transition-all">
+                       <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <FileSearch className="w-7 h-7" />
+                       </div>
+                       <div>
+                          <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm tracking-tight">Record Verification</h5>
+                          <p className="text-xs font-bold text-slate-400 mt-1">Cross-referencing all cleared portals.</p>
+                       </div>
+                    </div>
+                    {dispatchStaff && (
+                      <div className="p-8 bg-indigo-600 rounded-[2.5rem] text-white shadow-xl flex flex-col justify-between group hover:scale-[1.02] transition-all">
+                         <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
+                               <ShieldCheck className="w-6 h-6" />
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Issuance Coordinator</p>
+                               <h5 className="font-bold text-sm truncate">{dispatchStaff.full_name}</h5>
+                            </div>
                          </div>
-                         <div>
-                            <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm tracking-tight">Record Verification</h5>
-                            <p className="text-xs font-bold text-slate-400 mt-1">Cross-referencing all cleared portals.</p>
+                         <div className="flex gap-3">
+                            {dispatchStaff.phone && (
+                              <Button 
+                                onClick={() => window.open(`https://wa.me/${dispatchStaff.phone.replace(/\+/g, '')}`, '_blank')}
+                                variant="outline" 
+                                className="flex-1 rounded-xl h-12 bg-white/10 border-white/20 hover:bg-white/20 text-white font-bold text-xs"
+                              >
+                                WhatsApp
+                              </Button>
+                            )}
+                            <Button 
+                              onClick={() => window.location.href = `mailto:${dispatchStaff.email}`}
+                              variant="outline" 
+                              className="flex-1 rounded-xl h-12 bg-white/10 border-white/20 hover:bg-white/20 text-white font-bold text-xs"
+                            >
+                              Email
+                            </Button>
                          </div>
                       </div>
-                      <div className="p-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-xl flex items-center gap-6 group hover:border-primary transition-all">
-                         <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <GraduationCap className="w-7 h-7" />
-                         </div>
-                         <div>
-                            <h5 className="font-bold text-slate-900 dark:text-white uppercase text-sm tracking-tight">Final Convocation</h5>
-                            <p className="text-xs font-bold text-slate-400 mt-1">Status of degree printing and awarding.</p>
-                         </div>
-                      </div>
-                   </div>
-                </motion.div>
+                    )}
+                 </div>
+              </motion.div>
               )}
            </AnimatePresence>
         </div>

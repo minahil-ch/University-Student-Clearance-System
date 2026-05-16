@@ -53,6 +53,18 @@ export default function DepartmentDashboardContent(props: any) {
   const [customMessageModal, setCustomMessageModal] = useState<{isOpen: boolean, student: any}>({isOpen: false, student: null})
   const [customMessageText, setCustomMessageText] = useState("")
   const [customMessageSending, setCustomMessageSending] = useState(false)
+  const [deptFilter, setDeptFilter] = useState<string>("all")
+  
+  const departments = [
+    "Computer Science",
+    "Software Engineering",
+    "Information Technology",
+    "Mathematics",
+    "Humanities",
+    "Management Sciences",
+    "Environmental Sciences",
+    "Electrical Engineering"
+  ]
   
   const isAcademic = isAcademicClearancePortal(departmentKey)
   const supabase = createClient()
@@ -178,8 +190,15 @@ export default function DepartmentDashboardContent(props: any) {
 
       const { data: statusData } = await statusQuery
       
-      // Academic Portal Filter: Only show students cleared by all 4 core depts
+      // Dispatch Portal: Filter by Department
       let finalStudents = statusData || []
+      if (departmentKey === 'dispatch' && deptFilter !== 'all') {
+        finalStudents = (statusData || []).filter((item: any) => 
+          (item.profiles?.department_name || "").toLowerCase().trim() === deptFilter.toLowerCase().trim()
+        )
+      }
+      
+      // Academic Portal Filter: Only show students cleared by all 4 core depts
       if (isAcademic) {
         finalStudents = (statusData || []).filter((item: any) => {
           const allStatuses = item.profiles?.clearance_status || []
@@ -263,7 +282,7 @@ export default function DepartmentDashboardContent(props: any) {
 
     fetchData()
     fetchSettings()
-  }, [departmentKey, currentTab, timeFilter, surveySubTab, accessReady, isAcademic, sidebarDeptName])
+  }, [departmentKey, currentTab, timeFilter, surveySubTab, accessReady, isAcademic, sidebarDeptName, deptFilter])
 
   const handleUpdateStatus = async (clearanceId: string, status: 'cleared' | 'issue', studentProfile: any) => {
     try {
@@ -586,6 +605,19 @@ export default function DepartmentDashboardContent(props: any) {
           </div>
 
           <div className="flex items-center gap-6">
+            {departmentKey === 'dispatch' && (
+              <div className="flex items-center gap-4 border-r border-slate-200 pr-6 mr-6">
+                <div className="text-xs font-bold tracking-wider text-slate-400">Dept Filter:</div>
+                <select 
+                  value={deptFilter}
+                  onChange={(e) => setDeptFilter(e.target.value)}
+                  className="h-10 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-xs font-bold outline-none cursor-pointer"
+                >
+                  <option value="all">All Departments</option>
+                  {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </div>
+            )}
             <div className="flex items-center gap-3 text-xs font-bold tracking-wider text-slate-400">
                <Filter className="w-4 h-4" /> Filter Range:
             </div>
