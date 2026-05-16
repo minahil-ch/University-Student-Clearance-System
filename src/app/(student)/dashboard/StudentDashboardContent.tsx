@@ -396,26 +396,40 @@ export default function StudentDashboardContent() {
                 </div>
               </div>
              </div>
-           ) : (
-             <div className="w-full">
-                <div className="p-10 bg-blue-600 rounded-[2.5rem] text-white text-center space-y-6 relative overflow-hidden shadow-2xl">
-                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-                   <div className="relative z-10">
-                      <h4 className="text-2xl font-bold tracking-tight">Start Clearance Process</h4>
-                      <p className="text-blue-100 font-medium text-sm mt-2 max-w-sm mx-auto leading-relaxed">
-                        Please fill the clearance form. One-click initiation will guide you through the mandatory university survey and department clearance.
-                      </p>
-                      <div className="pt-6">
-                         <Button 
-                           onClick={() => { window.location.href = uniFormDone ? "/form" : "/uni-form" }}
-                           className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 shadow-2xl shadow-black/20 font-bold font-medium text-muted-foreground text-xs gap-3 active:scale-95 transition-all"
-                         >
-                            {uniFormDone ? "Fill Clearance Form" : "Start Filing Clearance Form"} <ArrowRight className="w-5 h-5" />
-                         </Button>
+           )}
+
+           {!clearanceStarted && (
+              <div className="w-full">
+                 <div className="p-12 bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-200 dark:border-slate-800 text-center space-y-8 relative overflow-hidden shadow-sm">
+                    <div className="w-24 h-24 rounded-[2rem] bg-sky-50 dark:bg-slate-800 text-primary flex items-center justify-center mx-auto shadow-inner">
+                       <FileText className="w-10 h-10" />
+                    </div>
+                    <div className="space-y-4">
+                       <h4 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase italic">
+                         {uniFormDone ? "Final Clearance Form" : "Clearance Protocol Inactive"}
+                       </h4>
+                       <p className="text-slate-500 font-medium text-sm max-w-lg mx-auto leading-relaxed">
+                         {uniFormDone 
+                           ? "Your university survey is verified! Now, please fill out the Proper Clearance Form to notify all departments and initiate your official verification process." 
+                           : "To begin, you must first complete the mandatory University Survey. Once submitted, the official clearance form will be unlocked for you."}
+                       </p>
+                    </div>
+                    <div className="pt-6">
+                       <Button 
+                         onClick={() => { window.location.href = uniFormDone ? "/form" : "/uni-form" }}
+                         className="h-16 px-16 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:scale-105 shadow-2xl shadow-slate-900/20 font-bold font-medium text-muted-foreground text-[11px] gap-4 active:scale-95 transition-all uppercase tracking-widest"
+                       >
+                          {uniFormDone ? "Fill Proper Clearance Form" : "Start with University Survey"} <ArrowRight className="w-5 h-5" />
+                       </Button>
+                    </div>
+                    
+                    {!uniFormDone && (
+                      <div className="flex items-center justify-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                         <ShieldCheck className="w-4 h-4" /> Sequential Multi-Portal Protocol Active
                       </div>
-                   </div>
-                </div>
-             </div>
+                    )}
+                 </div>
+              </div>
            )}
 
                   {/* Department Specific Forms Section */}

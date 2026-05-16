@@ -107,6 +107,12 @@ export default function ClearanceForm() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error("Not authenticated")
 
+      // Registration Number Validation (Format: SP25-BSE-039)
+      const regPattern = /^(SP|FA)\d{2}-[A-Z]{2,4}-\d{3,4}$/i
+      if (!regPattern.test(profile.reg_no)) {
+        throw new Error("Invalid Registration Number format. Example: SP25-BSE-039")
+      }
+
       // 1. Check if profile exists and Update or Insert
       const { data: existingProfile } = await supabase.from('profiles').select('id').eq('id', user.id).single()
 
@@ -378,11 +384,12 @@ export default function ClearanceForm() {
                             />
                          </div>
                          <div className="space-y-2.5">
-                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Registration Number</label>
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Registration Number (SP25-BSE-039)</label>
                             <Input 
                               value={profile.reg_no}
-                              onChange={(e) => setProfile({...profile, reg_no: e.target.value})}
-                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                              onChange={(e) => setProfile({...profile, reg_no: e.target.value.toUpperCase()})}
+                              placeholder="e.g. SP25-BSE-039"
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold placeholder:text-slate-300"
                             />
                          </div>
                       </div>
@@ -423,11 +430,15 @@ export default function ClearanceForm() {
                                  value={profile.department_name}
                                  onChange={(e) => setProfile({...profile, department_name: e.target.value})}
                                >
+                                 <option disabled value="">Select Department</option>
                                  <option>Computer Science</option>
                                  <option>Software Engineering</option>
+                                 <option>Information Technology</option>
                                  <option>Mathematics</option>
                                  <option>Humanities</option>
+                                 <option>Management Sciences</option>
                                  <option>Environmental Sciences</option>
+                                 <option>Electrical Engineering</option>
                                </select>
                              </div>
                           </div>

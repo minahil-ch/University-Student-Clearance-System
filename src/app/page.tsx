@@ -58,6 +58,13 @@ export default function LandingPage() {
       desc: "Final authority by student selected department", 
       href: "/academic" 
     },
+    { 
+      name: "Degree Awarded Portal", 
+      icon: Truck, 
+      color: "indigo", 
+      desc: "Degree issuance and final award processing", 
+      href: "/login/staff?role=staff&dept=dispatch&switch=1" 
+    },
   ]
 
   return (
@@ -137,12 +144,21 @@ export default function LandingPage() {
         transition={{ delay: 0.8 }}
         className="mt-24 md:mt-32 flex flex-col items-center gap-10 relative z-10"
       >
-        <button 
-          onClick={() => router.push('/login/admin?switch=1')}
-          className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
-        >
-          System Management <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
+        <div className="flex flex-wrap justify-center gap-6">
+          <button 
+            onClick={() => router.push('/login/admin?switch=1')}
+            className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
+          >
+            System Management <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button 
+            onClick={() => router.push('/login/staff?role=staff&dept=dispatch&switch=1')}
+            className="group flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-primary text-white text-xs font-bold uppercase tracking-[0.3em] hover:scale-105 transition-all shadow-2xl"
+          >
+            Degree Awarded Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
         
         <div className="flex flex-col items-center gap-2">
            <p className="text-slate-300 dark:text-slate-700 text-xs font-bold tracking-[0.5em] uppercase">

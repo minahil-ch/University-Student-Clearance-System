@@ -59,17 +59,9 @@ BEGIN
         department_name = COALESCE(EXCLUDED.department_name, profiles.department_name),
         updated_at = NOW();
 
-    -- Initialize clearance rows for students
-    IF v_role = 'student' THEN
-        INSERT INTO public.clearance_status (student_id, department_key)
-        VALUES
-            (new.id, 'transport'),
-            (new.id, 'library'),
-            (new.id, 'finance'),
-            (new.id, 'hostel'),
-            (new.id, regexp_replace(lower(coalesce(new.raw_user_meta_data->>'department_name', 'general')), '\s+', '-', 'g'))
-        ON CONFLICT (student_id, department_key) DO NOTHING;
-    END IF;
+    -- Profile creation logic ends here. 
+    -- Clearance rows are now initialized via the frontend Clearance Form 
+    -- to ensure they only appear after formal submission.
 
     RETURN new;
 
