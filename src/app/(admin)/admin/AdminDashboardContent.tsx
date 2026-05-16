@@ -2,28 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Sidebar } from "@/components/layout/Sidebar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
-import { Button } from "@/components/ui/Button"
-import { motion, AnimatePresence } from "framer-motion"
-import { 
-  Users, 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  Download, 
-  MoreVertical,
-  History,
-  ArrowUpRight,
-  ShieldCheck,
-  Search,
-  Check,
-  X,
-  UserPlus,
-  GraduationCap,
-  BarChart as BarChartIcon
-} from "lucide-react"
-import { NotificationBell } from "@/components/NotificationBell"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card"
+import { Input } from "@/components/ui/Input"
 import { 
   BarChart, 
   Bar, 
@@ -36,32 +16,53 @@ import {
   PieChart,
   Pie
 } from 'recharts'
-import { toast } from "sonner"
-import { Input } from "@/components/ui/Input"
-import { formatDate } from "@/lib/utils"
+import { 
+  Shield, 
+  Users, 
+  FileCheck, 
+  AlertTriangle, 
+  Download, 
+  Plus, 
+  Trash2, 
+  Search, 
+  Filter,
+  Calendar,
+  ChevronDown,
+  LayoutGrid,
+  List,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  MoreVertical,
+  History,
+  UserPlus,
+  GraduationCap
+} from 'lucide-react'
+import { Button } from "@/components/ui/Button"
 import { Logo } from "@/components/ui/Logo"
+import { formatDate } from "@/lib/utils"
+import { toast } from "sonner"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function AdminDashboardContent() {
-  const [stats, setStats] = useState<any>({
-    totalStudents: 0,
-    cleared: 0,
-    pending: 0,
-    issues: 0
-  })
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<any>({ totalStudents: 0, cleared: 0, pending: 0, issues: 0 })
+  const [allStudents, setAllStudents] = useState<any[]>([])
   const [departmentStats, setDepartmentStats] = useState<any[]>([])
   const [auditLogs, setAuditLogs] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [fullyApprovedStudents, setFullyApprovedStudents] = useState<string[]>([])
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [requests, setRequests] = useState<any[]>([])
   const [allFutureData, setAllFutureData] = useState<any[]>([])
-  const [activeTab, setActiveTab] = useState('dashboard')
-  
-  const [allStudents, setAllStudents] = useState<any[]>([])
-  const [fullyApprovedStudents, setFullyApprovedStudents] = useState<string[]>([])
-  const [showOnlyApproved, setShowOnlyApproved] = useState(false)
   const [isAddingStaff, setIsAddingStaff] = useState(false)
   const [newStaff, setNewStaff] = useState({ fullName: '', email: '', password: '', role: 'department', departmentName: 'Computer Science' })
   const [mounted, setMounted] = useState(false)
+  
+  // Advanced Filtering States
+  const [filterDept, setFilterDept] = useState('All Departments')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [filterTime, setFilterTime] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const academicDepartments = [
     "Computer Science",
@@ -70,6 +71,7 @@ export default function AdminDashboardContent() {
     "Humanities",
     "Environmental Sciences",
   ]
+
   const staffDepartments = [...academicDepartments, "transport", "library", "hostel", "finance"]
 
   const supabase = createClient()
@@ -77,10 +79,9 @@ export default function AdminDashboardContent() {
   async function fetchData() {
     setLoading(true)
     
-    // 1. Get overall student stats
     const { data: students } = await supabase
       .from('profiles')
-      .select('id, is_approved, role, full_name, reg_no, email, cgpa, department_name')
+      .select('id, is_approved, role, full_name, reg_no, email, cgpa, department_name, created_at')
       .eq('role', 'student')
 
     if (students) {
@@ -88,7 +89,6 @@ export default function AdminDashboardContent() {
       setAllStudents(students)
     }
 
-    // 2. Get departmental clearance stats
     const { data: clearance } = await supabase
       .from('clearance_status')
       .select('*')
@@ -126,16 +126,14 @@ export default function AdminDashboardContent() {
       setFullyApprovedStudents(fullyCleared)
     }
 
-    // 3. Get audit logs
     const { data: logs } = await supabase
       .from('audit_logs')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(50)
+      .limit(20)
     
     if (logs) setAuditLogs(logs)
 
-    // 4. Get pending staff requests
     const { data: staffReqs } = await supabase
       .from('profiles')
       .select('*')
@@ -144,7 +142,6 @@ export default function AdminDashboardContent() {
     
     if (staffReqs) setRequests(staffReqs)
 
-    // 5. Get Alumni Data
     const { data: future } = await supabase
       .from('future_data')
       .select(`*, student:profiles!future_data_student_id_fkey(full_name, reg_no, email, department_name)`)
@@ -169,18 +166,14 @@ export default function AdminDashboardContent() {
     }
   }, [])
 
-  const handleExportCSV = () => {
-    let headers: string[] = []
-    let rows: string[][] = []
-    let filename = `export_${new Date().toISOString().split('T')[0]}.csv`
-
-    if (activeTab === 'dashboard') {
-      headers = ["Department", "Cleared", "Total Count", "Percentage"]
-      rows = departmentStats.map(d => [d.name, d.cleared.toString(), d.total.toString(), `${d.percentage.toFixed(1)}%`])
-    } else if (activeTab === 'students') {
-      headers = ["Student Name", "Reg No", "Status"]
-      rows = allStudents.map(s => [s.full_name, s.reg_no, fullyApprovedStudents.includes(s.id) ? "Fully Cleared" : "In Progress"])
-    }
+  const downloadCSV = (data: any[], filename: string) => {
+    const headers = ["Name", "Reg No", "Department", "Status"]
+    const rows = data.map(s => [
+      s.full_name, 
+      s.reg_no, 
+      s.department_name, 
+      fullyApprovedStudents.includes(s.id) ? "Cleared" : "Pending"
+    ])
 
     const csvContent = "data:text/csv;charset=utf-8," 
       + headers.join(",") + "\n"
@@ -247,6 +240,29 @@ export default function AdminDashboardContent() {
     { name: 'Issues', value: stats.issues || 0, color: '#f43f5e' },
   ]
 
+  const filteredStudents = allStudents.filter(student => {
+    const matchesDept = filterDept === 'All Departments' || student.department_name === filterDept
+    const matchesSearch = !searchQuery || 
+      student.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.reg_no?.toLowerCase().includes(searchQuery.toLowerCase())
+    let matchesStatus = true
+    if (filterStatus === 'cleared') matchesStatus = fullyApprovedStudents.includes(student.id)
+    else if (filterStatus === 'pending') matchesStatus = !fullyApprovedStudents.includes(student.id)
+    let matchesTime = true
+    if (filterTime !== 'all') {
+      const createdDate = new Date(student.created_at)
+      const now = new Date()
+      if (filterTime === 'week') {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+        matchesTime = createdDate >= weekAgo
+      } else if (filterTime === 'month') {
+        const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
+        matchesTime = createdDate >= monthAgo
+      }
+    }
+    return matchesDept && matchesSearch && matchesStatus && matchesTime
+  })
+
   if (loading && !stats.totalStudents) return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50/50 dark:bg-slate-950 gap-6">
       <div className="relative">
@@ -260,111 +276,66 @@ export default function AdminDashboardContent() {
   )
 
   return (
-    <div className="flex min-h-screen bg-sky-50/50 dark:bg-slate-950">
-      <Sidebar role="admin" />
-      
-      <main className="flex-1 w-full lg:ml-64 p-4 md:p-6 xl:p-8">
-        <header className="flex flex-col md:flex-row justify-between items-center gap-10 mb-14 relative z-10">
-          <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
-            <div className="p-1 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-white/5">
-              <Logo className="w-20 h-20 md:w-24 md:h-24" />
+    <div className="min-h-screen bg-sky-50/50 dark:bg-slate-950 p-6 md:p-12 transition-colors duration-500">
+      <div className="max-w-[1600px] mx-auto">
+        <header className="flex flex-col xl:flex-row items-center justify-between gap-8 mb-12">
+          <div className="flex items-center gap-6">
+            <div className="p-5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-[2.5rem] shadow-2xl shadow-slate-900/20 rotate-3">
+              <Shield className="w-10 h-10" />
             </div>
             <div>
-              <div className="flex items-center gap-3 justify-center md:justify-start">
-                <h2 className="text-4xl font-bold tracking-tight uppercase text-slate-900 dark:text-white leading-none">
-                  COMSATS <span className="text-primary italic">UNIVERSITY</span>
-                </h2>
-                <div className="hidden md:block w-1 h-10 bg-slate-200 dark:bg-white/10 rounded-full" />
-                <div className="hidden md:flex flex-col">
-                  <span className="text-xs font-bold uppercase tracking-[0.4em] text-slate-400 leading-none mb-1">Official Master Control</span>
-                  <span className="text-xs font-bold tracking-tight text-primary italic">Institutional Oversight</span>
-                </div>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
+                Command <span className="text-primary italic">Center</span>
+              </h1>
+              <div className="flex items-center gap-3 mt-3">
+                <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-bold uppercase tracking-wider">Master Control</span>
+                <h3 className="text-slate-400 font-bold tracking-[0.2em] uppercase text-xs">Administrative Oversight V1.0</h3>
               </div>
-              <h3 className="mt-4 text-xl font-bold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400 flex items-center gap-3">
-                <ShieldCheck className="w-6 h-6 text-primary" /> Command Center Hub
-              </h3>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-             <div className="relative w-full md:w-80 group">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-all duration-300" />
-              <Input
-                placeholder="Global System Search..."
-                className="pl-14 h-16 rounded-3xl bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-2xl focus:border-primary/30 transition-all text-sm font-bold"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <NotificationBell />
-            <Button 
-              onClick={handleExportCSV} 
-              className="h-16 px-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-bold uppercase text-xs tracking-widest gap-3 transition-all active:scale-95"
-            >
-              <Download className="w-5 h-5" /> Export Data
-            </Button>
+          <div className="flex items-center gap-2 p-1 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl rounded-[2rem] border border-white/20 shadow-xl">
+             {['dashboard', 'students', 'staff_requests', 'alumni', 'logs'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  {tab.replace('_', ' ')}
+                </button>
+             ))}
           </div>
         </header>
 
-        <div className="flex flex-wrap items-center justify-between gap-8 mb-10 bg-white/40 dark:bg-slate-900/40 p-6 rounded-[3rem] border border-slate-100 dark:border-white/5 backdrop-blur-xl shadow-xl relative z-10">
-          <div className="flex flex-wrap gap-3 p-1.5 bg-slate-200/30 dark:bg-slate-800/30 rounded-[2rem]">
-            {(['dashboard', 'students', 'staff_requests', 'alumni'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-10 py-4 rounded-[1.5rem] text-[11px] font-bold uppercase tracking-[0.1em] transition-all duration-500 flex items-center gap-3 ${
-                  activeTab === tab 
-                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/30' 
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                {tab === 'dashboard' && <BarChartIcon className="w-4 h-4" />}
-                {tab === 'students' && <Users className="w-4 h-4" />}
-                {tab === 'staff_requests' && <ShieldCheck className="w-4 h-4" />}
-                {tab === 'alumni' && <GraduationCap className="w-4 h-4" />}
-                {tab.replace('_', ' ')}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {activeTab === 'dashboard' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { label: "Total Students", value: stats.totalStudents, icon: Users, color: "indigo", delay: 0.1 },
-                { label: "Staff Requests", value: requests.length, icon: ShieldCheck, color: "emerald", delay: 0.2 },
-                { label: "Overall Cleared", value: stats.cleared, icon: CheckCircle, color: "blue", delay: 0.3 },
-                { label: "Pending Verification", value: stats.pending, icon: Clock, color: "amber", delay: 0.4 },
-                { label: "Flagged Issues", value: stats.issues, icon: AlertCircle, color: "rose", delay: 0.5 },
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, y: 20 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  transition={{ delay: item.delay }}
-                  className="group relative p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:scale-[1.05] transition-all duration-500 overflow-hidden"
-                >
-                   <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700" />
-                   <div className="flex flex-col gap-6">
-                      <div className={`w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-12 transition-transform`}>
-                         <item.icon className="w-7 h-7" />
-                      </div>
-                      <div>
-                         <p className="text-xs font-bold tracking-wider text-slate-400 mb-1 leading-none">{item.label}</p>
-                         <h4 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight italic leading-none">{item.value}</h4>
-                      </div>
-                   </div>
-                </motion.div>
+                { label: 'Total Registry', value: stats.totalStudents, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                { label: 'Fully Cleared', value: fullyApprovedStudents.length, icon: FileCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                { label: 'Pending Ops', value: stats.totalStudents - fullyApprovedStudents.length, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+                { label: 'Critical Issues', value: stats.issues, icon: AlertTriangle, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+              ].map((stat, i) => (
+                <Card key={i} className="glass-card border-none shadow-2xl overflow-hidden rounded-[3rem] group hover:scale-[1.02] transition-all duration-500">
+                  <CardContent className="p-10 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">{stat.label}</p>
+                      <h4 className="text-5xl font-bold tracking-tighter text-slate-900 dark:text-white">{stat.value}</h4>
+                    </div>
+                    <div className={`w-16 h-16 rounded-[1.5rem] ${stat.bg} ${stat.color} flex items-center justify-center group-hover:rotate-12 transition-transform`}>
+                      <stat.icon className="w-8 h-8" />
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-              <Card className="lg:col-span-1 glass-card border-none shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">Clearance Status</CardTitle>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
+                <CardHeader className="px-10 py-8">
+                  <CardTitle className="text-xl font-bold">Clearance Status Matrix</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[350px] flex flex-col items-center justify-center">
+                <CardContent className="h-[350px] flex flex-col items-center justify-center p-10 pt-0">
                   {mounted && (
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>
@@ -375,10 +346,10 @@ export default function AdminDashboardContent() {
                       </PieChart>
                     </ResponsiveContainer>
                   )}
-                  <div className="flex flex-wrap justify-center gap-6 text-xs font-bold font-medium text-muted-foreground mt-4">
+                  <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-4">
                     {pieData.map(item => (
                       <div key={item.name} className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
                         <span>{item.name}: {item.value}</span>
                       </div>
                     ))}
@@ -386,11 +357,11 @@ export default function AdminDashboardContent() {
                 </CardContent>
               </Card>
 
-              <Card className="lg:col-span-2 glass-card border-none shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">Department Efficiency</CardTitle>
+              <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
+                <CardHeader className="px-10 py-8">
+                  <CardTitle className="text-xl font-bold">Departmental Efficiency</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[350px]">
+                <CardContent className="h-[350px] p-10 pt-0">
                   {mounted && (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={departmentStats}>
@@ -405,94 +376,179 @@ export default function AdminDashboardContent() {
                 </CardContent>
               </Card>
             </div>
-            
-            <Card className="glass-card border-none shadow-xl overflow-hidden">
-              <CardHeader className="border-b bg-sky-50/50/50 dark:bg-slate-900/50 px-8 py-6">
-                <CardTitle className="flex items-center gap-3 text-2xl font-bold"><History className="w-6 h-6 text-primary" /> System Audit Trail</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
-                        <th className="px-8 py-4">Action</th><th className="px-8 py-4">Timestamp</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                      {auditLogs.map((log) => (
-                        <tr key={log.id} className="hover:bg-primary/[0.02] transition-colors">
-                          <td className="px-8 py-5">
-                             <div className="font-bold uppercase text-[11px] tracking-tight">{log.action.replace(/_/g, ' ')}</div>
-                             <p className="text-xs text-slate-400 mt-1">
-                               {typeof log.details === 'object' ? (
-                                 log.details.remarks || JSON.stringify(log.details)
-                               ) : (
-                                 log.details || 'No additional details'
-                               )}
-                             </p>
-                          </td>
-                          <td className="px-8 py-5 text-sm text-muted-foreground">{formatDate(log.created_at)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
           </motion.div>
         )}
 
         {activeTab === 'students' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="bg-slate-900 p-8 text-white flex flex-row items-center justify-between">
-                <div>
-                  <CardTitle className="text-3xl font-bold tracking-tight flex items-center gap-4">
-                    <Users className="w-8 h-8" /> Students Master List
-                  </CardTitle>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <div className="flex flex-col gap-8 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.25rem] bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                    <LayoutGrid className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold tracking-tight">Student <span className="text-primary italic">Intelligence</span></h2>
+                    <p className="text-muted-foreground font-medium text-sm">Full institutional record monitoring and lifecycle tracking.</p>
+                  </div>
                 </div>
-                <Button 
-                  onClick={() => setShowOnlyApproved(!showOnlyApproved)} 
-                  variant="outline" 
-                  className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-                >
-                  {showOnlyApproved ? "Showing: Fully Approved" : "Showing: All Registered"}
-                </Button>
-              </CardHeader>
+                
+                <div className="flex items-center gap-3">
+                   <div className="relative group">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+                      <input 
+                        type="text" 
+                        placeholder="Search database..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-11 pr-4 py-3 bg-white dark:bg-slate-900 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-primary/20 transition-all w-64 text-sm font-medium"
+                      />
+                   </div>
+                   <Button onClick={() => downloadCSV(filteredStudents, `University_Clearance_Report_${new Date().toISOString().split('T')[0]}.csv`)} className="bg-primary hover:bg-primary/90 text-white rounded-2xl h-11 px-6 shadow-xl shadow-primary/20 flex items-center gap-2">
+                      <Download className="w-4 h-4" />
+                      <span className="text-xs font-bold tracking-wider">Export Report</span>
+                   </Button>
+                </div>
+              </div>
+
+              {/* 🔍 Unified Filter Bar */}
+              <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-3 rounded-3xl border border-white/20 dark:border-white/5 flex flex-wrap items-center justify-between gap-4">
+                 <div className="flex items-center gap-2">
+                    <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                       <button 
+                         onClick={() => setFilterStatus('all')}
+                         className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${filterStatus === 'all' ? 'bg-white dark:bg-slate-700 shadow-md text-primary' : 'text-slate-400 hover:text-slate-600'}`}
+                       >
+                         All Records
+                       </button>
+                       <button 
+                         onClick={() => setFilterStatus('pending')}
+                         className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${filterStatus === 'pending' ? 'bg-white dark:bg-slate-700 shadow-md text-amber-500' : 'text-slate-400 hover:text-slate-600'}`}
+                       >
+                         Pending
+                       </button>
+                       <button 
+                         onClick={() => setFilterStatus('cleared')}
+                         className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${filterStatus === 'cleared' ? 'bg-white dark:bg-slate-700 shadow-md text-emerald-500' : 'text-slate-400 hover:text-slate-600'}`}
+                       >
+                         Cleared
+                       </button>
+                    </div>
+                 </div>
+
+                 <div className="flex items-center gap-3">
+                    <div className="relative">
+                       <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                       <select 
+                         value={filterDept}
+                         onChange={(e) => setFilterDept(e.target.value)}
+                         className="pl-10 pr-10 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-2xl border-none text-xs font-bold appearance-none cursor-pointer hover:bg-slate-200 transition-colors"
+                       >
+                         <option>All Departments</option>
+                         {academicDepartments.map(dept => <option key={dept} value={dept}>{dept}</option>)}
+                       </select>
+                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                    </div>
+
+                    <div className="relative">
+                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                       <select 
+                         value={filterTime}
+                         onChange={(e) => setFilterTime(e.target.value)}
+                         className="pl-10 pr-10 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-2xl border-none text-xs font-bold appearance-none cursor-pointer hover:bg-slate-200 transition-colors"
+                       >
+                         <option value="all">All Time</option>
+                         <option value="week">This Week</option>
+                         <option value="month">This Month</option>
+                       </select>
+                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left">
+                  <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
-                        <th className="px-8 py-5">Student</th>
-                        <th className="px-8 py-5">Reg No</th>
-                        <th className="px-8 py-5">Status</th>
+                      <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-white/5">
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Student Identity</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Department</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Progress</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                      {(showOnlyApproved ? allStudents.filter(s => fullyApprovedStudents.includes(s.id)) : allStudents)
-                        .filter(s => s.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || s.reg_no?.toLowerCase().includes(searchTerm.toLowerCase()))
-                        .map(student => {
-                          const isFullyApproved = fullyApprovedStudents.includes(student.id);
-                          return (
-                            <tr key={student.id} className="hover:bg-sky-50/50 dark:hover:bg-slate-900/50">
-                              <td className="px-8 py-5">
-                                <div className="font-bold">{student.full_name}</div>
-                                <div className="text-xs text-muted-foreground">{student.email}</div>
-                              </td>
-                              <td className="px-8 py-5">
-                                <div className="font-bold text-primary font-mono">{student.reg_no}</div>
-                              </td>
-                              <td className="px-8 py-5">
-                                {isFullyApproved ? (
-                                  <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-500 flex items-center gap-1 w-fit"><CheckCircle className="w-3 h-3"/> Fully Approved</span>
-                                ) : (
-                                  <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 flex items-center gap-1 w-fit"><Clock className="w-3 h-3"/> In Progress</span>
-                                )}
-                              </td>
-                            </tr>
-                          )
-                        })}
+                    <tbody className="divide-y divide-slate-50 dark:divide-white/[0.02]">
+                      {filteredStudents.length > 0 ? filteredStudents.map((student) => {
+                        const isCleared = fullyApprovedStudents.includes(student.id)
+                        return (
+                          <tr key={student.id} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-all group">
+                            <td className="px-8 py-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center font-bold text-slate-400 group-hover:scale-110 transition-transform">
+                                  {student.full_name?.charAt(0)}
+                                </div>
+                                <div>
+                                  <div className="font-bold text-slate-900 dark:text-white">{student.full_name}</div>
+                                  <div className="text-[10px] font-bold text-slate-400 tracking-wider mt-0.5">{student.reg_no}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              <span className="px-4 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-full text-[10px] font-bold text-slate-500">
+                                {student.department_name}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6">
+                              <div className="flex flex-col gap-2 min-w-[120px]">
+                                 <div className="flex justify-between items-center text-[10px] font-bold">
+                                    <span className="text-slate-400">Clearance</span>
+                                    <span className={isCleared ? "text-emerald-500" : "text-amber-500"}>{isCleared ? '100%' : '80%'}</span>
+                                 </div>
+                                 <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <motion.div 
+                                      initial={{ width: 0 }}
+                                      animate={{ width: isCleared ? '100%' : '80%' }}
+                                      className={`h-full rounded-full ${isCleared ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.4)]'}`}
+                                    />
+                                 </div>
+                              </div>
+                            </td>
+                            <td className="px-8 py-6">
+                              {isCleared ? (
+                                <div className="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 px-4 py-1.5 rounded-xl w-fit">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  <span className="text-[10px] font-bold uppercase tracking-wider">Certified</span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-amber-500 bg-amber-500/10 px-4 py-1.5 rounded-xl w-fit">
+                                  <Clock className="w-3.5 h-3.5" />
+                                  <span className="text-[10px] font-bold uppercase tracking-wider">In Process</span>
+                                </div>
+                              )}
+                            </td>
+                            <td className="px-8 py-6 text-right">
+                              <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
+                                 <MoreVertical className="w-4 h-4 text-slate-400" />
+                              </button>
+                            </td>
+                          </tr>
+                        )
+                      }) : (
+                        <tr>
+                          <td colSpan={5} className="px-8 py-24 text-center">
+                            <div className="flex flex-col items-center justify-center gap-4">
+                              <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+                                <Search className="w-8 h-8 text-slate-200" />
+                              </div>
+                              <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Records Discovered</h3>
+                              <p className="text-sm text-slate-400 font-medium">Try broadening your search term or segment switch.</p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -502,76 +558,107 @@ export default function AdminDashboardContent() {
         )}
 
         {activeTab === 'staff_requests' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-bold tracking-tight">Staff Authorization Hub</h3>
-              <Button onClick={() => setIsAddingStaff(!isAddingStaff)} className="rounded-xl gap-2 shadow-xl shadow-primary/20"><UserPlus className="w-4 h-4" /> Register New Staff</Button>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <div className="flex justify-between items-center mb-8">
+               <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.25rem] bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/20">
+                    <Shield className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold tracking-tight">Staff <span className="text-amber-500 italic">Authorizations</span></h2>
+                    <p className="text-muted-foreground font-medium text-sm">Credential verification and administrative access control.</p>
+                  </div>
+               </div>
+               <Button onClick={() => setIsAddingStaff(!isAddingStaff)} className="rounded-2xl gap-2 shadow-xl shadow-primary/20 h-12 px-8"><UserPlus className="w-4 h-4" /> Register New Official</Button>
             </div>
 
             {isAddingStaff && (
-              <Card className="glass-card shadow-2xl border-none">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold text-primary">New Staff Account</CardTitle>
+              <Card className="glass-card shadow-2xl border-none rounded-[2.5rem] mb-12 overflow-hidden animate-in slide-in-from-top duration-500">
+                <CardHeader className="bg-primary p-8 text-white">
+                  <CardTitle className="text-xl font-bold flex items-center gap-3"><Plus className="w-6 h-6" /> Create Official Identity</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleAddStaff} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Input placeholder="Full Name" value={newStaff.fullName} onChange={e => setNewStaff({...newStaff, fullName: e.target.value})} required className="h-12 rounded-xl" />
-                    <Input type="email" placeholder="Email" value={newStaff.email} onChange={e => setNewStaff({...newStaff, email: e.target.value})} required className="h-12 rounded-xl" />
-                    <Input type="password" placeholder="Password" value={newStaff.password} onChange={e => setNewStaff({...newStaff, password: e.target.value})} required className="h-12 rounded-xl" />
-                    <select className="h-12 rounded-xl border bg-background px-4" value={newStaff.role} onChange={e => setNewStaff({...newStaff, role: e.target.value})}>
-                      <option value="department">Academic Department</option>
-                      <option value="library">Library</option>
-                      <option value="transport">Transport</option>
-                      <option value="hostel">Hostel</option>
-                      <option value="finance">Finance</option>
-                    </select>
+                <CardContent className="p-10">
+                  <form onSubmit={handleAddStaff} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Official Name</label>
+                       <Input placeholder="Enter full name" value={newStaff.fullName} onChange={e => setNewStaff({...newStaff, fullName: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                       <Input type="email" placeholder="official@university.com" value={newStaff.email} onChange={e => setNewStaff({...newStaff, email: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Secure Key</label>
+                       <Input type="password" placeholder="••••••••" value={newStaff.password} onChange={e => setNewStaff({...newStaff, password: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">System Role</label>
+                       <select className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.role} onChange={e => setNewStaff({...newStaff, role: e.target.value})}>
+                          <option value="department">Academic Official</option>
+                          <option value="library">Library Manager</option>
+                          <option value="transport">Transport Dept</option>
+                          <option value="hostel">Hostel Warden</option>
+                          <option value="finance">Finance Officer</option>
+                       </select>
+                    </div>
                     {newStaff.role === 'department' && (
-                      <select className="h-12 rounded-xl border bg-background px-4" value={newStaff.departmentName} onChange={e => setNewStaff({...newStaff, departmentName: e.target.value})}>
-                        {staffDepartments.map(d => <option key={d} value={d}>{d}</option>)}
-                      </select>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Assigned Department</label>
+                        <select className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.departmentName} onChange={e => setNewStaff({...newStaff, departmentName: e.target.value})}>
+                          {staffDepartments.map(d => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                      </div>
                     )}
-                    <div className="md:col-span-2 flex justify-end">
-                      <Button type="submit" disabled={loading} className="px-8 rounded-xl h-14 bg-primary text-white font-bold font-medium text-muted-foreground text-xs">{loading ? 'Processing...' : 'Create Account'}</Button>
+                    <div className="lg:col-span-3 flex justify-end pt-4">
+                      <Button type="submit" disabled={loading} className="px-12 rounded-2xl h-14 bg-primary text-white font-bold tracking-widest uppercase text-xs shadow-xl shadow-primary/20">{loading ? 'Synthesizing...' : 'Initialize Account'}</Button>
                     </div>
                   </form>
                 </CardContent>
               </Card>
             )}
 
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="bg-amber-500 p-8 text-white">
-                <CardTitle className="text-2xl font-bold tracking-tight flex items-center gap-4">
-                  <Clock className="w-6 h-6" /> Pending Approvals
-                </CardTitle>
-              </CardHeader>
+            <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
-                        <th className="px-8 py-5">Applicant</th>
-                        <th className="px-8 py-5">Target Role</th>
-                        <th className="px-8 py-5 text-right">Decision</th>
+                      <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-white/5">
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Applicant</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Authorization Goal</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Verification</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                      {requests.map(req => (
-                        <tr key={req.id} className="hover:bg-sky-50/50 dark:hover:bg-slate-900/50">
-                          <td className="px-8 py-5">
-                            <div className="font-bold">{req.full_name}</div>
-                            <div className="text-xs text-muted-foreground">{req.email}</div>
+                    <tbody className="divide-y divide-slate-50 dark:divide-white/[0.02]">
+                      {requests.length > 0 ? requests.map(req => (
+                        <tr key={req.id} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+                          <td className="px-8 py-6">
+                            <div className="flex items-center gap-4">
+                               <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-amber-500/20">
+                                 {req.full_name?.charAt(0)}
+                               </div>
+                               <div>
+                                 <div className="font-bold text-slate-900 dark:text-white">{req.full_name}</div>
+                                 <div className="text-[10px] font-bold text-slate-400 tracking-wider mt-0.5">{req.email}</div>
+                               </div>
+                            </div>
                           </td>
-                          <td className="px-8 py-5 font-bold uppercase text-xs tracking-widest">
-                            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">
+                          <td className="px-8 py-6">
+                            <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-widest">
                               {req.role === 'department' ? req.department_name : req.role}
                             </span>
                           </td>
-                          <td className="px-8 py-5 text-right flex justify-end gap-2">
-                            <Button size="sm" onClick={() => handleApproveStaff(req.id)} className="bg-emerald-500 hover:bg-emerald-600 rounded-lg h-10 px-4">Approve</Button>
-                            <Button size="sm" variant="destructive" onClick={() => handleRejectStaff(req.id)} className="rounded-lg h-10 px-4">Reject</Button>
+                          <td className="px-8 py-6 text-right">
+                             <div className="flex justify-end gap-3">
+                                <Button size="sm" onClick={() => handleApproveStaff(req.id)} className="bg-emerald-500 hover:bg-emerald-600 rounded-xl h-10 px-6 text-[10px] font-bold uppercase tracking-widest">Verify</Button>
+                                <Button size="sm" variant="destructive" onClick={() => handleRejectStaff(req.id)} className="rounded-xl h-10 px-6 text-[10px] font-bold uppercase tracking-widest">Deny</Button>
+                             </div>
                           </td>
                         </tr>
-                      ))}
+                      )) : (
+                        <tr>
+                           <td colSpan={3} className="px-8 py-20 text-center text-slate-400 font-bold text-sm uppercase tracking-widest">All identities verified</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -581,42 +668,51 @@ export default function AdminDashboardContent() {
         )}
 
         {activeTab === 'alumni' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="glass-card border-none shadow-2xl overflow-hidden rounded-[2rem]">
-              <CardHeader className="bg-emerald-600 p-8 text-white">
-                <CardTitle className="text-3xl font-bold tracking-tight flex items-center gap-4">
-                  <GraduationCap className="w-8 h-8" /> Alumni Insight Data
-                </CardTitle>
-              </CardHeader>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <div className="flex items-center gap-4 mb-8">
+               <div className="w-12 h-12 rounded-[1.25rem] bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                 <GraduationCap className="w-6 h-6" />
+               </div>
+               <div>
+                 <h2 className="text-3xl font-bold tracking-tight">Alumni <span className="text-emerald-600 italic">Census</span></h2>
+                 <p className="text-muted-foreground font-medium text-sm">Post-graduate success monitoring and institutional impact tracking.</p>
+               </div>
+            </div>
+
+            <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead>
-                      <tr className="bg-slate-100/50 dark:bg-slate-800/50 text-xs font-bold font-medium text-muted-foreground text-muted-foreground border-b">
-                        <th className="px-8 py-5">Graduate</th>
-                        <th className="px-8 py-5">Employment</th>
-                        <th className="px-8 py-5">Higher Education</th>
+                      <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-white/5">
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Graduate</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Career Vector</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Higher Education</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                      {allFutureData.map((item) => (
-                        <tr key={item.id}>
-                          <td className="px-8 py-5">
-                            <div className="font-bold text-sm">{item.student?.full_name}</div>
-                            <div className="text-xs text-primary uppercase font-bold">{item.student?.reg_no}</div>
+                    <tbody className="divide-y divide-slate-50 dark:divide-white/[0.02]">
+                      {allFutureData.length > 0 ? allFutureData.map((item) => (
+                        <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                          <td className="px-8 py-6">
+                            <div className="font-bold text-slate-900 dark:text-white">{item.student?.full_name}</div>
+                            <div className="text-[10px] font-bold text-primary uppercase mt-0.5 tracking-wider">{item.student?.reg_no}</div>
                           </td>
-                          <td className="px-8 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold font-medium text-muted-foreground ${item.experience === 'Yes' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-200 text-slate-500'}`}>
-                              {item.experience === 'Yes' ? 'Employed' : 'Unemployed'}
+                          <td className="px-8 py-6">
+                            <span className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest ${item.experience === 'Yes' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-100 text-slate-400'}`}>
+                              {item.experience === 'Yes' ? 'Engaged' : 'Not Specified'}
                             </span>
                           </td>
-                          <td className="px-8 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold font-medium text-muted-foreground ${item.degree ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-200 text-slate-500'}`}>
-                              {item.degree ? item.degree : 'No Further Education'}
+                          <td className="px-8 py-6">
+                            <span className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest ${item.degree ? 'bg-blue-500/10 text-blue-500' : 'bg-slate-100 text-slate-400'}`}>
+                              {item.degree ? item.degree : 'Institutional Goal Met'}
                             </span>
                           </td>
                         </tr>
-                      ))}
+                      )) : (
+                        <tr>
+                           <td colSpan={3} className="px-8 py-20 text-center text-slate-400 font-bold text-sm uppercase tracking-widest">No alumni data synchronized</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -624,7 +720,57 @@ export default function AdminDashboardContent() {
             </Card>
           </motion.div>
         )}
-      </main>
+
+        {activeTab === 'logs' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <div className="flex items-center gap-4 mb-8">
+               <div className="w-12 h-12 rounded-[1.25rem] bg-slate-900 dark:bg-white text-white dark:text-slate-950 flex items-center justify-center shadow-lg">
+                 <History className="w-6 h-6" />
+               </div>
+               <div>
+                 <h2 className="text-3xl font-bold tracking-tight">System <span className="text-primary italic">Audit Log</span></h2>
+                 <p className="text-muted-foreground font-medium text-sm">Permanent record of all security-sensitive administrative operations.</p>
+               </div>
+            </div>
+
+            <Card className="glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-white/5">
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Operation</th>
+                        <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-50 dark:divide-white/[0.02]">
+                      {auditLogs.length > 0 ? auditLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                          <td className="px-8 py-6">
+                             <div className="font-bold uppercase text-[10px] tracking-widest text-slate-900 dark:text-white">{log.action.replace(/_/g, ' ')}</div>
+                             <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-tight">
+                               {typeof log.details === 'object' ? (
+                                 log.details.remarks || JSON.stringify(log.details)
+                               ) : (
+                                 log.details || 'Baseline Operation'
+                               )}
+                             </p>
+                          </td>
+                          <td className="px-8 py-6 text-[10px] font-bold text-slate-400 tracking-widest uppercase">{formatDate(log.created_at)}</td>
+                        </tr>
+                      )) : (
+                        <tr>
+                           <td colSpan={2} className="px-8 py-20 text-center text-slate-400 font-bold text-sm uppercase tracking-widest">Clear Audit Trail</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </div>
     </div>
   )
 }

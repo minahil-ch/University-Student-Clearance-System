@@ -53,17 +53,14 @@ export default function DepartmentDashboardContent(props: any) {
   const [customMessageModal, setCustomMessageModal] = useState<{isOpen: boolean, student: any}>({isOpen: false, student: null})
   const [customMessageText, setCustomMessageText] = useState("")
   const [customMessageSending, setCustomMessageSending] = useState(false)
-  const [deptFilter, setDeptFilter] = useState<string>("all")
+  const [filterDept, setFilterDept] = useState<string>("All Departments")
   
-  const departments = [
+  const academicDepartments = [
     "Computer Science",
     "Software Engineering",
-    "Information Technology",
     "Mathematics",
     "Humanities",
-    "Management Sciences",
     "Environmental Sciences",
-    "Electrical Engineering"
   ]
   
   const isAcademic = isAcademicClearancePortal(departmentKey)
@@ -190,13 +187,17 @@ export default function DepartmentDashboardContent(props: any) {
 
       const { data: statusData } = await statusQuery
       
-      // Dispatch Portal: Filter by Department
-      let finalStudents = statusData || []
-      if (departmentKey === 'dispatch' && deptFilter !== 'all') {
-        finalStudents = (statusData || []).filter((item: any) => 
-          (item.profiles?.department_name || "").toLowerCase().trim() === deptFilter.toLowerCase().trim()
-        )
-      }
+      // Global Filtering Logic
+      let finalStudents = (statusData || []).filter((item: any) => {
+        const matchesSearch = !searchTerm || 
+          item.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.profiles?.reg_no?.toLowerCase().includes(searchTerm.toLowerCase())
+        
+        const matchesDept = filterDept === 'All Departments' || 
+          item.profiles?.department_name === filterDept
+        
+        return matchesSearch && matchesDept
+      })
       
       // Academic Portal Filter: Only show students cleared by all 4 core depts
       if (isAcademic) {
@@ -282,7 +283,7 @@ export default function DepartmentDashboardContent(props: any) {
 
     fetchData()
     fetchSettings()
-  }, [departmentKey, currentTab, timeFilter, surveySubTab, accessReady, isAcademic, sidebarDeptName, deptFilter])
+  }, [departmentKey, currentTab, timeFilter, surveySubTab, accessReady, isAcademic, sidebarDeptName, filterDept, searchTerm])
 
   const handleUpdateStatus = async (clearanceId: string, status: 'cleared' | 'issue', studentProfile: any) => {
     try {
@@ -495,10 +496,9 @@ export default function DepartmentDashboardContent(props: any) {
     }
   }
 
-  const filteredItems = currentTab === 'surveys' ? surveyData : students.filter(s =>
-    s.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.profiles?.reg_no?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredItems = currentTab === 'surveys' 
+    ? surveyData.filter(s => filterDept === 'All Departments' || s.profiles?.department_name === filterDept)
+    : students
 
   const deptLabel = departmentKey.replace(/-/g, ' ').toUpperCase()
 
@@ -605,34 +605,33 @@ export default function DepartmentDashboardContent(props: any) {
           </div>
 
           <div className="flex items-center gap-6">
-            {departmentKey === 'dispatch' && (
-              <div className="flex items-center gap-4 border-r border-slate-200 pr-6 mr-6">
-                <div className="text-xs font-bold tracking-wider text-slate-400">Dept Filter:</div>
-                <select 
-                  value={deptFilter}
-                  onChange={(e) => setDeptFilter(e.target.value)}
-                  className="h-10 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-xs font-bold outline-none cursor-pointer"
-                >
-                  <option value="all">All Departments</option>
-                  {departments.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-              </div>
-            )}
             <div className="flex items-center gap-3 text-xs font-bold tracking-wider text-slate-400">
-               <Filter className="w-4 h-4" /> Filter Range:
+               <Filter className="w-4 h-4" /> View Filter:
             </div>
-            <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5">
-              {(['all', 'today', 'month'] as const).map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setTimeFilter(filter)}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-bold font-medium text-muted-foreground transition-all duration-300 ${
-                    timeFilter === filter ? 'bg-white dark:bg-slate-900 text-primary shadow-xl' : 'text-slate-400 hover:text-slate-600'
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
+            
+            <div className="flex items-center gap-3">
+              <select 
+                value={filterDept}
+                onChange={(e) => setFilterDept(e.target.value)}
+                className="h-10 px-6 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none text-[10px] font-bold uppercase tracking-widest outline-none cursor-pointer hover:bg-slate-200 transition-colors"
+              >
+                <option>All Departments</option>
+                {academicDepartments.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+
+              <div className="flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-white/5">
+                {(['all', 'today', 'month'] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setTimeFilter(filter)}
+                    className={`px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${
+                      timeFilter === filter ? 'bg-white dark:bg-slate-900 text-primary shadow-xl' : 'text-slate-400 hover:text-slate-600'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
