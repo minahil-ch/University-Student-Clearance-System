@@ -304,7 +304,7 @@ export default function StudentDashboardContent() {
 
         <div className="flex flex-col gap-8">
            {/* Live Status Tracker - Full Width */}
-           {clearanceStarted ? (
+           {clearanceStarted && (
              <div className="w-full">
               <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-white/5 shadow-2xl overflow-hidden group">
                 <div className="p-10 border-b border-slate-50 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
