@@ -61,6 +61,7 @@ export default function AdminDashboardContent() {
   const [showOnlyApproved, setShowOnlyApproved] = useState(false)
   const [isAddingStaff, setIsAddingStaff] = useState(false)
   const [newStaff, setNewStaff] = useState({ fullName: '', email: '', password: '', role: 'department', departmentName: 'Computer Science' })
+  const [mounted, setMounted] = useState(false)
 
   const academicDepartments = [
     "Computer Science",
@@ -154,6 +155,7 @@ export default function AdminDashboardContent() {
   }
 
   useEffect(() => {
+    setMounted(true)
     fetchData()
 
     const channel = supabase
@@ -363,15 +365,17 @@ export default function AdminDashboardContent() {
                   <CardTitle className="text-xl font-bold">Clearance Status</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[350px] flex flex-col items-center justify-center">
-                  <ResponsiveContainer width="100%" height="90%">
-                    <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={8} dataKey="value">
-                        {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />)}
-                      </Pie>
-                      <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="flex flex-wrap justify-center gap-6 text-xs font-bold font-medium text-muted-foreground">
+                  {mounted && (
+                    <ResponsiveContainer width="100%" height="90%">
+                      <PieChart>
+                        <Pie data={pieData} cx="50%" cy="50%" innerRadius={70} outerRadius={100} paddingAngle={8} dataKey="value">
+                          {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />)}
+                        </Pie>
+                        <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                  <div className="flex flex-wrap justify-center gap-6 text-xs font-bold font-medium text-muted-foreground mt-4">
                     {pieData.map(item => (
                       <div key={item.name} className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
@@ -387,15 +391,17 @@ export default function AdminDashboardContent() {
                   <CardTitle className="text-xl font-bold">Department Efficiency</CardTitle>
                 </CardHeader>
                 <CardContent className="h-[350px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={departmentStats}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                      <XAxis dataKey="name" fontSize={10} fontWeight="bold" tickLine={false} axisLine={false} dy={10} />
-                      <YAxis fontSize={10} fontWeight="bold" tickLine={false} axisLine={false} />
-                      <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
-                      <Bar dataKey="cleared" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} barSize={45} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {mounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={departmentStats}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                        <XAxis dataKey="name" fontSize={10} fontWeight="bold" tickLine={false} axisLine={false} dy={10} />
+                        <YAxis fontSize={10} fontWeight="bold" tickLine={false} axisLine={false} />
+                        <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
+                        <Bar dataKey="cleared" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} barSize={45} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
               </Card>
             </div>
