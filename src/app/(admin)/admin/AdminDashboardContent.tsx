@@ -93,7 +93,7 @@ export default function AdminDashboardContent() {
       .from('clearance_status')
       .select('*')
 
-    if (clearance) {
+    if (clearance && clearance.length > 0) {
       const departments = [...new Set(clearance.map(c => c.department_key))]
       const deptStats = departments.map(dept => {
         const deptClearances = clearance.filter(c => c.department_key === dept)
@@ -423,7 +423,13 @@ export default function AdminDashboardContent() {
                         <tr key={log.id} className="hover:bg-primary/[0.02] transition-colors">
                           <td className="px-8 py-5">
                              <div className="font-bold uppercase text-[11px] tracking-tight">{log.action.replace(/_/g, ' ')}</div>
-                             <p className="text-xs text-slate-400 mt-1">{log.details || 'No additional details'}</p>
+                             <p className="text-xs text-slate-400 mt-1">
+                               {typeof log.details === 'object' ? (
+                                 log.details.remarks || JSON.stringify(log.details)
+                               ) : (
+                                 log.details || 'No additional details'
+                               )}
+                             </p>
                           </td>
                           <td className="px-8 py-5 text-sm text-muted-foreground">{formatDate(log.created_at)}</td>
                         </tr>
