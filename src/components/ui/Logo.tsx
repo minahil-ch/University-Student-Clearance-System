@@ -14,7 +14,7 @@ export function Logo({ className = "w-12 h-12" }: { className?: string }) {
         <img 
           src="/logo.png"
           alt="CUI Logo"
-          className="w-full h-full object-cover rounded-full"
+          className="w-full h-full object-contain"
           loading="eager"
           onError={() => setErrorCount(1)}
         />
