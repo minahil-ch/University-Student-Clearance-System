@@ -12,7 +12,7 @@ export function Logo({ className = "w-12 h-12" }: { className?: string }) {
     <div className={`relative flex items-center justify-center transition-all duration-300 hover:scale-110 ${className}`}>
       {errorCount === 0 ? (
         <img 
-          src="/logo.png"
+          src="https://upload.wikimedia.org/wikipedia/en/5/52/COMSATS_University_Islamabad_logo.png"
           alt="CUI Logo"
           className="w-full h-full object-contain"
           loading="eager"
