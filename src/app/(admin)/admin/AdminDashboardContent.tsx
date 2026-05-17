@@ -583,19 +583,19 @@ export default function AdminDashboardContent() {
                   <form onSubmit={handleAddStaff} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div className="space-y-2">
                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Official Name</label>
-                       <Input placeholder="Enter full name" value={newStaff.fullName} onChange={e => setNewStaff({...newStaff, fullName: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                       <Input placeholder="Enter full name" value={newStaff.fullName} onChange={e => setNewStaff({...newStaff, fullName: e.target.value})} required className="h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
-                       <Input type="email" placeholder="official@university.com" value={newStaff.email} onChange={e => setNewStaff({...newStaff, email: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                       <Input type="email" placeholder="official@university.com" value={newStaff.email} onChange={e => setNewStaff({...newStaff, email: e.target.value})} required className="h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Secure Key</label>
-                       <Input type="password" placeholder="••••••••" value={newStaff.password} onChange={e => setNewStaff({...newStaff, password: e.target.value})} required className="h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
+                       <Input type="password" placeholder="••••••••" value={newStaff.password} onChange={e => setNewStaff({...newStaff, password: e.target.value})} required className="h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none font-bold" />
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">System Role</label>
-                       <select className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.role} onChange={e => setNewStaff({...newStaff, role: e.target.value})}>
+                       <select className="w-full h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.role} onChange={e => setNewStaff({...newStaff, role: e.target.value})}>
                           <option value="department">Academic Official</option>
                           <option value="library">Library Manager</option>
                           <option value="transport">Transport Dept</option>
@@ -606,13 +606,13 @@ export default function AdminDashboardContent() {
                     {newStaff.role === 'department' && (
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Assigned Department</label>
-                        <select className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.departmentName} onChange={e => setNewStaff({...newStaff, departmentName: e.target.value})}>
+                        <select className="w-full h-11 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-none px-4 font-bold text-sm appearance-none cursor-pointer" value={newStaff.departmentName} onChange={e => setNewStaff({...newStaff, departmentName: e.target.value})}>
                           {staffDepartments.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                       </div>
                     )}
                     <div className="lg:col-span-3 flex justify-end pt-4">
-                      <Button type="submit" disabled={loading} className="px-12 rounded-2xl h-14 bg-primary text-white font-bold tracking-widest uppercase text-xs shadow-xl shadow-primary/20">{loading ? 'Synthesizing...' : 'Initialize Account'}</Button>
+                      <Button type="submit" disabled={loading} className="px-12 rounded-2xl h-11 bg-primary text-white font-bold tracking-widest uppercase text-xs shadow-xl shadow-primary/20">{loading ? 'Synthesizing...' : 'Initialize Account'}</Button>
                     </div>
                   </form>
                 </CardContent>

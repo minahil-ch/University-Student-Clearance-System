@@ -12,7 +12,7 @@ import {
   Phone, Mail, User, CheckCircle2, 
   Building2, Truck, BookOpen, ArrowRight, 
   FileText, ClipboardCheck, GraduationCap, LayoutDashboard, ShieldCheck, ExternalLink,
-  AlertTriangle, Lock
+  AlertTriangle, Lock, Clock
 } from "lucide-react"
 import { Logo } from "@/components/ui/Logo"
 import { Button } from "@/components/ui/Button"

@@ -134,7 +134,7 @@ export default function AddStudentPage() {
                          type="email" 
                          value={formData.email} 
                          onChange={e => setFormData({...formData, email: e.target.value})}
-                         className="pl-14 h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
+                         className="pl-14 h-11 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                          placeholder="student@cui.edu.pk"
                          required
                        />
@@ -145,7 +145,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.full_name} 
                       onChange={e => setFormData({...formData, full_name: e.target.value})}
-                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-11 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Muhammad Abdullah"
                       required
                     />
@@ -155,7 +155,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.reg_no} 
                       onChange={e => setFormData({...formData, reg_no: e.target.value})}
-                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold uppercase" 
+                      className="h-11 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold uppercase" 
                       placeholder="CIIT/FA20-BCS-001/VHR"
                       required
                     />
@@ -165,7 +165,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.department_name} 
                       onChange={e => setFormData({...formData, department_name: e.target.value})}
-                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-11 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Computer Science"
                       required
                     />
@@ -175,7 +175,7 @@ export default function AddStudentPage() {
                     <Input 
                       value={formData.session} 
                       onChange={e => setFormData({...formData, session: e.target.value})}
-                      className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
+                      className="h-11 rounded-2xl bg-sky-50/50 dark:bg-slate-900 border-none font-bold" 
                       placeholder="Fall 2020"
                       required
                     />
@@ -186,7 +186,7 @@ export default function AddStudentPage() {
                   <Button 
                     type="submit" 
                     disabled={loading}
-                    className="h-16 px-12 rounded-2xl bg-primary text-white font-bold font-medium text-muted-foreground text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full md:w-auto"
+                    className="h-12 px-12 rounded-2xl bg-primary text-white font-bold text-xs shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all w-full md:w-auto"
                   >
                     {loading ? "Registering & Clearing..." : "Execute Force Enrollment"}
                   </Button>

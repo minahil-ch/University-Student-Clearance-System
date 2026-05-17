@@ -58,13 +58,6 @@ export default function LandingPage() {
       desc: "Final authority by student selected department", 
       href: "/academic" 
     },
-    { 
-      name: "Degree Awarded Portal", 
-      icon: Truck, 
-      color: "indigo", 
-      desc: "Degree issuance and final award processing", 
-      href: "/login/staff?role=staff&dept=dispatch&switch=1" 
-    },
   ]
 
   return (

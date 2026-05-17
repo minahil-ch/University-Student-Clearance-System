@@ -299,7 +299,7 @@ function LoginContent() {
                     placeholder="email@example.com" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-16 rounded-2xl border-none bg-slate-100 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-700 font-medium text-slate-900 dark:text-white transition-all shadow-inner" 
+                    className="pl-12 h-12 rounded-2xl border-none bg-slate-100 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-700 font-medium text-slate-900 dark:text-white transition-all shadow-inner" 
                     required 
                   />
                 </div>
@@ -319,7 +319,7 @@ function LoginContent() {
                     placeholder="••••••••" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-12 h-16 rounded-2xl border-none bg-slate-100 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-700 font-medium text-slate-900 dark:text-white transition-all shadow-inner" 
+                    className="pl-12 h-11 rounded-2xl border-none bg-slate-100 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-700 font-medium text-slate-900 dark:text-white transition-all shadow-inner" 
                     required 
                   />
                 </div>
@@ -329,7 +329,7 @@ function LoginContent() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-bold tracking-wider rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-3"
+                  className="w-full h-11 bg-primary hover:bg-primary/90 text-white font-bold tracking-wider rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-3"
                 >
                   {loading ? "Verifying..." : (
                     <>

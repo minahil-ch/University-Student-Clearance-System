@@ -176,7 +176,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
                   const { createClient } = await import("@/lib/supabase/client")
                   const supabase = createClient()
                   await supabase.auth.signOut()
-                  window.location.href = "/login"
+                  window.location.href = "/"
                 }}
               >
                 <LogOut className="w-4 h-4" />

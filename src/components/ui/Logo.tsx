@@ -12,9 +12,9 @@ export function Logo({ className = "w-12 h-12" }: { className?: string }) {
     <div className={`relative flex items-center justify-center transition-all duration-300 hover:scale-110 ${className}`}>
       {errorCount === 0 ? (
         <img 
-          src={logoUrl}
+          src="/logo.png"
           alt="CUI Logo"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover rounded-full"
           loading="eager"
           onError={() => setErrorCount(1)}
         />
