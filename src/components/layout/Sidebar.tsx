@@ -22,7 +22,8 @@ import {
   Clock,
   Bell,
   History,
-  GraduationCap
+  GraduationCap,
+  ClipboardCheck
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
@@ -40,7 +41,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
 
   const navItems: Record<string, { label: string; href: string; icon: any }[]> = {
     student: [
-      { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Clearance Form", href: "/dashboard", icon: ClipboardCheck },
       { label: "Identity", href: "/details", icon: User },
       { label: "Dispatch", href: "/degree-dispatch", icon: GraduationCap },
       { label: "Messages", href: "/notifications", icon: Mail },

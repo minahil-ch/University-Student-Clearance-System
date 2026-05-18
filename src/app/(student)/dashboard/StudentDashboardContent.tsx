@@ -297,34 +297,106 @@ export default function StudentDashboardContent() {
                   </div>
                </CardHeader>
                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                     {orderedClearanceData.map((item, index) => (
-                       <motion.div 
-                         key={item.id}
-                         initial={{ opacity: 0, y: 10 }}
-                         animate={{ opacity: 1, y: 0 }}
-                         transition={{ delay: index * 0.05 }}
-                         className={`p-4 rounded-2xl border transition-all duration-500 ${
-                           item.status === 'cleared' ? 'bg-emerald-50/50 border-emerald-200 dark:bg-emerald-500/5 dark:border-emerald-500/20' : 
-                           item.status === 'issue' ? 'bg-rose-50 border-rose-200 dark:bg-rose-500/10' : 
-                           'bg-white dark:bg-slate-900 border-slate-100 dark:border-white/5'
-                         }`}
-                       >
-                          <div className="flex items-center justify-between mb-3">
-                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                               item.status === 'cleared' ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-                             }`}>
-                                {getDepartmentIcon(item.department_key)}
-                             </div>
-                             <StatusBadge status={item.status} className="text-[8px] h-5 px-2 font-bold uppercase" />
-                          </div>
-                          <p className="text-[9px] font-bold uppercase text-slate-400 tracking-wider leading-none mb-1">{item.department_key}</p>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-[11px] truncate">
-                            {item.department_key.startsWith("academic-") ? "Final Academic" : item.department_key.replace(/_/g, " ")}
-                          </h5>
-                          {item.remarks && <p className="text-[9px] font-bold text-rose-500 mt-2 italic line-clamp-1">&quot;{item.remarks}&quot;</p>}
-                       </motion.div>
-                     ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                     {orderedClearanceData.map((item, index) => {
+                       const key = item.department_key
+                       const isCore = !key.startsWith('academic-')
+                       const rawPhone = isCore ? departmentContacts[key] : hodContact?.phone
+                       
+                       let deptPhone = rawPhone
+                       if (!deptPhone) {
+                         if (key === 'library') deptPhone = "+92 67 3001234"
+                         else if (key === 'transport') deptPhone = "+92 67 3005678"
+                         else if (key === 'finance') deptPhone = "+92 67 3009012"
+                         else if (key === 'hostel') deptPhone = "+92 67 3003456"
+                         else deptPhone = "+92 67 3007890"
+                       }
+
+                       const isCleared = item.status === 'cleared'
+                       const isIssue = item.status === 'issue'
+
+                       return (
+                        <motion.div 
+                          key={item.id}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.08 }}
+                          className={`p-6 rounded-[2rem] border transition-all duration-300 relative overflow-hidden group hover:scale-[1.03] hover:shadow-2xl flex flex-col justify-between min-h-[220px] ${
+                            isCleared 
+                              ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-none shadow-lg shadow-emerald-500/20' 
+                              : isIssue 
+                              ? 'bg-gradient-to-br from-rose-500 to-red-600 text-white border-none shadow-lg shadow-rose-500/20' 
+                              : 'bg-white dark:bg-slate-900 border-slate-200/60 dark:border-white/5 shadow-md'
+                          }`}
+                        >
+                           {isCleared && (
+                             <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none animate-pulse" />
+                           )}
+                           {isIssue && (
+                             <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none animate-pulse" />
+                           )}
+
+                           <div>
+                              <div className="flex items-center justify-between mb-4">
+                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                                   isCleared || isIssue ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-primary'
+                                 }`}>
+                                    {getDepartmentIcon(item.department_key)}
+                                 </div>
+                                 <span className={`text-[8px] font-extrabold uppercase px-2.5 py-1 rounded-full ${
+                                   isCleared ? 'bg-white/30 text-white' : isIssue ? 'bg-white/30 text-white' : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'
+                                 }`}>
+                                    {item.status}
+                                 </span>
+                              </div>
+
+                              <div className="space-y-1">
+                                 <p className={`text-[8px] font-bold uppercase tracking-widest ${isCleared || isIssue ? 'text-white/70' : 'text-slate-400'}`}>
+                                    {isCore ? 'CAMPUS PORTAL' : 'ACADEMIC DEPT'}
+                                 </p>
+                                 <h5 className={`font-bold text-sm tracking-tight ${isCleared || isIssue ? 'text-white' : 'text-slate-800 dark:text-white'}`}>
+                                   {item.department_key.startsWith("academic-") 
+                                     ? (profile?.department_name || "Academic") 
+                                     : item.department_key.charAt(0).toUpperCase() + item.department_key.slice(1)}
+                                 </h5>
+                              </div>
+                           </div>
+
+                           <div className="mt-4 space-y-4">
+                              {/* Helpline Section directly on the card! */}
+                              <div className={`pt-3 border-t ${isCleared || isIssue ? 'border-white/10' : 'border-slate-100 dark:border-white/5'} space-y-1.5`}>
+                                 <p className={`text-[7px] font-extrabold uppercase tracking-widest ${isCleared || isIssue ? 'text-white/60' : 'text-slate-400'}`}>
+                                    Helpline Contact
+                                 </p>
+                                 <div className="flex items-center justify-between">
+                                    <span className={`text-[10px] font-extrabold font-mono ${isCleared || isIssue ? 'text-white' : 'text-slate-600 dark:text-slate-300'}`}>
+                                       {deptPhone}
+                                    </span>
+                                    <button 
+                                      onClick={() => window.open(`https://wa.me/${deptPhone.replace(/[^0-9]/g, '')}`, '_blank')}
+                                      className={`w-6 h-6 rounded-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all ${
+                                        isCleared || isIssue ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                                      }`}
+                                      title="Message on WhatsApp"
+                                    >
+                                       <Phone className="w-2.5 h-2.5" />
+                                    </button>
+                                 </div>
+                              </div>
+
+                              {item.remarks && (
+                                <div className={`p-2 rounded-xl text-[9px] font-semibold leading-normal ${
+                                  isCleared || isIssue 
+                                    ? 'bg-white/10 text-white italic' 
+                                    : 'bg-rose-50 text-rose-600 italic'
+                                }`}>
+                                   &quot;{item.remarks}&quot;
+                                </div>
+                              )}
+                           </div>
+                        </motion.div>
+                       )
+                     })}
                   </div>
                </CardContent>
             </Card>
