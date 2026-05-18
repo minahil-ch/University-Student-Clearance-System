@@ -41,7 +41,8 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
 
   const navItems: Record<string, { label: string; href: string; icon: any }[]> = {
     student: [
-      { label: "Clearance Form", href: "/dashboard", icon: ClipboardCheck },
+      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { label: "Clearance Form", href: "/form", icon: ClipboardCheck },
       { label: "Identity", href: "/details", icon: User },
       { label: "Dispatch", href: "/degree-dispatch", icon: GraduationCap },
       { label: "Messages", href: "/notifications", icon: Mail },

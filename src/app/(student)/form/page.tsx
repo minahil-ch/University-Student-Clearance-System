@@ -392,6 +392,15 @@ export default function ClearanceForm() {
                               className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold placeholder:text-slate-300"
                             />
                          </div>
+                         <div className="space-y-2.5">
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Email Address</label>
+                            <Input 
+                              type="email"
+                              value={profile.email}
+                              onChange={(e) => setProfile({...profile, email: e.target.value})}
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
                       </div>
 
                       <div className="space-y-8">
@@ -408,6 +417,15 @@ export default function ClearanceForm() {
                             <Input 
                               value={profile.cgpa}
                               onChange={(e) => setProfile({...profile, cgpa: e.target.value})}
+                              className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
+                            />
+                         </div>
+                         <div className="space-y-2.5">
+                            <label className="text-xs font-bold tracking-wider text-slate-400 ml-1">Contact Number (WhatsApp)</label>
+                            <Input 
+                              value={profile.phone || ''}
+                              onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                              placeholder="e.g. +923001234567"
                               className="h-16 rounded-2xl bg-sky-50/50 dark:bg-slate-950/50 border-slate-100 dark:border-white/5 shadow-sm focus:shadow-xl focus:border-emerald-500/30 transition-all font-bold"
                             />
                          </div>
