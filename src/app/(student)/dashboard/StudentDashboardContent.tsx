@@ -87,7 +87,7 @@ export default function StudentDashboardContent() {
       
       setClearanceData(clearance || [])
       setUniFormDone(Boolean(futureData))
-      setClearanceStarted((clearance || []).length > 0)
+      setClearanceStarted((clearance || []).length > 0 && Boolean(profile?.father_name))
 
       if (profile?.department_name) {
         const { data: forms } = await supabase
@@ -235,10 +235,10 @@ export default function StudentDashboardContent() {
                 
                 <div className="space-y-4">
                    <h3 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white uppercase leading-none italic">
-                     Initialize <span className="text-primary not-italic">Clearance Protocol</span>
+                     Graduation <span className="text-primary not-italic">Clearance Form</span>
                    </h3>
                    <p className="text-slate-500 font-medium text-sm max-w-lg mx-auto leading-relaxed">
-                     Welcome, {profile?.full_name}! To begin your final graduation journey, you must first initiate the official clearance workflow. This will notify all relevant departments (Library, Transport, Finance, etc.) to review your status.
+                     Welcome, {profile?.full_name}! Please fill out the official clearance request form to start your graduation clearance process across all departments.
                    </p>
                 </div>
 
@@ -247,14 +247,12 @@ export default function StudentDashboardContent() {
                      onClick={() => window.location.href = uniFormDone ? "/form" : "/uni-form"}
                      className="h-14 px-12 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl shadow-slate-900/20 font-bold text-[11px] uppercase tracking-widest gap-4 active:scale-95 transition-all group"
                    >
-                      {uniFormDone ? "Start Proper Clearance" : "Start University Survey"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      Start Clearance Form <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                    </Button>
                    
-                   {!uniFormDone && (
-                     <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        <ShieldCheck className="w-4 h-4" /> Multi-Step Institutional Protocol Active
-                     </div>
-                   )}
+                   <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <ShieldCheck className="w-4 h-4" /> Multi-Step Institutional Protocol Active
+                   </div>
                 </div>
              </div>
           </div>

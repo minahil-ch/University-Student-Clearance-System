@@ -42,7 +42,7 @@ export function Sidebar({ role, departmentName }: SidebarProps) {
     student: [
       { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
       { label: "Identity", href: "/details", icon: User },
-      { label: "Logistics", href: "/degree-dispatch", icon: Truck },
+      { label: "Dispatch", href: "/degree-dispatch", icon: GraduationCap },
       { label: "Messages", href: "/notifications", icon: Mail },
     ],
     department: [

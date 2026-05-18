@@ -17,7 +17,8 @@ import {
   Send,
   FileSearch,
   Phone,
-  Mail
+  Mail,
+  Lock
 } from "lucide-react"
 import { toast } from "sonner"
 import { Logo } from "@/components/ui/Logo"
@@ -134,20 +135,30 @@ export default function DispatchPage() {
                   key="locked"
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800 p-16 text-center space-y-8 shadow-2xl"
+                  className="bg-white dark:bg-slate-900 rounded-[3rem] border border-rose-100 dark:border-rose-950/30 p-16 text-center space-y-8 shadow-2xl"
                 >
-                   <div className="w-24 h-24 rounded-[2rem] bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
-                      <GraduationCap className="w-12 h-12" />
+                   <div className="w-24 h-24 rounded-[2rem] bg-rose-50 dark:bg-rose-950/20 text-rose-500 flex items-center justify-center mx-auto shadow-inner">
+                      <AlertCircle className="w-12 h-12" />
                    </div>
                    <div className="space-y-4">
-                      <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Awaiting Academic Clearance</h3>
-                      <p className="text-slate-500 max-w-md mx-auto font-medium leading-relaxed">
-                        The Degree Award process only begins once your academic department has fully cleared your record. Please ensure your HOD has approved your final clearance.
+                      <h3 className="text-2xl font-bold text-rose-600 uppercase italic">Clearance Pending</h3>
+                      <p className="text-slate-500 max-w-md mx-auto font-medium leading-relaxed text-sm">
+                         Your clearance is not approved yet. You can&apos;t dispatch now.
                       </p>
                    </div>
-                   <div className="pt-6">
-                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-bold text-slate-400 uppercase tracking-widest">
-                         <Clock className="w-4 h-4" /> Sequential Protocol Active
+                   
+                   <div className="pt-4">
+                      <Button 
+                        disabled
+                        className="h-16 px-12 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 font-bold font-medium text-xs gap-4 cursor-not-allowed uppercase tracking-widest"
+                      >
+                         Send Request to Dispatch <Lock className="w-4 h-4" />
+                      </Button>
+                   </div>
+
+                   <div className="pt-2">
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-50 dark:bg-slate-800/50 rounded-full text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                         <Clock className="w-4 h-4 text-primary" /> Sequential Protocol Active
                       </div>
                    </div>
                 </motion.div>
