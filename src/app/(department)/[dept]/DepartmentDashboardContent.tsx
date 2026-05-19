@@ -39,7 +39,7 @@ export default function DepartmentDashboardContent(props: any) {
   const [sidebarRole, setSidebarRole] = useState<'department' | 'transport' | 'library' | 'admin' | 'student'>('department')
   const [sidebarDeptName, setSidebarDeptName] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState("")
-  const [currentTab, setCurrentTab] = useState<'pending' | 'surveys' | 'history'>('pending')
+  const [currentTab, setCurrentTab] = useState<'pending' | 'surveys' | 'approved' | 'rejected'>('pending')
   const [timeFilter, setTimeFilter] = useState<'today' | 'month' | 'all'>('all')
   const [surveySubTab, setSurveySubTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
   const [remarks, setRemarks] = useState<{ [key: string]: string }>({})
@@ -585,7 +585,7 @@ export default function DepartmentDashboardContent(props: any) {
         {/* Global Control Hub */}
         <div className="flex flex-wrap items-center justify-between gap-8 mb-10 bg-white/40 dark:bg-slate-900/40 p-6 rounded-[3rem] border border-slate-100 dark:border-white/5 backdrop-blur-xl shadow-xl relative z-10">
           <div className="flex flex-wrap gap-3 p-1.5 bg-slate-200/30 dark:bg-slate-800/30 rounded-[2rem]">
-            {(isAcademic ? ['pending', 'surveys', 'approved', 'rejected'] : ['pending', 'approved', 'rejected']).map((tab) => (
+            {(isAcademic ? ['pending', 'surveys', 'approved', 'rejected'] as const : ['pending', 'approved', 'rejected'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentTab(tab)}

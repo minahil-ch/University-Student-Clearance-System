@@ -84,13 +84,7 @@ export default function ClearanceForm() {
         return
       }
 
-      const { data: existingClearance } = await supabase
-        .from('clearance_status')
-        .select('id')
-        .eq('student_id', user.id)
-        .limit(1)
-
-      if (existingClearance && existingClearance.length > 0) {
+      if (pData && pData.father_name) {
         setAlreadySubmitted(true)
         setPageReady(true)
         return
@@ -174,7 +168,7 @@ export default function ClearanceForm() {
           regNo: profile.reg_no,
           department: profile.department_name,
           eventType: 'form_submission',
-          futureData: { graduated_year: profile.graduated_year }
+          futureData: { graduated_year: profile.session }
         })
       }
 

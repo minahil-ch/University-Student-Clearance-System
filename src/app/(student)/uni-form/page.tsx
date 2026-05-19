@@ -88,7 +88,7 @@ export default function UniversityFormPage() {
             <div>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900">Already Submitted!</h2>
               <p className="text-slate-500 font-medium mt-3 leading-relaxed">
-                Your University Survey form has already been submitted successfully. Your responses have been recorded.
+                Your Alumni form has already been submitted successfully. Your responses have been recorded.
               </p>
             </div>
             <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100 text-left space-y-2">
@@ -152,14 +152,14 @@ export default function UniversityFormPage() {
         phone: "",
         recipientEmail: adminEmail,
         eventType: "portal_alert",
-        remarks: "New University Form submitted (Admin-only).",
+        remarks: "New Alumni Form submitted (Admin-only).",
         futureData,
       })
 
-      toast.success("University form submitted. Now fill Clearance Form.")
+      toast.success("Alumni form submitted. Now fill Clearance Form.")
       window.location.href = "/form"
     } catch (e: any) {
-      toast.error(e.message || "Failed to submit university form")
+      toast.error(e.message || "Failed to submit Alumni form")
     } finally {
       setLoading(false)
     }
@@ -172,7 +172,7 @@ export default function UniversityFormPage() {
         <header className="mb-10 text-center max-w-2xl mx-auto">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight px-4">
-              University <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 uppercase italic">Form</span>
+              Alumni <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 uppercase italic">Form</span>
             </h2>
             
             {rejectionRemarks ? (
@@ -202,8 +202,8 @@ export default function UniversityFormPage() {
                        <GraduationCap className="w-4 h-4 text-primary" />
                        <span className="text-xs font-bold tracking-wider text-primary italic">Official University Survey</span>
                     </div>
-                    <CardTitle className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">
-                       FUTURE <span className="text-primary italic">MAPPING</span>
+                    <CardTitle className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-none uppercase">
+                       ALUMNI <span className="text-primary italic">FORM</span>
                     </CardTitle>
                     <p className="text-slate-500 dark:text-slate-400 font-bold text-sm tracking-tight italic">
                       Please provide accurate data for university alumni records and placement monitoring.
