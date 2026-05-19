@@ -87,7 +87,7 @@ export default function StudentDashboardContent() {
       
       setClearanceData(clearance || [])
       setUniFormDone(Boolean(futureData))
-      setClearanceStarted(Boolean(profile?.father_name))
+      setClearanceStarted((clearance || []).some((c: any) => c.form_submitted === true))
 
       if (profile?.department_name) {
         const { data: forms } = await supabase
@@ -359,28 +359,54 @@ export default function StudentDashboardContent() {
                                      ? (profile?.department_name || "Academic") 
                                      : item.department_key.charAt(0).toUpperCase() + item.department_key.slice(1)}
                                  </h5>
+                                  
+                                 {/* HOD Identity for Academic Card */}
+                                 {!isCore && hodContact && (
+                                   <div className="mt-2 space-y-0.5">
+                                     <p className={`text-[10px] font-extrabold ${isCleared || isIssue ? 'text-white' : 'text-slate-800 dark:text-white'}`}>
+                                       HOD: {hodContact.full_name}
+                                     </p>
+                                     <p className={`text-[9px] font-semibold truncate ${isCleared || isIssue ? 'text-white/80' : 'text-slate-400'}`}>
+                                       {hodContact.email}
+                                     </p>
+                                   </div>
+                                 )}
                               </div>
                            </div>
 
                            <div className="mt-4 space-y-4">
-                              {/* Helpline Section directly on the card! */}
+                              {/* Helpline & Action Section */}
                               <div className={`pt-3 border-t ${isCleared || isIssue ? 'border-white/10' : 'border-slate-100 dark:border-white/5'} space-y-1.5`}>
                                  <p className={`text-[7px] font-extrabold uppercase tracking-widest ${isCleared || isIssue ? 'text-white/60' : 'text-slate-400'}`}>
-                                    Helpline Contact
+                                    Helpline & Actions
                                  </p>
-                                 <div className="flex items-center justify-between">
+                                 <div className="flex items-center justify-between gap-2">
                                     <span className={`text-[10px] font-extrabold font-mono ${isCleared || isIssue ? 'text-white' : 'text-slate-600 dark:text-slate-300'}`}>
                                        {deptPhone}
                                     </span>
-                                    <button 
-                                      onClick={() => window.open(`https://wa.me/${deptPhone.replace(/[^0-9]/g, '')}`, '_blank')}
-                                      className={`w-6 h-6 rounded-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all ${
-                                        isCleared || isIssue ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-emerald-500 text-white hover:bg-emerald-600'
-                                      }`}
-                                      title="Message on WhatsApp"
-                                    >
-                                       <Phone className="w-2.5 h-2.5" />
-                                    </button>
+                                    <div className="flex gap-1.5">
+                                       <button 
+                                         onClick={() => window.open(`https://wa.me/${deptPhone.replace(/[^0-9]/g, '')}`, '_blank')}
+                                         className={`w-7 h-7 rounded-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all ${
+                                           isCleared || isIssue ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                                         }`}
+                                         title="Message on WhatsApp"
+                                       >
+                                          <Phone className="w-3 h-3" />
+                                       </button>
+                                       <button 
+                                         onClick={() => {
+                                           const email = !isCore && hodContact ? hodContact.email : `${key}@university.com`
+                                           window.open(`mailto:${email}?subject=Clearance Status Inquiry - ${profile?.reg_no}`, '_self')
+                                         }}
+                                         className={`w-7 h-7 rounded-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all ${
+                                           isCleared || isIssue ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-indigo-500 text-white hover:bg-indigo-600'
+                                         }`}
+                                         title="Send Email"
+                                       >
+                                          <Mail className="w-3 h-3" />
+                                       </button>
+                                    </div>
                                  </div>
                               </div>
 

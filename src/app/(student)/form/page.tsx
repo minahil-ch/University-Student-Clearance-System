@@ -84,7 +84,14 @@ export default function ClearanceForm() {
         return
       }
 
-      if (pData && pData.father_name) {
+      const { data: submittedRows } = await supabase
+        .from('clearance_status')
+        .select('id')
+        .eq('student_id', user.id)
+        .eq('form_submitted', true)
+        .limit(1)
+
+      if (submittedRows && submittedRows.length > 0) {
         setAlreadySubmitted(true)
         setPageReady(true)
         return
